@@ -30,6 +30,9 @@ export default function Start({assignments}){
 	return (
 		<div id="container" className={styles.container}>
 			<ul>
+				<li id={`slide-start`}>
+					<Image data={assignments[assignments.length-1].images[0].responsiveImage} className={styles.image}/>
+				</li>
 				{assignments.map(({title, slug, images}, idx) => 
 					<li key={idx} id={`slide-${idx}`}>
 						<Image data={images[0].responsiveImage} className={styles.image}/>
@@ -40,6 +43,9 @@ export default function Start({assignments}){
 						</span>
 					</li>
 				)}
+				<li id={`slide-end`}>
+					<Image data={assignments[0].images[0].responsiveImage} className={styles.image}/>
+				</li>
 			</ul>
 			<div className={styles.nav}>
 				<div className={styles.back} onClick={back}></div>
