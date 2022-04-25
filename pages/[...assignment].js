@@ -5,12 +5,13 @@ import { GetAllAssignments, GetAssignment } from '/graphql';
 import { Image } from 'react-datocms';
 
 export default function Assignment({assignment:{ title, description, images, slug, open, assignmentTypes}}){
+	console.log
 	return (
 		<div className={styles.container}>
 			<h1>{title}</h1>
       <p>{description}</p>
       {images.map((image, idx)=>
-        <Image key={idx} data={image.responsiveImage}/>
+        image.responsiveImage && <Image key={idx} data={image.responsiveImage}/>
       )}
       <br/>
       {assignmentTypes.map(t => t.value).join(', ')}
