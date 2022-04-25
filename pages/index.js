@@ -4,6 +4,7 @@ import { GetAllAssignments} from '/graphql'
 import Link from 'next/link';
 import { Image } from 'react-datocms';
 import { useState, useEffect } from 'react';
+import smoothscroll from 'smoothscroll-polyfill';
 
 export default function Start({assignments}){	
 
@@ -12,13 +13,14 @@ export default function Start({assignments}){
 	const back = () => setIndex(index > 0 ? index-1 : 0)
 	const forward = () => setIndex(index+1 < assignments.length ? index+1 : index)
 
-	const scrollTo = (index) => {
+	const scrollTo = (index, behavior = 'smooth') => {
 		const container = document.getElementById('container');
 		const slide = document.getElementById(`slide-${index}`)
 		const padding = (container.clientWidth*0.2)/2
-		container.scrollTo({left: slide.offsetLeft - padding, behavior: 'smooth'});
+		container.scrollTo({left: slide.offsetLeft - padding, behavior});
 	}
 
+	useEffect(()=>{ smoothscroll.polyfill(); scrollTo(index, 'instant')}, [])
 	useEffect(()=>scrollTo(index), [index])
 	useEffect(()=>{
 		const handleKeyDown = ({key}) => key === 'ArrowRight' ?  forward() : key === 'ArrowLeft' ? back() : null
@@ -28,7 +30,7 @@ export default function Start({assignments}){
 	}, [index])
 	
 	return (
-		<div id="container" className={styles.container}>
+		<main id="container" className={styles.container}>
 			<ul>
 				<li id={`slide-start`}>
 					<Image data={assignments[assignments.length-1].images[0].responsiveImage} className={styles.image}/>
@@ -51,7 +53,7 @@ export default function Start({assignments}){
 				<div className={styles.back} onClick={back}></div>
 				<div className={styles.forward} onClick={forward}></div>
 			</div>
-		</div>
+		</main>
 	)
 }
 

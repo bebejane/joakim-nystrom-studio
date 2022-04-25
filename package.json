@@ -34,6 +34,7 @@
     "remark-gfm": "^3.0.1",
     "rooks": "^5.11.0",
     "sass": "^1.43.5",
+    "smoothscroll-polyfill": "^0.4.4",
     "swiper": "^8.1.1",
     "use-scroll-direction": "^1.1.4"
   },
