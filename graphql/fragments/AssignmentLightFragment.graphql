@@ -1,0 +1,7 @@
+fragment AssignmentLightFragment on AssignmentRecord {
+  title
+  images{
+    ...ImageFragment
+  }
+  slug
+}

@@ -7,47 +7,57 @@ $max-width: 80%;
   ul{
     display: flex;
     flex-direction: row;
-    li{
+    a{
       position: relative;
-      margin:0;
-      padding: 0;
-      text-indent: 0;
-      list-style-type: none;
       max-width: $max-width;
       min-width: $max-width;
-      .image{
-        max-height: 100vh;
-        min-height: 100vh;
-        max-width: $max-width;
-        picture > img{
-          object-fit: cover;
-        }
-      }
-      .title{
-        position: absolute;
-        display: flex;
-        justify-content: center;
-        align-items: center;
+      li{
+        position: relative;
+        margin:0;
+        padding: 0;
+        text-indent: 0;
+        list-style-type: none;
         width: 100%;
-        left:0;
-        bottom:20px;
-        margin-left: auto;
-        margin-right: auto;
-        a{
-          font-size: 20px;
-          font-weight: bold; 
+        .image{
+          max-height: 100vh;
+          min-height: 100vh;
+          max-width: 100%;
+          min-width: 100%;
+          picture > img{
+            object-fit: cover;
+          }
+        }
+        .blurup{
+          min-height: 100vh;
+        }
+        .title{
+          position: absolute;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          width: 100%;
+          left:0;
+          bottom:20px;
+          margin-left: auto;
+          margin-right: auto;
+          font-weight: bold;
+          opacity: 0;
+          transition: opacity 0s;
+          transition-delay: .8s;
+          &.show{
+            opacity: 1;
+          }
         }
       }
     }
   }
-  
   .back, .forward{
     position: fixed;
-    cursor: pointer;
     top:0;
     height: 100vh;
     background-color: transparent;
     width: calc((100% - $max-width)/2);
+    cursor: pointer;
   }
   .back{
     left: 0;
@@ -55,4 +65,15 @@ $max-width: 80%;
   .forward{
     right: 0;
   }
+}
+
+.loading{
+  position: fixed;
+  top:0;
+  left:0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
 }

@@ -1,0 +1,12 @@
+{
+  "files.exclude": {
+    "node_modules": true,
+    ".next": true,
+    ".vscode": true,
+    "jsconfig.json": true,
+    "migrate.js": true,
+    ".gitignore": true,
+    "next.config.js": true,
+    "package-lock.json": true
+  }
+}

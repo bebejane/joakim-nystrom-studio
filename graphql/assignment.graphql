@@ -1,9 +1,10 @@
 #import "./fragments/ImageFragment.graphql"
 #import "./fragments/AssignmentFragment.graphql"
+#import "./fragments/AssignmentLightFragment.graphql"
 
 query GetAllAssignments {
   assignments : allAssignments {
-    ...AssignmentFragment
+    ...AssignmentLightFragment
   }
 }
 
