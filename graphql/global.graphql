@@ -1,0 +1,7 @@
+#import "./fragments/SiteFragment.graphql"
+
+query GetGlobal {
+  site: _site {
+		...SiteFragment
+	} 
+}

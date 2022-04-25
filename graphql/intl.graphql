@@ -1,0 +1,7 @@
+query GetIntl( $locale: SiteLocale = en, $fallbackLocales: [SiteLocale!] = [en], $first: IntType = 100, $skip: IntType = 0) {
+	messages: allTranslations(locale: $locale, fallbackLocales: $fallbackLocales, first: $first, skip: $skip, orderBy: [value_ASC]) {
+		key
+    value
+	}
+}
+

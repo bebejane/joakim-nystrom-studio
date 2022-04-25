@@ -1,0 +1,8 @@
+.sound {
+  margin-top: math.div($space, 2);
+
+  @include mq($from: tablet) {
+    margin-top: $space;
+    @include textWidth();
+  }
+}

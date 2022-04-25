@@ -1,0 +1,27 @@
+.image {
+  margin-top: math.div($space, 2);
+  @include mq($from: tablet) {
+    margin: $space;
+    margin-top: $space * 0.5;
+    margin-bottom: 0 !important;
+  }
+
+  div {
+    max-height: 85vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  img {
+    object-fit: contain;
+  }
+
+  caption {
+    display: block;
+    padding-top: 1em;
+    text-align: center;
+    @include mq($until: tablet) {
+      @include textWidth();
+    }
+  }
+}

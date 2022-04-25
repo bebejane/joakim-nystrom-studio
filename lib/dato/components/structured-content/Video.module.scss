@@ -1,0 +1,10 @@
+.video {
+  display: block;
+  margin-top: math.div($space, 2);
+
+  @include mq($from: tablet) {
+    width: calc(100% - 2 * $space);
+    margin: $space;
+    margin-bottom: 0;
+  }
+}

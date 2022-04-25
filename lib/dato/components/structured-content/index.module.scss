@@ -1,0 +1,23 @@
+.mainContent {
+  figure + p,
+  section + p {
+    margin-top: math.div($space, 3);
+    @include mq($from: tablet) {
+      margin-top: $space * 0.5;
+    }
+  }
+  p {
+    margin-bottom: 0.8em;
+    //text-indent: 3em;
+  }
+
+  h1 {
+    margin-top: math.div($space, 2);
+
+    @include mq($from: tablet) {
+      margin-top: $space;
+      @include textWidth();
+    }
+  }
+  
+}

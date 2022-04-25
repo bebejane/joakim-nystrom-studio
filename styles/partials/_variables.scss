@@ -1,0 +1,54 @@
+// COLOR
+$black: #121212;
+$white: #fafafa;
+$gray: #bbb;
+
+//BORDER
+$line: 3px solid $black;
+$radius: 20px;
+
+// MARGINS & SPACES
+$outer-margin: 22%;
+$space: 80px;
+$small-space: 20px;
+$max-width: 1440px;
+
+// SET OUTER MARGINS ON SECTION
+@mixin outerMargins() {
+  padding-left: $outer-margin * 1.5;
+  padding-right: $outer-margin * 1.5;
+
+  @include mq($from: tablet) {
+    padding-left: $outer-margin;
+    padding-right: $outer-margin;
+  }
+}
+
+@mixin verticalMarginTop() {
+  padding-top: $space;
+
+  @include mq($from: tablet) {
+    padding-top: $scale-space * 2;
+  }
+
+  @include mq($from: wide) {
+    padding-top: $space * 1.8;
+  }
+}
+
+@mixin verticalMarginBottom() {
+  padding-bottom: $space;
+
+  @include mq($from: tablet) {
+    padding-bottom: $scale-space * 2;
+  }
+
+  @include mq($from: wide) {
+    padding-bottom: $space * 1.8;
+  }
+}
+
+@mixin maxWidth() {
+  max-width: $max-width;
+  margin: auto;
+}
