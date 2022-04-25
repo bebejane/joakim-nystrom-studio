@@ -1,0 +1,12 @@
+query GetAbout{
+	about{
+    email
+    phone
+    description
+    background
+    clients{
+      name
+      url
+    }
+  }
+}

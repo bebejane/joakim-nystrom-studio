@@ -1,5 +1,10 @@
 import { GetGlobal } from  "./global.graphql";
+import { GetAllAssignments, GetAssignment } from  "./assignment.graphql";
+import { GetAbout } from  "./about.graphql";
 
 export {
-  GetGlobal
+  GetGlobal,
+  GetAllAssignments,
+  GetAssignment,
+  GetAbout
 }

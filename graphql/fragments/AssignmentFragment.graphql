@@ -1,0 +1,12 @@
+fragment AssignmentFragment on AssignmentRecord {
+  title
+  description
+  images{
+    ...ImageFragment
+  }
+  assignmentTypes{
+    value
+  }
+  open
+  slug
+}

@@ -28,7 +28,6 @@ function MyApp({ Component, pageProps, pageProps: { site, seo, artists, shows, e
       <DatoSEO seo={seo} site={site} title={`Joakim Nyström Studio${title ? ` · ${title}` : ''}`} pathname={pathname} key={pathname}/>
       <Menu {...pageProps}/>
       <Component {...pageProps}/>
-      <Footer {...pageProps}/>
     </>
   )
 }

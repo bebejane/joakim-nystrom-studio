@@ -20,11 +20,6 @@
 	@import "partials/print";
 }
 
-:root {
-  --blu: #1e90ff;
-}
-
-
 #error-404, #error-505 {
 	display:flex;
 	flex-direction:column;

@@ -1,0 +1,14 @@
+#import "./fragments/ImageFragment.graphql"
+#import "./fragments/AssignmentFragment.graphql"
+
+query GetAllAssignments {
+  assignments : allAssignments {
+    ...AssignmentFragment
+  }
+}
+
+query GetAssignment($slug:String!) {
+	assignment(filter: {slug: {eq: $slug}}) {
+		...AssignmentFragment
+	}
+}
