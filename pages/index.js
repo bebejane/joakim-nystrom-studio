@@ -57,7 +57,7 @@ export default function Start({assignments}){
 		window.addEventListener('keydown', handleKeyDown)
 		return () => window.removeEventListener('keydown', handleKeyDown)
 	}, [index])
-	useEffect(()=> setTimeout(()=>setLoading(false), 500), [])
+	useEffect(()=> setTimeout(()=>setLoading(false), 1000), [])
 
 	const slides = assignments.concat(assignments).concat(assignments)
 
