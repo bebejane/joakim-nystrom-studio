@@ -18,6 +18,7 @@ export default function Start({assignments}){
 
 	const [loadedImages, setLoadedImages] = useState(0)
 	const [loading, setLoading] = useState(true)
+	const [caption, setCaption] = useState()
 	
 
 	const back = () => setIndex(index > 0 ? index-1 : 0)
@@ -25,27 +26,36 @@ export default function Start({assignments}){
 	const handleKeyDown = ({key}) => key === 'ArrowRight' ?  forward() : key === 'ArrowLeft' ? back() : null
 		
 	const scrollTo = (index, behavior = 'smooth') => {
+		
 		const container = document.getElementById('container');
 		const slide = document.getElementById(`slide-${index}`)
 		const left = slide.offsetLeft - ((innerWidth-slide.clientWidth)/2)
-		container.scrollTo({left, behavior});
 		setNavWidth((innerWidth-slide.clientWidth)/2)
+		setCaption()
+		container.scrollTo({left, behavior});	
+		setTimeout(()=>setCaption(assignments[index].title), 800)
 	}
-
+	
 	useEffect(()=>{ smoothscroll.polyfill(); scrollTo(index, 'instant')}, [])
-	useEffect(()=> scrollTo(index), [index, innerWidth])
+	useEffect(()=> scrollTo(index), [index, innerWidth, assignments])
+	useEffect(()=>setDimensions({innerHeight, innerWidth}), [innerHeight, innerWidth])
+
+	/*
 	useEffect(()=>{
 		window.addEventListener('keydown', handleKeyDown)
 		return () => window.removeEventListener('keydown', handleKeyDown)
 	}, [index])
-	
+	*/
+
+	/*
 	useEffect(()=>{
 		const totalImages = assignments.filter(a => a.images.length > 0).length
 		setLoading(loadedImages < totalImages)
+		console.log('hej')
 	}, [loadedImages])
+	*/
 	
-	useEffect(()=>setDimensions({innerHeight, innerWidth}), [innerHeight, innerWidth])
-
+	
 	return (
 		<Content id="container" className={styles.container}>
 			<ul>
@@ -54,9 +64,8 @@ export default function Start({assignments}){
 					const image = images[0]
 					const rotation = image.width > image.height ? 'landscape' : 'portrait'
 					const width = Math.min((dimensions.innerHeight/image.height)*image.width, maxWidth);
-					
 					return (
-						<Link key={idx}href={`/${slug}`}>
+						<Link key={idx} href={`/${slug}`}>
 							<a id={`slide-${idx}`} style={{maxWidth:`${width}px`, width:`${width}px`}}>
 								<li key={idx}>
 									<Image 
@@ -67,15 +76,14 @@ export default function Start({assignments}){
 										//onLoad={()=>setLoadedImages(loadedImages+1)}
 										//lazyLoad={false}
 									/>
-									<div className={cn(styles.title, index === idx && styles.show)}>
-										<span>{title}</span>
-									</div>
 								</li>
 							</a>
 						</Link>
 					)})}
-				
 			</ul>
+			<div className={cn(styles.caption, caption && styles.show)}>
+				<span>{caption}</span>
+			</div>
 			<a className={styles.slideEnd}>‹</a>
 			<div className={styles.nav}>
 				<div className={styles.back} onClick={back} style={{width:`${index === 0 ? 0 : navWidth}px`}}></div>

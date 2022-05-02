@@ -32,32 +32,30 @@ $max-width: 80%;
         }
         .blurup{
           display: none;
-        }
-        .title{
-          position: absolute;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          width: 100%;
-          left:0;
-          bottom:20px;
-          margin-left: auto;
-          margin-right: auto;
-          font-weight: bold;
-          opacity: 0;
-          transition: opacity 0s;
-          transition-delay: .5s;
-          &.show{
-            opacity: 1;
-          }
-          span{
-            background-color: #fff;
-            padding: 10px;
-          }
-        }   
+        } 
       }
     }
   }
+  .caption{
+    position: fixed;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    left:0;
+    bottom:20px;
+    margin-left: auto;
+    margin-right: auto;
+    font-weight: bold;
+    z-index: 2000;
+    &.show{
+      display: flex;
+    }
+    span{
+      background-color: #fff;
+      padding: 10px;
+    }
+  }  
   .slideEnd, .slideStart{
     display:flex;
     align-items: center;
@@ -75,7 +73,6 @@ $max-width: 80%;
     position: fixed;
     top:0;
     height: 100vh;
-    transition: width .3s ease;
     cursor: pointer;
     &:hover{
       background-color: rgba(255,0,0,0.05);

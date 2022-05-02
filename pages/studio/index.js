@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { Image } from 'react-datocms';
 import { useState, useEffect } from 'react';
 import Content from '/components/Content';
+import Markdown from '/lib/dato/components/Markdown';
 
 export default function Studio({about : {email, phone, description, background, clients}}){	
 
@@ -15,10 +16,11 @@ export default function Studio({about : {email, phone, description, background, 
 			{phone}
 			</p>
 			<p>
-				{description}
+				<Markdown>{description}</Markdown>
 			</p>
 			<p>
-				{background}
+				
+				<Markdown>{background}</Markdown>
 			</p>
 			<p>
 				<ul>
