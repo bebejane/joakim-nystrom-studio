@@ -20,24 +20,34 @@ export default function Start({assignments}){
 	const [loading, setLoading] = useState(true)
 	const [caption, setCaption] = useState()
 	
-
-	const back = () => setIndex(index > 0 ? index-1 : 0)
-	const forward = () => setIndex(index+1 < assignments.length ? index+1 : 0)
+	const back = () => {
+		if(index-1 >= 0) return setIndex(index-1)
+		scrollTo(assignments.length, 'instant', true)
+		setIndex(assignments.length-1)
+	}
+	const forward = () => {
+		if(index+1 >= assignments.length) scrollTo(-1, 'instant', true)
+		setIndex(index+1 < assignments.length ? index+1 : 0)
+	}
 	const handleKeyDown = ({key}) => key === 'ArrowRight' ?  forward() : key === 'ArrowLeft' ? back() : null
 		
-	const scrollTo = (index, behavior = 'smooth') => {
+	const scrollTo = (index, behavior = 'smooth', skipIndex = false) => {
 		
 		const container = document.getElementById('container');
 		const slide = document.getElementById(`slide-${index}`)
-		const left = slide.offsetLeft - ((innerWidth-slide.clientWidth)/2)
-		setNavWidth((innerWidth-slide.clientWidth)/2)
-		setCaption()
-		container.scrollTo({left, behavior});	
-		setTimeout(()=>setCaption(assignments[index].title), 800)
+		const left = slide.offsetLeft - ((dimensions.innerWidth-slide.clientWidth)/2)
+		
+		console.log('scroll', index, left)
+		setNavWidth((dimensions.innerWidth-slide.clientWidth)/2)
+		if(!skipIndex){
+			setCaption()
+			setTimeout(()=>setCaption(assignments[index].title), 1000)
+		}
+		requestAnimationFrame(()=>container.scrollTo({left, behavior, block: 'start'}))	
 	}
 	
-	useEffect(()=>{ smoothscroll.polyfill(); scrollTo(index, 'instant')}, [])
-	useEffect(()=> scrollTo(index), [index, innerWidth, assignments])
+	useEffect(()=>{ scrollTo(index, 'instant')}, [])
+	useEffect(()=> scrollTo(index), [index, dimensions.innerWidth, assignments])
 	useEffect(()=>setDimensions({innerHeight, innerWidth}), [innerHeight, innerWidth])
 
 	/*
@@ -54,20 +64,22 @@ export default function Start({assignments}){
 		console.log('hej')
 	}, [loadedImages])
 	*/
-	
-	
+	const slides = assignments.concat(assignments).concat(assignments)
+
+	console.log('render')
 	return (
 		<Content id="container" className={styles.container}>
 			<ul>
-				{assignments.map(({title, slug, images}, idx) => {
+				{slides.map(({title, slug, images}, idx) => {
 					const maxWidth = dimensions.innerWidth*0.8;
 					const image = images[0]
 					const rotation = image.width > image.height ? 'landscape' : 'portrait'
 					const width = Math.min((dimensions.innerHeight/image.height)*image.width, maxWidth);
+
 					return (
-						<Link key={idx} href={`/${slug}`}>
-							<a id={`slide-${idx}`} style={{maxWidth:`${width}px`, width:`${width}px`}}>
-								<li key={idx}>
+						<Link key={`slide-${idx}`} href={`/${slug}`}>
+							<a key={`slide-link-${idx}`} id={`slide-${idx-(slides.length/3)}`} style={{maxWidth:`${width}px`, width:`${width}px`}}>
+								<li key={`slide-li-${idx}`}>
 									<Image 
 										data={image.responsiveImage} 
 										className={styles.image} 
@@ -84,10 +96,10 @@ export default function Start({assignments}){
 			<div className={cn(styles.caption, caption && styles.show)}>
 				<span>{caption}</span>
 			</div>
-			<a className={styles.slideEnd}>‹</a>
+			
 			<div className={styles.nav}>
-				<div className={styles.back} onClick={back} style={{width:`${index === 0 ? 0 : navWidth}px`}}></div>
-				<div className={styles.forward} onClick={forward} style={{width:`${index === 0 ? navWidth*2 : navWidth}px`}}></div>
+				<div className={styles.back} onClick={back} style={{width:`${navWidth}px`}}></div>
+				<div className={styles.forward} onClick={forward} style={{width:`${navWidth}px`}}></div>
 			</div>
 			{/*loading && <div className={styles.loading}>Loading...</div>*/}
 		</Content>
