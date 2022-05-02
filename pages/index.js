@@ -4,7 +4,7 @@ import { GetAllAssignments} from '/graphql'
 import cn from 'classnames'
 import Link from 'next/link';
 import { Image } from 'react-datocms';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useWindowSize } from 'rooks';
 import smoothscroll from 'smoothscroll-polyfill';
 import Content from '/components/Content';
@@ -19,7 +19,8 @@ export default function Start({assignments}){
 	const [loadedImages, setLoadedImages] = useState(0)
 	const [loading, setLoading] = useState(true)
 	const [caption, setCaption] = useState()
-	
+	const timer = useRef(null);
+
 	const back = () => {
 		if(index-1 >= 0) return setIndex(index-1)
 		scrollTo(assignments.length, 'instant', true)
@@ -37,36 +38,29 @@ export default function Start({assignments}){
 		const slide = document.getElementById(`slide-${index}`)
 		const left = slide.offsetLeft - ((dimensions.innerWidth-slide.clientWidth)/2)
 		
-		console.log('scroll', index, left)
-		setNavWidth((dimensions.innerWidth-slide.clientWidth)/2)
-		if(!skipIndex){
+		container.scrollTo({left,top:0, behavior, block: 'start'})
+
+		requestAnimationFrame(()=>{
 			setCaption()
-			setTimeout(()=>setCaption(assignments[index].title), 1000)
-		}
-		requestAnimationFrame(()=>container.scrollTo({left, behavior, block: 'start'}))	
+			setNavWidth((dimensions.innerWidth-slide.clientWidth)/2)
+			if(!skipIndex){	
+				clearTimeout(timer.current)
+				timer.current = setTimeout(()=>setCaption(assignments[index].title), 750)
+			}
+		})		
 	}
-	
-	useEffect(()=>{ scrollTo(index, 'instant')}, [])
+
+	useEffect(()=>{ smoothscroll.polyfill(); scrollTo(index, 'instant')}, [])
 	useEffect(()=> scrollTo(index), [index, dimensions.innerWidth, assignments])
 	useEffect(()=>setDimensions({innerHeight, innerWidth}), [innerHeight, innerWidth])
-
-	/*
 	useEffect(()=>{
 		window.addEventListener('keydown', handleKeyDown)
 		return () => window.removeEventListener('keydown', handleKeyDown)
 	}, [index])
-	*/
+	useEffect(()=> setTimeout(()=>setLoading(false), 500), [])
 
-	/*
-	useEffect(()=>{
-		const totalImages = assignments.filter(a => a.images.length > 0).length
-		setLoading(loadedImages < totalImages)
-		console.log('hej')
-	}, [loadedImages])
-	*/
 	const slides = assignments.concat(assignments).concat(assignments)
 
-	console.log('render')
 	return (
 		<Content id="container" className={styles.container}>
 			<ul>
@@ -75,33 +69,38 @@ export default function Start({assignments}){
 					const image = images[0]
 					const rotation = image.width > image.height ? 'landscape' : 'portrait'
 					const width = Math.min((dimensions.innerHeight/image.height)*image.width, maxWidth);
-
+					const realIndex = idx-(slides.length/3);
+					
 					return (
 						<Link key={`slide-${idx}`} href={`/${slug}`}>
-							<a key={`slide-link-${idx}`} id={`slide-${idx-(slides.length/3)}`} style={{maxWidth:`${width}px`, width:`${width}px`}}>
+							<a key={`slide-link-${idx}`} id={`slide-${realIndex}`} style={{maxWidth:`${width}px`, width:`${width}px`}}>
 								<li key={`slide-li-${idx}`}>
 									<Image 
 										data={image.responsiveImage} 
 										className={styles.image} 
-										pictureClassName={styles.picture} 
-										blurupClassName={styles.blurup} 
-										//onLoad={()=>setLoadedImages(loadedImages+1)}
-										//lazyLoad={false}
+										lazyLoad={true}
+										layout="responsive"
+    								objectFit="contain"
+    								objectPosition="50% 50%"
+										fadeInDuration={0}
+										usePlaceholder={true}
+										intersectionMargin={'0px 100px 0px 100px'}
 									/>
 								</li>
 							</a>
 						</Link>
 					)})}
 			</ul>
-			<div className={cn(styles.caption, caption && styles.show)}>
+
+			<div key={'caption'} className={cn(styles.caption, caption && styles.show)}>
 				<span>{caption}</span>
 			</div>
 			
-			<div className={styles.nav}>
-				<div className={styles.back} onClick={back} style={{width:`${navWidth}px`}}></div>
-				<div className={styles.forward} onClick={forward} style={{width:`${navWidth}px`}}></div>
+			<div key={'nav'} className={styles.nav}>
+				<div key={'back'} className={styles.back} onClick={back} style={{width:`${navWidth}px`}}></div>
+				<div key={'forward'} className={styles.forward} onClick={forward} style={{width:`${navWidth}px`}}></div>
 			</div>
-			{/*loading && <div className={styles.loading}>Loading...</div>*/}
+			{loading && <div key={'loader'} className={styles.loading}></div>}
 		</Content>
 	)
 }
