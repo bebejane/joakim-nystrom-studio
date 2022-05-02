@@ -13,9 +13,12 @@ export default function Start({assignments}){
 
 	const [index, setIndex] = useState(0)
 	const [navWidth, setNavWidth] = useState(0)
+	const [dimensions, setDimensions] = useState({innerWidth:0, innerHeight:0})
+	const { innerWidth, innerHeight } = useWindowSize();
+
 	const [loadedImages, setLoadedImages] = useState(0)
 	const [loading, setLoading] = useState(true)
-	const { innerWidth, innerHeight } = useWindowSize();
+	
 
 	const back = () => setIndex(index > 0 ? index-1 : 0)
 	const forward = () => setIndex(index+1 < assignments.length ? index+1 : 0)
@@ -41,14 +44,16 @@ export default function Start({assignments}){
 		setLoading(loadedImages < totalImages)
 	}, [loadedImages])
 	
+	useEffect(()=>setDimensions({innerHeight, innerWidth}), [innerHeight, innerWidth])
+
 	return (
 		<Content id="container" className={styles.container}>
 			<ul>
 				{assignments.map(({title, slug, images}, idx) => {
-					const maxWidth = innerWidth*0.8;
+					const maxWidth = dimensions.innerWidth*0.8;
 					const image = images[0]
 					const rotation = image.width > image.height ? 'landscape' : 'portrait'
-					const width = Math.min((innerHeight/image.height)*image.width, maxWidth);
+					const width = Math.min((dimensions.innerHeight/image.height)*image.width, maxWidth);
 					
 					return (
 						<Link key={idx}href={`/${slug}`}>
@@ -59,7 +64,8 @@ export default function Start({assignments}){
 										className={styles.image} 
 										pictureClassName={styles.picture} 
 										blurupClassName={styles.blurup} 
-										onLoad={()=>setLoadedImages(loadedImages+1)}
+										//onLoad={()=>setLoadedImages(loadedImages+1)}
+										//lazyLoad={false}
 									/>
 									<div className={cn(styles.title, index === idx && styles.show)}>
 										<span>{title}</span>

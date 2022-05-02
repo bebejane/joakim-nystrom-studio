@@ -6,16 +6,32 @@ import { Image } from 'react-datocms';
 import { useState, useEffect } from 'react';
 import Content from '/components/Content';
 
-export default function Studio({about}){	
+export default function Studio({about : {email, phone, description, background, clients}}){	
 
 	return (
 		<Content className={styles.container}>
-      studio
+			<p>
+      {email}<br/>
+			{phone}
+			</p>
+			<p>
+				{description}
+			</p>
+			<p>
+				{background}
+			</p>
+			<p>
+				<ul>
+				{clients.map(({name}) => 
+					<li>{name}</li>
+				)}
+				</ul>
+			</p>
 		</Content>
 	)
 }
 
-export const getStaticProps = withGlobalProps({queries:[]}, async ({props, revalidate }) => {
+export const getStaticProps = withGlobalProps({queries:[GetAbout]}, async ({props, revalidate }) => {
 	
 	return {
 		props:{
