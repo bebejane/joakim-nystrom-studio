@@ -1,0 +1,7 @@
+#import "./fragments/ArtworkFragment.graphql"
+
+query GetAllArtwork {
+  artwork : allArtworks {
+    ...ArtworkFragment
+  }
+}

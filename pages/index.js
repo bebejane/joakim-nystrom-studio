@@ -11,19 +11,21 @@ import smoothscroll from 'smoothscroll-polyfill';
 export default function Start({assignments}){	
 
 	const [index, setIndex] = useState(0)
+	const [navWidth, setNavWidth] = useState(0)
 	const [loadedImages, setLoadedImages] = useState(0)
 	const [loading, setLoading] = useState(true)
-	const { innerWidth } = useWindowSize();
+	const { innerWidth, innerHeight } = useWindowSize();
 
 	const back = () => setIndex(index > 0 ? index-1 : 0)
-	const forward = () => setIndex(index+1 < assignments.length ? index+1 : index)
+	const forward = () => setIndex(index+1 < assignments.length ? index+1 : 0)
 	const handleKeyDown = ({key}) => key === 'ArrowRight' ?  forward() : key === 'ArrowLeft' ? back() : null
 		
 	const scrollTo = (index, behavior = 'smooth') => {
 		const container = document.getElementById('container');
 		const slide = document.getElementById(`slide-${index}`)
-		const padding = (container.clientWidth*0.2)/2
-		container.scrollTo({left: slide.offsetLeft - padding, behavior});	
+		const left = slide.offsetLeft - ((innerWidth-slide.clientWidth)/2)
+		container.scrollTo({left, behavior});
+		setNavWidth((innerWidth-slide.clientWidth)/2)
 	}
 
 	useEffect(()=>{ smoothscroll.polyfill(); scrollTo(index, 'instant')}, [])
@@ -37,43 +39,41 @@ export default function Start({assignments}){
 		const totalImages = assignments.filter(a => a.images.length > 0).length
 		setLoading(loadedImages < totalImages)
 	}, [loadedImages])
-
-
+	
 	return (
 		<main id="container" className={styles.container}>
+			
 			<ul>
-				<a>
-					<li id={`slide-start`}>
-						<Image data={assignments[assignments.length-1].images[0].responsiveImage} className={cn(styles.image, styles.cropped)} blurupClassName={styles.blurup}/>
-					</li>
-				</a>
-				{assignments.map(({title, slug, images}, idx) => 
-					<Link href={`/${slug}`}>
-						<a id={`slide-${idx}`}>
-							<li key={idx}>
-								<Image 
-									data={images[0].responsiveImage} 
-									className={styles.image} 
-									blurupClassName={styles.blurup} 
-									onLoad={()=>setLoadedImages(loadedImages+1)}
-									//lazyLoad={false}
-								/>
-								<span className={cn(styles.title, index === idx && styles.show)}>
-									{title}
-								</span>
-							</li>
-						</a>
-					</Link>
-				)}
-				<a>
-					<li id={`slide-end`}>
-						<Image data={assignments[0].images[0].responsiveImage} className={cn(styles.image, styles.cropped)} blurupClassName={styles.blurup}/>
-					</li>
-				</a>
+				{assignments.map(({title, slug, images}, idx) => {
+					const maxWidth = innerWidth*0.8;
+					const image = images[0]
+					const rotation = image.width > image.height ? 'landscape' : 'portrait'
+					const width = Math.min((innerHeight/image.height)*image.width, maxWidth);
+					
+					return (
+						<Link key={idx}href={`/${slug}`}>
+							<a id={`slide-${idx}`} style={{maxWidth:`${width}px`, width:`${width}px`}}>
+								<li key={idx}>
+									<Image 
+										data={image.responsiveImage} 
+										className={styles.image} 
+										pictureClassName={styles.picture} 
+										blurupClassName={styles.blurup} 
+										onLoad={()=>setLoadedImages(loadedImages+1)}
+									/>
+									<div className={cn(styles.title, index === idx && styles.show)}>
+										<span>{title}</span>
+									</div>
+								</li>
+							</a>
+						</Link>
+					)})}
+				
 			</ul>
+			<a className={styles.slideEnd}>‹</a>
 			<div className={styles.nav}>
-				<div className={styles.back} onClick={back}></div>
-				<div className={styles.forward} onClick={forward}></div>
+				<div className={styles.back} onClick={back} style={{width:`${index === 0 ? 0 : navWidth}px`}}></div>
+				<div className={styles.forward} onClick={forward} style={{width:`${index === 0 ? navWidth*2 : navWidth}px`}}></div>
 			</div>
 			{/*loading && <div className={styles.loading}>Loading...</div>*/}
 		</main>

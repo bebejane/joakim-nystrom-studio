@@ -1,20 +1,25 @@
 import styles from './Artwork.module.scss'
 import { withGlobalProps } from "/lib/hoc";
-import { GetAbout } from '/graphql'
-import Link from 'next/link';
+import cn from 'classnames'
 import { Image } from 'react-datocms';
-import { useState, useEffect } from 'react';
+import { GetAllArtwork } from '/graphql';
 
-export default function Artwork({about}){	
-
+export default function Artwork({artwork}){	
+	console.log(artwork)
 	return (
 		<div className={styles.container}>
-      artwork
+      {artwork.map(({image, dimensions, sold}) => 
+				<div className={styles.artwork}>
+					<Image data={image.responsiveImage} className={styles.image} pictureClassName={styles.picture}/>
+					<span className={styles.dimensions}>{dimensions}</span>
+					<span className={cn(styles.availability, sold && styles.sold)}>{sold ? 'Sold' : 'Buy'}</span>
+				</div>
+			)}
 		</div>
 	)
 }
 
-export const getStaticProps = withGlobalProps({queries:[]}, async ({props, revalidate }) => {
+export const getStaticProps = withGlobalProps({queries:[GetAllArtwork]}, async ({props, revalidate }) => {
 	
 	return {
 		props:{

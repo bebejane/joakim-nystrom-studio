@@ -2,6 +2,9 @@ $max-width: 80%;
 
 .container {
   overflow-x: hidden;
+  display:flex;
+  flex-direction: row;
+
 	max-height: 100vh;
   max-width: 100vw;
   ul{
@@ -9,8 +12,8 @@ $max-width: 80%;
     flex-direction: row;
     a{
       position: relative;
-      max-width: $max-width;
-      min-width: $max-width;
+      //max-width: $max-width;
+      //min-width: $max-width;
       li{
         position: relative;
         margin:0;
@@ -21,14 +24,13 @@ $max-width: 80%;
         .image{
           max-height: 100vh;
           min-height: 100vh;
-          max-width: 100%;
-          min-width: 100%;
-          picture > img{
-            object-fit: cover;
-          }
+        }
+        .picture{
+          object-fit:contain;
+          width: auto !important;
         }
         .blurup{
-          min-height: 100vh;
+          display: none;
         }
         .title{
           position: absolute;
@@ -43,21 +45,40 @@ $max-width: 80%;
           font-weight: bold;
           opacity: 0;
           transition: opacity 0s;
-          transition-delay: .8s;
+          transition-delay: .5s;
           &.show{
             opacity: 1;
           }
-        }
+          span{
+            background-color: #fff;
+            padding: 10px;
+          }
+        }   
       }
     }
+  }
+  .slideEnd, .slideStart{
+    display:flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #fff;
+    color:#000;
+    padding: 20px;
+    min-width: 10%;
+    font-size: 100px;
+  }
+  .slideStart{
+    
   }
   .back, .forward{
     position: fixed;
     top:0;
     height: 100vh;
-    background-color: transparent;
-    width: calc((100% - $max-width)/2);
+    transition: width .3s ease;
     cursor: pointer;
+    &:hover{
+      background-color: rgba(255,0,0,0.05);
+    }
   }
   .back{
     left: 0;

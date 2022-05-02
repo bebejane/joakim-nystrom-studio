@@ -1,0 +1,32 @@
+.container {
+	margin-top: 70px;
+	padding: 20px;
+	display: flex;
+	flex-direction: row; 
+	flex-wrap: wrap;
+	justify-content: flex-start;
+	.artwork {
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		flex: 0 0 20%;
+		width: 100%;
+		margin-bottom: 1rem;
+    padding: 1rem;
+		.dimensions,
+		.availability {
+			margin-top: 0.5rem;
+			display: flex;
+			justify-content: center;
+      line-height: 1;
+		}
+    .dimensions{
+      font-weight: 700;
+    }
+		.availability {
+			&.sold {
+				color: gray;
+			}
+		}
+	}
+}

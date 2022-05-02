@@ -27,7 +27,13 @@ function MyApp({ Component, pageProps, pageProps: { site, seo, artists, shows, e
       <GoogleAnalytics />
       <DatoSEO seo={seo} site={site} title={`Joakim Nyström Studio${title ? ` · ${title}` : ''}`} pathname={pathname} key={pathname}/>
       <Menu {...pageProps}/>
-      <Component {...pageProps}/>
+      <AnimatePresence
+				exitBeforeEnter
+				initial={true}
+				onExitComplete={() =>  typeof window !== 'undefined' && window.scrollTo({ top: 0 })}
+			>
+        <Component {...pageProps}/>
+      </AnimatePresence>
     </>
   )
 }

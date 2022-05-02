@@ -16,11 +16,6 @@ export default function Menu({}) {
       </div>
 			<nav className={styles.nav}>
 				<ul>
-					<Link href="/work">
-						<a>
-							<li>Work</li>
-						</a>
-					</Link>
 					<Link href="/artwork">
 						<a>
 							<li>Artwork</li>

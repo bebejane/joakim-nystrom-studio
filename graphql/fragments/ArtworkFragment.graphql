@@ -1,0 +1,10 @@
+#import "./ImageFragment.graphql"
+
+fragment ArtworkFragment on ArtworkRecord {
+  title
+  dimensions
+  image{
+    ...ImageFragment
+  }
+  sold
+}
