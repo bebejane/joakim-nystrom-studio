@@ -24,8 +24,8 @@ export default function Studio({about : {email, phone, description, background, 
 			</p>
 			<p>
 				<ul>
-				{clients.map(({name}) => 
-					<li>{name}</li>
+				{clients.map(({name}, idx) => 
+					<li key={idx}>{name}</li>
 				)}
 				</ul>
 			</p>
