@@ -7,6 +7,7 @@ import { Image } from 'react-datocms';
 import { useState, useEffect } from 'react';
 import { useWindowSize } from 'rooks';
 import smoothscroll from 'smoothscroll-polyfill';
+import Content from '/components/Content';
 
 export default function Start({assignments}){	
 
@@ -41,8 +42,7 @@ export default function Start({assignments}){
 	}, [loadedImages])
 	
 	return (
-		<main id="container" className={styles.container}>
-			
+		<Content id="container" className={styles.container}>
 			<ul>
 				{assignments.map(({title, slug, images}, idx) => {
 					const maxWidth = innerWidth*0.8;
@@ -76,7 +76,7 @@ export default function Start({assignments}){
 				<div className={styles.forward} onClick={forward} style={{width:`${index === 0 ? navWidth*2 : navWidth}px`}}></div>
 			</div>
 			{/*loading && <div className={styles.loading}>Loading...</div>*/}
-		</main>
+		</Content>
 	)
 }
 

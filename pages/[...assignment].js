@@ -3,11 +3,12 @@ import { withGlobalProps } from "/lib/hoc";
 import { apiQuery } from '/lib/dato/api';
 import { GetAllAssignments, GetAssignment } from '/graphql';
 import { Image } from 'react-datocms';
+import Content from '/components/Content';
 
 export default function Assignment({assignment:{ title, description, images, slug, open, assignmentTypes}}){
-	console.log
+	
 	return (
-		<div className={styles.container}>
+		<Content className={styles.assignment}>
 			<h1>{title}</h1>
       <p>{description}</p>
       {images.map((image, idx)=>
@@ -15,7 +16,7 @@ export default function Assignment({assignment:{ title, description, images, slu
       )}
       <br/>
       {assignmentTypes.map(t => t.value).join(', ')}
-		</div>
+		</Content>
 	)
 }
 

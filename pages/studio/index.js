@@ -4,13 +4,14 @@ import { GetAbout } from '/graphql'
 import Link from 'next/link';
 import { Image } from 'react-datocms';
 import { useState, useEffect } from 'react';
+import Content from '/components/Content';
 
 export default function Studio({about}){	
 
 	return (
-		<div className={styles.container}>
+		<Content className={styles.container}>
       studio
-		</div>
+		</Content>
 	)
 }
 

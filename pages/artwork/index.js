@@ -3,19 +3,19 @@ import { withGlobalProps } from "/lib/hoc";
 import cn from 'classnames'
 import { Image } from 'react-datocms';
 import { GetAllArtwork } from '/graphql';
+import Content from '/components/Content';
 
 export default function Artwork({artwork}){	
-	console.log(artwork)
 	return (
-		<div className={styles.container}>
-      {artwork.map(({image, dimensions, sold}) => 
+		<Content className={styles.container}>
+			{artwork.map(({image, dimensions, sold}) => 
 				<div className={styles.artwork}>
 					<Image data={image.responsiveImage} className={styles.image} pictureClassName={styles.picture}/>
 					<span className={styles.dimensions}>{dimensions}</span>
 					<span className={cn(styles.availability, sold && styles.sold)}>{sold ? 'Sold' : 'Buy'}</span>
 				</div>
 			)}
-		</div>
+		</Content>
 	)
 }
 
