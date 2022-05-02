@@ -50,7 +50,7 @@ export default function Start({assignments}){
 		})		
 	}
 
-	useEffect(()=>{ smoothscroll.polyfill(); scrollTo(index, 'instant')}, [])
+	useEffect(()=>{ scrollTo(index, 'instant'); smoothscroll.polyfill();}, [])
 	useEffect(()=> scrollTo(index), [index, dimensions.innerWidth, assignments])
 	useEffect(()=>setDimensions({innerHeight, innerWidth}), [innerHeight, innerWidth])
 	useEffect(()=>{
