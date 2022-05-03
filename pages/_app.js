@@ -6,6 +6,8 @@ import { useRouter } from 'next/router';
 import Menu from '/components/Menu';
 import { AnimatePresence } from "framer-motion";
 import useTransitionFix from '/lib/hooks/useTransitionFix';
+import Content from '/components/Content';
+import Gallery from '/components/Gallery';
 
 function MyApp({ Component, pageProps, pageProps: { site, seo, backgroundImage }}) {
 
