@@ -6,6 +6,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useWindowSize } from 'rooks';
 import smoothscroll from 'smoothscroll-polyfill';
 import { motion} from 'framer-motion';
+import { useRouter } from 'next/router';
 
 const duration = 1;
 const galleryTransition = {
@@ -26,8 +27,8 @@ const galleryTransition = {
 }
 
 export default function Gallery({slides, className, style}){	
-	//useTraceUpdate(props);
-  
+	
+  const router = useRouter()
   const [index, setIndex] = useState(0)
   const [init, setInit] = useState(false)
 	const [dimensions, setDimensions] = useState({innerWidth:0, innerHeight:0})
@@ -64,6 +65,7 @@ export default function Gallery({slides, className, style}){
     if(!init)
       setTimeout(()=>setInit(true), 500)
   }
+
 	const back = () => {
 		if(index-1 >= 0) return setIndex(index-1)
 		scrollTo(slides.length, 'instant', true)
@@ -99,7 +101,7 @@ export default function Gallery({slides, className, style}){
 					return (
 						<Link key={`slide-${idx}`} href={`/${slug}`}>
 							<motion.a
-								//initial={realIndex === 0 && isIntroSlide ? undefined : 'initial'}
+								initial={realIndex === 0 && isIntroSlide ? undefined : 'initial'}
 								animate={realIndex !== 0 ? 'enter' : undefined}
 								exit={realIndex !== index  ? "exit" : undefined}
 								variants={galleryTransition} 
