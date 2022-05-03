@@ -5,11 +5,31 @@ import { Image } from 'react-datocms';
 import { useState, useEffect, useRef } from 'react';
 import { useWindowSize } from 'rooks';
 import smoothscroll from 'smoothscroll-polyfill';
-import useStore from '/store';
+import useStore from '/store'
+import { motion} from 'framer-motion';
+import useTraceUpdate from '/lib/hooks/useTraceUpdate';
 
-export default function Gallery({slides, className, style, onIndexChange, onImageChange}){	
+const duration = 1;
+const galleryTransition = {
+	initial: {
+		translateY:'100vh'
+	},
+	enter: {
+		translateY:'0vh',
+		transition:{ duration}
+	},
+	exit: {
+		translateY:'-100vh',
+		transition:{ duration},
+		transitionEnd: {
+			translateY:'unset',
+		}
+	}	
+}
+
+export default function Gallery({slides, className, style}){	
+	//useTraceUpdate(props);
   
-
   const [index, setIndex] = useState(0)
   const [init, setInit] = useState(false)
 	const [navWidth, setNavWidth] = useState(0)
@@ -18,27 +38,24 @@ export default function Gallery({slides, className, style, onIndexChange, onImag
 	const [caption, setCaption] = useState()
 	const timer = useRef(null);
   const galleryRef = useRef()
-	const setBackgroundImage = useStore((state) => state.setBackgroundImage);
-
+	
   const scrollTo = (idx, behavior = 'smooth', skipIndex = false) => {
 		
 		const slide = document.getElementById(`slide-${idx}`)
-    const left = slide.offsetLeft - ((dimensions.innerWidth-slide.clientWidth)/2)
+    const left = slide.offsetLeft - ((((dimensions.innerWidth-slide.clientWidth)/2)))
+		
+		setCaption(undefined)
+		setNavWidth((dimensions.innerWidth-slide.clientWidth)/2)
 
 		galleryRef.current?.scrollTo({left,top:0, behavior: init ? behavior : 'instant'})
+
+		if(!skipIndex){	
+			clearTimeout(timer.current)
+			timer.current = setTimeout(()=>setCaption(slides[index].title), 750)
+		}
 		
-		requestAnimationFrame(()=>{
-			setCaption(undefined)
-			setNavWidth((dimensions.innerWidth-slide.clientWidth)/2)
-			if(!skipIndex){	
-				clearTimeout(timer.current)
-				timer.current = setTimeout(()=>setCaption(slides[index].title), 750)
-			}
-		})
     if(!init)
       setTimeout(()=>setInit(true), 500)
-    
-    onIndexChange && onIndexChange(index)
   }
 	const back = () => {
 		if(index-1 >= 0) return setIndex(index-1)
@@ -61,8 +78,6 @@ export default function Gallery({slides, className, style, onIndexChange, onImag
 		return () => window.removeEventListener('keydown', handleKeyDown)
 	}, [index])
 
-	useEffect(()=> setBackgroundImage(slides[index].image), [index, slides])
-
   return (
 		<div ref={galleryRef} className={cn(styles.gallery, className)} style={style}>
 			<ul>
@@ -70,11 +85,16 @@ export default function Gallery({slides, className, style, onIndexChange, onImag
 					const maxWidth = dimensions.innerWidth*0.8;
 					const width = Math.min((dimensions.innerHeight/image.height)*image.width, maxWidth);
 					const realIndex = idx-(slides.length);
+					const isIntroSlide =  realIndex >= -1 && realIndex <= 1;
 					
 					return (
 						<Link key={`slide-${idx}`} href={`/${slug}`}>
-							<a 
-                id={`slide-${realIndex}`} 
+							<motion.a
+								initial={realIndex === 0 && isIntroSlide ? undefined : 'initial'}
+								animate={realIndex !== 0 ? 'enter' : undefined}
+								exit={realIndex !== index  ? "exit" : undefined}
+								variants={galleryTransition} 
+								id={`slide-${realIndex}`} 
                 key={`slide-link-${idx}`} 
                 style={{maxWidth:`${width}px`, width:`${width}px`, height:`${dimensions.innerHeight}px`}}
               >
@@ -97,7 +117,7 @@ export default function Gallery({slides, className, style, onIndexChange, onImag
 										null
 								}
 								</li>
-							</a>
+							</motion.a>
 						</Link>
 					)})}
 			</ul>

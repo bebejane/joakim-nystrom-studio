@@ -41,15 +41,9 @@ export default function Assignment({assignment:{ title, description, images, slu
       <br/>
       {assignmentTypes.map(t => t.value).join(', ')}
 			*/}
-			<motion.div
-				initial="initial" 
-				animate={"animate"}
-				variants={galleryTransition} 	
-				onAnimationComplete={()=>setIsTransitioning(false)}
-				onAnimationStart={()=>setIsTransitioning(true)}
-			>
+			
 				<Gallery slides={images.map((image)=> ({image, title:image.title, slug}))}/>
-			</motion.div>
+			
 		</Content>
 	)
 }
