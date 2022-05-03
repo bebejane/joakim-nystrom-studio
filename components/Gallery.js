@@ -99,7 +99,7 @@ export default function Gallery({slides, className, style}){
 					return (
 						<Link key={`slide-${idx}`} href={`/${slug}`}>
 							<motion.a
-								initial={realIndex === 0 && isIntroSlide ? undefined : 'initial'}
+								//initial={realIndex === 0 && isIntroSlide ? undefined : 'initial'}
 								animate={realIndex !== 0 ? 'enter' : undefined}
 								exit={realIndex !== index  ? "exit" : undefined}
 								variants={galleryTransition} 
