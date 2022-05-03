@@ -2,6 +2,7 @@ import styles from './Assignment.module.scss'
 import { withGlobalProps } from "/lib/hoc";
 import { apiQuery } from '/lib/dato/api';
 import { GetAllAssignments, GetAssignment } from '/graphql';
+import useStore from '/store';
 import { motion } from 'framer-motion';
 import Content from '/components/Content';
 import Gallery from '/components/Gallery';
@@ -28,6 +29,8 @@ const galleryTransition = {
 }
 export default function Assignment({assignment:{ title, description, images, slug, open, assignmentTypes}}){
 	
+	const setIsTransitioning = useStore((state) => state.setIsTransitioning);
+
 	return (
 		<Content className={styles.assignment}>
 			{/*<h1>{title}</h1>
@@ -42,6 +45,8 @@ export default function Assignment({assignment:{ title, description, images, slu
 				initial="initial" 
 				animate={"animate"}
 				variants={galleryTransition} 	
+				onAnimationComplete={()=>setIsTransitioning(false)}
+				onAnimationStart={()=>setIsTransitioning(true)}
 			>
 				<Gallery slides={images.map((image)=> ({image, title:image.title, slug}))}/>
 			</motion.div>
@@ -67,7 +72,8 @@ export const getStaticProps = withGlobalProps({mode:'assignment'}, async ({props
   return {
 		props :{
       ...props,
-			assignment
+			assignment,
+			backgroundImage:assignment.images[0]
     },
 		revalidate
 	};

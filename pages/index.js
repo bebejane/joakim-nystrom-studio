@@ -6,7 +6,7 @@ import Gallery from '/components/Gallery';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
 import { GetAllAssignments } from '/graphql';
-import cn from 'classnames'
+import useStore from '/store';
 
 const duration = 1;
 const galleryTransition = {
@@ -24,30 +24,35 @@ const galleryTransition = {
 }
 
 export default function Start({assignments}){	
+
 	const [index, setIndex] = useState(0)
 	const [animating, setAnimating] = useState(false)
-	
+	const setIsTransitioning = useStore((state) => state.setIsTransitioning)
+
 	return (
+		<motion.div
+			initial="initial" 
+			exit={"exit"}
+			variants={galleryTransition} 
+			onAnimationComplete={()=>setIsTransitioning(false)}
+			onAnimationStart={()=>setIsTransitioning(true)}
+		>
 			<Content id="container" className={styles.container}>
-				<motion.div
-					initial="initial" 
-					exit={"exit"}
-					variants={galleryTransition} 
-					onAnimationComplete={()=>setAnimating(false)}
-					onAnimationStart={()=>setAnimating(true)}
-				>
-					<Gallery 
-						slides={assignments.map(({images, title, slug}) => ({image:images[0], title, slug}))} 
-						onIndexChange={(idx)=>setIndex(idx)}
-					/>
-				</motion.div>
+				<Gallery 
+					slides={assignments.map(({images, title, slug}) => ({image:images[0], title, slug}))} 
+					onIndexChange={(idx)=>setIndex(idx)}
+				/>
 			</Content>
+		</motion.div>
 	)
 }
 
 export const getStaticProps = withGlobalProps({queries:[GetAllAssignments]}, async ({props, revalidate }) => {
 	return {
-		props,
+		props:{
+			...props,
+			backgroundImage:props.assignments[0].images[0]
+		},
 		revalidate
 	};
 });

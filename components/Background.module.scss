@@ -1,0 +1,25 @@
+.background{
+  position: fixed;
+  z-index: 1;
+  top:0;
+  left:0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  .imageWrap{
+    overflow: hidden;
+    img{
+      width: auto;
+      height: 100%;
+      object-fit: contain; 
+      object-position: 50% 50%;
+    }
+  }
+  
+  &.active{
+    z-index: 1000;
+  }
+}
