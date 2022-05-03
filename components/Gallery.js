@@ -5,9 +5,7 @@ import { Image } from 'react-datocms';
 import { useState, useEffect, useRef } from 'react';
 import { useWindowSize } from 'rooks';
 import smoothscroll from 'smoothscroll-polyfill';
-import useStore from '/store'
 import { motion} from 'framer-motion';
-import useTraceUpdate from '/lib/hooks/useTraceUpdate';
 
 const duration = 1;
 const galleryTransition = {
@@ -32,26 +30,35 @@ export default function Gallery({slides, className, style}){
   
   const [index, setIndex] = useState(0)
   const [init, setInit] = useState(false)
-	const [navWidth, setNavWidth] = useState(0)
 	const [dimensions, setDimensions] = useState({innerWidth:0, innerHeight:0})
 	const { innerWidth, innerHeight } = useWindowSize();
-	const [caption, setCaption] = useState()
+	
 	const timer = useRef(null);
-  const galleryRef = useRef()
+  const galleryRef = useRef(null)
+	const captionRef = useRef(null)
+	const backRef = useRef(null)
+	const forwardRef = useRef(null)
 	
   const scrollTo = (idx, behavior = 'smooth', skipIndex = false) => {
 		
 		const slide = document.getElementById(`slide-${idx}`)
     const left = slide.offsetLeft - ((((dimensions.innerWidth-slide.clientWidth)/2)))
-		
-		setCaption(undefined)
-		setNavWidth((dimensions.innerWidth-slide.clientWidth)/2)
+		const navWidth = (dimensions.innerWidth-slide.clientWidth)/2
 
+		
+		captionRef.current.style.display = 'none'
+		captionRef.current.innerHTML = ''
+		forwardRef.current.style.width = `${navWidth}px`
+		backRef.current.style.width = `${navWidth}px`
+		
 		galleryRef.current?.scrollTo({left,top:0, behavior: init ? behavior : 'instant'})
 
 		if(!skipIndex){	
 			clearTimeout(timer.current)
-			timer.current = setTimeout(()=>setCaption(slides[index].title), 750)
+			timer.current = setTimeout(() => {
+				captionRef.current.innerHTML = slides[index].title
+				captionRef.current.style.display = 'flex'
+			}, 750)
 		}
 		
     if(!init)
@@ -72,12 +79,14 @@ export default function Gallery({slides, className, style}){
 	
 	useEffect(()=>{ scrollTo(0, 'instant'); smoothscroll.polyfill(); }, [])
 	useEffect(()=> setDimensions({innerHeight, innerWidth}), [innerHeight, innerWidth])
-	useEffect(()=> scrollTo(index), [index, dimensions.innerWidth, slides])
+	useEffect(()=> scrollTo(index), [index, slides])
+	useEffect(()=> scrollTo(index, 'instant'), [dimensions.innerWidth, slides])
+	
 	useEffect(()=>{
 		window.addEventListener('keydown', handleKeyDown)
 		return () => window.removeEventListener('keydown', handleKeyDown)
 	}, [index])
-
+	
   return (
 		<div ref={galleryRef} className={cn(styles.gallery, className)} style={style}>
 			<ul>
@@ -102,14 +111,15 @@ export default function Gallery({slides, className, style}){
 									{image.responsiveImage ?
                     <Image 
                       data={image.responsiveImage} 
-                      className={styles.image} 
-                      lazyLoad={true}
+                      className={styles.image}                      
                       layout="responsive"
                       objectFit="contain"
                       objectPosition="50% 50%"
                       fadeInDuration={0}
-                      usePlaceholder={true}
-                      intersectionMargin={'0px 100px 0px 100px'}
+                      usePlaceholder={false}
+											lazyLoad={true}
+                      intersectionMargin={'0px 0px 0px 0px'}
+											intersectionThreshold={0.0}
                     />
                   : image.mimeType.startsWith('video') ? 
 										<Video data={image} active={index === realIndex}/>
@@ -122,13 +132,13 @@ export default function Gallery({slides, className, style}){
 					)})}
 			</ul>
 
-			<div key={'caption'} className={cn(styles.caption, caption && styles.show)}>
-				<span>{caption}</span>
+			<div key={'caption'} className={styles.caption}>
+				<span ref={captionRef}></span>
 			</div>
 			
 			<div key={'nav'} className={styles.nav}>
-				<div key={'back'} className={styles.back} onClick={back} style={{width:`${navWidth}px`}}></div>
-				<div key={'forward'} className={styles.forward} onClick={forward} style={{width:`${navWidth}px`}}></div>
+				<div ref={backRef} key={'back'} className={styles.back} onClick={back}></div>
+				<div ref={forwardRef} key={'forward'} className={styles.forward} onClick={forward}></div>
 			</div>
 		</div>
 	)

@@ -45,7 +45,7 @@
 	}
 	.caption {
 		position: fixed;
-		display: none;
+		display: flex;
 		justify-content: center;
 		align-items: center;
 		width: 100%;
@@ -55,9 +55,6 @@
 		margin-right: auto;
 		font-weight: bold;
 		z-index: 2000;
-		&.show {
-			display: flex;
-		}
 		span {
 			background-color: #fff;
 			padding: 10px;
