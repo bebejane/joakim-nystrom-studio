@@ -8,7 +8,7 @@ import { motion } from 'framer-motion';
 
 export default function Artwork({artwork}){	
 	return (
-		<motion.div initial={{translateY:'100%'}} animate={{translateY:['100%', '0%']}} exit={{translateY:'-100%'}} transition={{duration:1}}>
+		<motion.div initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} transition={{duration:0.3}}>
 			<Content className={styles.container}>
 				{artwork.map(({image, dimensions, sold}, idx) => 
 					<div key={idx} className={styles.artwork}>

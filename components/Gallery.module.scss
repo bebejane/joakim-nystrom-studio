@@ -65,9 +65,11 @@
 .nav{
   .back,
 	.forward {
-		position: fixed;
+		position: absolute;
 		top: 0;
 		height: 100vh;
+		max-height: 100vh;
+
 		cursor: pointer;
     background-color: transparent;
     z-index: 2;

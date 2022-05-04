@@ -5,13 +5,14 @@ import { Image } from 'react-datocms';
 import { useState, useEffect, useRef } from 'react';
 import { useWindowSize } from 'rooks';
 import smoothscroll from 'smoothscroll-polyfill';
-import { motion} from 'framer-motion';
+import { motion } from 'framer-motion';
 import { useRouter } from 'next/router';
 
-const duration = 1;
+const duration = 0.5;
 const galleryTransition = {
 	initial: {
-		translateY:'100vh'
+		translateY:'100vh',
+		opacity:1,
 	},
 	enter: {
 		translateY:'0vh',
@@ -23,7 +24,13 @@ const galleryTransition = {
 		transitionEnd: {
 			translateY:'unset',
 		}
-	}	
+	},
+	fadeIn:{
+		opacity:1
+	},
+	fadeOut:{
+		opacity:1
+	}
 }
 
 export default function Gallery({slides, className, style}){	
@@ -31,9 +38,10 @@ export default function Gallery({slides, className, style}){
   const router = useRouter()
   const [index, setIndex] = useState(0)
   const [init, setInit] = useState(false)
-	const [dimensions, setDimensions] = useState({innerWidth:0, innerHeight:0})
+	const [dimensions, setDimensions] = useState({innerHeight: 0, innerWidth: 0})
 	const { innerWidth, innerHeight } = useWindowSize();
 	
+	const allSlides = slides.concat(slides).concat(slides)
 	const timer = useRef(null);
   const galleryRef = useRef(null)
 	const captionRef = useRef(null)
@@ -45,7 +53,6 @@ export default function Gallery({slides, className, style}){
 		const slide = document.getElementById(`slide-${idx}`)
     const left = slide.offsetLeft - ((((dimensions.innerWidth-slide.clientWidth)/2)))
 		const navWidth = (dimensions.innerWidth-slide.clientWidth)/2
-
 		
 		captionRef.current.style.display = 'none'
 		captionRef.current.innerHTML = ''
@@ -76,38 +83,35 @@ export default function Gallery({slides, className, style}){
 		if(index+1 >= slides.length) scrollTo(-1, 'instant', true)
 		setIndex(index+1 < slides.length ? index+1 : 0)
 	}
-	
-	const handleKeyDown = ({key}) => key === 'ArrowRight' ?  forward() : key === 'ArrowLeft' ? back() : null
-	
+
 	useEffect(()=>{ scrollTo(0, 'instant'); smoothscroll.polyfill(); }, [])
 	useEffect(()=> setDimensions({innerHeight, innerWidth}), [innerHeight, innerWidth])
 	useEffect(()=> scrollTo(index), [index, slides])
-	useEffect(()=> scrollTo(index, 'instant'), [dimensions.innerWidth, slides])
-	
+	useEffect(()=> scrollTo(index, 'instant'), [dimensions, slides])
 	useEffect(()=>{
+		const handleKeyDown = ({key}) => key === 'ArrowRight' ?  forward() : key === 'ArrowLeft' ? back() : null
 		window.addEventListener('keydown', handleKeyDown)
 		return () => window.removeEventListener('keydown', handleKeyDown)
 	}, [index])
 	
-	const allExit = ['/artwork', '/studio'].includes(router.asPath) 		
-
 
   return (
 		<div ref={galleryRef} className={cn(styles.gallery, className)} style={style}>
 			<ul>
-				{slides.concat(slides).concat(slides).map(({title, slug, image}, idx) => {          
+				{allSlides.map(({title, slug, image}, idx) => {
+
 					const maxWidth = dimensions.innerWidth*0.8;
 					const width = Math.min((dimensions.innerHeight/image.height)*image.width, maxWidth);
 					const realIndex = idx-(slides.length);
 					const isIntroSlide =  realIndex >= -1 && realIndex <= 1;
-							
+					const allExit = ['/artwork', '/studio'].includes(router.asPath) 
 
 					return (
 						<Link key={`slide-${idx}`} href={`/${slug}`}>
 							<motion.a
 								initial={realIndex === 0 && isIntroSlide ? undefined : 'initial'}
 								animate={realIndex !== 0 ? 'enter' : undefined}
-								exit={realIndex !== index || allExit ? "exit" : undefined}
+								exit={allExit ? 'fadeOut' : realIndex !== index ? "exit" : undefined}
 								variants={galleryTransition} 
 								id={`slide-${realIndex}`}
                 key={`slide-link-${idx}`} 
