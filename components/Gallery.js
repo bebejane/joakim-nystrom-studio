@@ -89,6 +89,8 @@ export default function Gallery({slides, className, style}){
 		return () => window.removeEventListener('keydown', handleKeyDown)
 	}, [index])
 	
+	const allExit = ['/artwork', '/studio'].includes(router.asPath) 		
+
 
   return (
 		<div ref={galleryRef} className={cn(styles.gallery, className)} style={style}>
@@ -98,7 +100,7 @@ export default function Gallery({slides, className, style}){
 					const width = Math.min((dimensions.innerHeight/image.height)*image.width, maxWidth);
 					const realIndex = idx-(slides.length);
 					const isIntroSlide =  realIndex >= -1 && realIndex <= 1;
-					const allExit = ['/artwork', '/studio'].includes(router.asPath) 				
+							
 
 					return (
 						<Link key={`slide-${idx}`} href={`/${slug}`}>

@@ -4,7 +4,7 @@ import DatoSEO from '/lib/dato/components/DatoSEO';
 import { GoogleAnalytics, usePagesViews } from "nextjs-google-analytics";
 import { useRouter } from 'next/router';
 import Menu from '/components/Menu';
-import { AnimatePresence } from "framer-motion";
+import { AnimatePresence, AnimateSharedLayout } from "framer-motion";
 import useTransitionFix from '/lib/hooks/useTransitionFix';
 
 function MyApp({ Component, pageProps, pageProps: { site, seo, backgroundImage }}) {
@@ -23,7 +23,7 @@ function MyApp({ Component, pageProps, pageProps: { site, seo, backgroundImage }
       <Menu {...pageProps}/>
       <AnimatePresence exitBeforeEnter initial={false}>
         <Component {...pageProps} key={router.asPath}/>
-      </AnimatePresence>    
+      </AnimatePresence>
     </>
   )
 }
