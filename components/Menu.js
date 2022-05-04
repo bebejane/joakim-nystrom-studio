@@ -6,8 +6,6 @@ import { useRouter } from "next/router";
 import { Twirl as Hamburger } from "hamburger-react";
 
 export default function Menu({}) {
-	
-  const router = useRouter();
 
 	return (
 		<menu id="menu" className={styles.menu}>

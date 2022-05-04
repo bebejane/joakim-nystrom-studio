@@ -6,14 +6,12 @@ import { useRouter } from 'next/router';
 import Menu from '/components/Menu';
 import { AnimatePresence } from "framer-motion";
 import useTransitionFix from '/lib/hooks/useTransitionFix';
-import Content from '/components/Content';
-import Gallery from '/components/Gallery';
 
 function MyApp({ Component, pageProps, pageProps: { site, seo, backgroundImage }}) {
-
+  
   if(process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID) usePagesViews(); // Google Analytics page view tracker
   
-  useTransitionFix()
+  const fix = useTransitionFix()
   const router = useRouter()
   const { asPath : pathname } = router  
   const title = ''
@@ -27,7 +25,7 @@ function MyApp({ Component, pageProps, pageProps: { site, seo, backgroundImage }
         <div id="app" key={router.asPath}>
           <Component {...pageProps}/>
         </div>
-      </AnimatePresence>
+      </AnimatePresence>    
     </>
   )
 }
