@@ -89,6 +89,7 @@ export default function Gallery({slides, className, style}){
 		return () => window.removeEventListener('keydown', handleKeyDown)
 	}, [index])
 	
+
   return (
 		<div ref={galleryRef} className={cn(styles.gallery, className)} style={style}>
 			<ul>
@@ -97,32 +98,34 @@ export default function Gallery({slides, className, style}){
 					const width = Math.min((dimensions.innerHeight/image.height)*image.width, maxWidth);
 					const realIndex = idx-(slides.length);
 					const isIntroSlide =  realIndex >= -1 && realIndex <= 1;
-					
+					const allExit = ['/artwork', '/studio'].includes(router.asPath) 				
+
 					return (
 						<Link key={`slide-${idx}`} href={`/${slug}`}>
 							<motion.a
 								initial={realIndex === 0 && isIntroSlide ? undefined : 'initial'}
 								animate={realIndex !== 0 ? 'enter' : undefined}
-								exit={realIndex !== index  ? "exit" : undefined}
+								exit={realIndex !== index || allExit ? "exit" : undefined}
 								variants={galleryTransition} 
-								id={`slide-${realIndex}`} 
+								id={`slide-${realIndex}`}
                 key={`slide-link-${idx}`} 
                 style={{maxWidth:`${width}px`, width:`${width}px`, height:`${dimensions.innerHeight}px`}}
               >
 								<li key={`slide-li-${idx}`}>
 									{image.responsiveImage ?
                     <Image 
+											key={`g-image${idx}`}
                       data={image.responsiveImage} 
                       className={styles.image}                      
                       layout="responsive"
                       objectFit="contain"
                       objectPosition="50% 50%"
                       fadeInDuration={0}
-                      usePlaceholder={false}
+                      usePlaceholder={true}
 											lazyLoad={true}
                       intersectionMargin={'0px 0px 0px 0px'}
 											intersectionThreshold={0.0}
-                    />
+                    />										
                   : image.mimeType.startsWith('video') ? 
 										<Video data={image} active={index === realIndex}/>
 									:

@@ -22,9 +22,7 @@ function MyApp({ Component, pageProps, pageProps: { site, seo, backgroundImage }
       <DatoSEO seo={seo} site={site} title={`Joakim Nyström Studio${title ? ` · ${title}` : ''}`} pathname={pathname} key={pathname}/>
       <Menu {...pageProps}/>
       <AnimatePresence exitBeforeEnter initial={false}>
-        <div id="app" key={router.asPath}>
-          <Component {...pageProps}/>
-        </div>
+        <Component {...pageProps} key={router.asPath}/>
       </AnimatePresence>    
     </>
   )

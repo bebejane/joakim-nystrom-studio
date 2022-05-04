@@ -21,12 +21,13 @@
 }
 
 #app{
-	position: absolute;
+	//position: absolute;
 	top:0;
 	left:0;
 	z-index: 100;
 	min-height: 100vh;
 	min-width: 100vw;
+	overflow: hidden;
 }
 #error-404, #error-505 {
 	display:flex;

@@ -13,7 +13,6 @@ export default function Start({assignments}){
 }
 
 export const getStaticProps = withGlobalProps({queries:[GetAllAssignments]}, async ({props, revalidate }) => {
-	console.log('serve')
 	return {
 		props:{
 			...props,
