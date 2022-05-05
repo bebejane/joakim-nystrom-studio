@@ -91,7 +91,7 @@ export default function Gallery({id, slides, className, style = {}, onIndexChang
 						maxWidth:`${width}px`, 
 						width:`${width}px`, 
 						height:`${dimensions.innerHeight}px`, 
-						visibility: `${slides.length <= 3 && isNavSlide ? 'hidden' : 'visible'}`
+						visibility: `${slides.length <= 1 && isNavSlide ? 'hidden' : 'visible'}`
 					}
 					return (
 						<li
