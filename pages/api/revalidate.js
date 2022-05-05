@@ -1,13 +1,13 @@
 import { Dato } from "/lib/dato/api"
 
-const timeout = 8000;
+const DATO_TIMEOUT = 8000;
 
 const getPathsFromPayload = async (payload) => {
   
   const record = await getRecordFromPayload(payload)
   const paths = []
-  const { apiKey } = record;
-
+  const { apiKey } = record.model;
+  
   if(apiKey === 'assignment'){
     paths.push(`/${record.slug}`)
     paths.push(`/`)
@@ -34,12 +34,14 @@ export default async (req, res) => {
       throw new Error(`Nothing to revalidate`);
     
     const t = new Date().getTime()
-    const res = Promise.all(paths.map(path => res.unstable_revalidate(path)))
-    const duration = (new Date().getTime()-t)/1000
+    const to = setTimeout(()=>res.json({ revalidated: true, paths, duration:DATO_TIMEOUT, timeout:true}), DATO_TIMEOUT)
+    const result = await Promise.all(paths.map(path => res.unstable_revalidate(path)))
+    clearTimeout(to)
+    const duration = (new Date().getTime()-t)
+    if(duration > DATO_TIMEOUT)  return
     res.json({ revalidated: true, paths, duration })
-
-  }catch(err){
-    console.error(err)
+  } catch(err){
+    console.log(err)
     res.status(500).send(`Error revalidating: ${err.message || err }`)
   }
 }
@@ -55,7 +57,7 @@ const getRecordFromPayload = async (payload) => {
   const record = (await Dato.items.all({filter: {type: model.apiKey, fields:{id: {eq:payload.id }}}},{allPages: true}))[0]
   if(!record) 
     throw `No record found with modelId: ${modelId}`
-  return record
+  return {...record, model}
 }
 
 const basicAuth = (req) => {
