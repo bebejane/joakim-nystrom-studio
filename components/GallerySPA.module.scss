@@ -28,9 +28,9 @@
 			.image {
 				max-height: 100vh;
 				min-height: 100vh;
-				picture {
-					//position: relative;
-					//min-height: 100vh;
+				img:nth-child(1){ // Blurup image
+					width: 110% !important;
+					height: 110% !important;
 				}
 			}
 			.blurup {
