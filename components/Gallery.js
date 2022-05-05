@@ -2,17 +2,17 @@ import styles from './Gallery.module.scss'
 import cn from 'classnames'
 import Link from 'next/link';
 import { Image } from 'react-datocms';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useLayoutEffect } from 'react';
 import { useWindowSize } from 'rooks';
 import smoothscroll from 'smoothscroll-polyfill';
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/router';
 
-const duration = 0.5;
+const duration = 0.7;
 const galleryTransition = {
 	initial: {
 		translateY:'100vh',
-		opacity:1,
+		opacity: 1,
 	},
 	enter: {
 		translateY:'0vh',
@@ -33,10 +33,11 @@ const galleryTransition = {
 	}
 }
 
-export default function Gallery({slides, className, style}){	
+export default function Gallery({slides, className, style = {}}){	
 	
   const router = useRouter()
   const [index, setIndex] = useState(0)
+	const [loaded, setLoaded] = useState(0)
   const [init, setInit] = useState(false)
 	const [dimensions, setDimensions] = useState({innerHeight: 0, innerWidth: 0})
 	const { innerWidth, innerHeight } = useWindowSize();
@@ -50,16 +51,18 @@ export default function Gallery({slides, className, style}){
 	
   const scrollTo = (idx, behavior = 'smooth', skipIndex = false) => {
 		
-		const slide = document.getElementById(`slide-${idx}`)
-    const left = slide.offsetLeft - ((((dimensions.innerWidth-slide.clientWidth)/2)))
-		const navWidth = (dimensions.innerWidth-slide.clientWidth)/2
+		if(dimensions.innerWidth === 0) return
 		
+		const slide = document.getElementById(`slide-${idx}`)
+    const left = Math.floor(slide.offsetLeft - ((dimensions.innerWidth-slide.clientWidth)/2))
+		const navWidth = (dimensions.innerWidth-slide.clientWidth)/2
+
 		captionRef.current.style.display = 'none'
 		captionRef.current.innerHTML = ''
 		forwardRef.current.style.width = `${navWidth}px`
 		backRef.current.style.width = `${navWidth}px`
 		
-		galleryRef.current?.scrollTo({left,top:0, behavior: init ? behavior : 'instant'})
+		galleryRef.current?.scrollTo({left, top:0, behavior: init ? behavior : 'instant'})
 
 		if(!skipIndex){	
 			clearTimeout(timer.current)
@@ -69,8 +72,7 @@ export default function Gallery({slides, className, style}){
 			}, 750)
 		}
 		
-    if(!init)
-      setTimeout(()=>setInit(true), 500)
+    if(!init) setInit(true)
   }
 
 	const back = () => {
@@ -84,43 +86,41 @@ export default function Gallery({slides, className, style}){
 		setIndex(index+1 < slides.length ? index+1 : 0)
 	}
 
-	useEffect(()=>{ scrollTo(0, 'instant'); smoothscroll.polyfill(); }, [])
-	useEffect(()=> setDimensions({innerHeight, innerWidth}), [innerHeight, innerWidth])
-	useEffect(()=> scrollTo(index), [index, slides])
-	useEffect(()=> scrollTo(index, 'instant'), [dimensions, slides])
+	useLayoutEffect(()=>{ smoothscroll.polyfill(); }, [])
+	useLayoutEffect(()=> scrollTo(index), [index, slides.length, dimensions])
+	useLayoutEffect(()=> setDimensions({innerHeight, innerWidth}), [innerHeight, innerWidth])
 	useEffect(()=>{
 		const handleKeyDown = ({key}) => key === 'ArrowRight' ?  forward() : key === 'ArrowLeft' ? back() : null
 		window.addEventListener('keydown', handleKeyDown)
 		return () => window.removeEventListener('keydown', handleKeyDown)
 	}, [index])
 	
-
   return (
 		<div ref={galleryRef} className={cn(styles.gallery, className)} style={style}>
 			<ul>
 				{allSlides.map(({title, slug, image}, idx) => {
 
-					const maxWidth = dimensions.innerWidth*0.8;
+					const maxWidth = dimensions.innerWidth * 0.8;
 					const width = Math.min((dimensions.innerHeight/image.height)*image.width, maxWidth);
 					const realIndex = idx-(slides.length);
-					const isIntroSlide =  realIndex >= -1 && realIndex <= 1;
+					const isIntroSlide = realIndex >= -1 && realIndex <= 1;
 					const allExit = ['/artwork', '/studio'].includes(router.asPath) 
 
 					return (
-						<Link key={`slide-${idx}`} href={`/${slug}`}>
+						<Link key={`slide-${idx}-${image.id}`} href={`/${slug}`}>
 							<motion.a
+								id={`slide-${realIndex}`}
+								key={`slide-a-${idx}`} 
+								style={{maxWidth:`${width}px`, width:`${width}px`, height:`${dimensions.innerHeight}px`}}
 								initial={realIndex === 0 && isIntroSlide ? undefined : 'initial'}
 								animate={realIndex !== 0 ? 'enter' : undefined}
 								exit={allExit ? 'fadeOut' : realIndex !== index ? "exit" : undefined}
 								variants={galleryTransition} 
-								id={`slide-${realIndex}`}
-                key={`slide-link-${idx}`} 
-                style={{maxWidth:`${width}px`, width:`${width}px`, height:`${dimensions.innerHeight}px`}}
               >
 								<li key={`slide-li-${idx}`}>
 									{image.responsiveImage ?
                     <Image 
-											key={`g-image${idx}`}
+											key={`slide-image-${idx}`}
                       data={image.responsiveImage} 
                       className={styles.image}                      
                       layout="responsive"
@@ -129,11 +129,13 @@ export default function Gallery({slides, className, style}){
                       fadeInDuration={0}
                       usePlaceholder={true}
 											lazyLoad={true}
+											//onLoad={()=>setLoaded(loaded+1)}
                       intersectionMargin={'0px 0px 0px 0px'}
 											intersectionThreshold={0.0}
+											
                     />										
                   : image.mimeType.startsWith('video') ? 
-										<Video data={image} active={index === realIndex}/>
+										<Video key={`slide-video-${idx}`} data={image} active={index === realIndex}/>
 									:
 										null
 								}
@@ -151,6 +153,7 @@ export default function Gallery({slides, className, style}){
 				<div ref={backRef} key={'back'} className={styles.back} onClick={back}></div>
 				<div ref={forwardRef} key={'forward'} className={styles.forward} onClick={forward}></div>
 			</div>
+		{false && !init && <div key={'loading'} className={styles.loading}>Loading...</div>}
 		</div>
 	)
 }
