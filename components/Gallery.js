@@ -87,8 +87,8 @@ export default function Gallery({slides, className, style = {}}){
 	}
 
 	useEffect(()=>{ smoothscroll.polyfill(); }, [])
-	useEffect(()=> scrollTo(index), [index, slides.length, dimensions])
-	useEffect(()=> setDimensions({innerHeight, innerWidth}), [innerHeight, innerWidth])
+	useEffect(()=> {scrollTo(index)}, [index, slides.length, dimensions])
+	useEffect(()=> {setDimensions({innerHeight, innerWidth})}, [innerHeight, innerWidth])
 	useEffect(()=>{
 		const handleKeyDown = ({key}) => key === 'ArrowRight' ?  forward() : key === 'ArrowLeft' ? back() : null
 		window.addEventListener('keydown', handleKeyDown)

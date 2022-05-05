@@ -37,8 +37,6 @@ export default function Gallery({id, slides, className, style = {}, onIndexChang
 	
   const router = useRouter()
   const [index, setIndex] = useState(0)
-	const [loaded, setLoaded] = useState(0)
-  const [init, setInit] = useState(false)
 	const [dimensions, setDimensions] = useState({innerHeight: 0, innerWidth: 0})
 	const { innerWidth, innerHeight } = useWindowSize();
 	
@@ -53,9 +51,10 @@ export default function Gallery({id, slides, className, style = {}, onIndexChang
 		const slide = document.getElementById(`slide-${idx}-${id}`)
 		if(!slide) return console.log('slide not found')
     const left = Math.floor(slide.offsetLeft - ((dimensions.innerWidth-slide.clientWidth)/2))
+		
 		galleryRef.current.scrollTo({left, top:0, behavior : initRef.current === true ? behavior : 'instant'})
-		initRef.current = true;
 
+		if(!initRef.current) initRef.current = true;
   }
 
 	const back = () => {
@@ -69,18 +68,19 @@ export default function Gallery({id, slides, className, style = {}, onIndexChang
 		setIndex(index+1 < slides.length ? index+1 : 0)
 	}
 	
-	useEffect(()=> setDimensions({innerHeight, innerWidth}), [innerHeight, innerWidth])
-	useEffect(()=> scrollTo(index), [index, slides.length, dimensions, id])
-	useEffect(()=> onIndexChange(index), [index])
-	useEffect(()=>{ smoothscroll.polyfill(); }, [])
-	useEffect(()=> indexFromProps !== undefined && setIndex(indexFromProps), [indexFromProps])
+	useEffect(()=> { setDimensions({innerHeight, innerWidth}) }, [innerHeight, innerWidth])
+	useEffect(()=> { scrollTo(index) }, [index, slides.length, dimensions, id])
+	useEffect(()=> { onIndexChange(index) }, [index])
+	useEffect(()=> { indexFromProps !== undefined && setIndex(indexFromProps) }, [indexFromProps])
+	useEffect(()=>{ smoothscroll.polyfill()}, []) // Safari
 	
+	//console.log('render', id, index)
+
 	return (
 		<div ref={galleryRef} className={cn(styles.gallery, className)} style={style}>
 			<ul>
 				{allSlides.map(({title, slug, image}, idx) => {
 					if(!image) return null
-
 					const maxWidth = dimensions.innerWidth * 0.8;
 					const width = Math.min((dimensions.innerHeight/image.height)*image.width, maxWidth);
 					const realIndex = idx-(slides.length);
@@ -97,7 +97,7 @@ export default function Gallery({id, slides, className, style = {}, onIndexChang
 					return (
 						<li
 							id={`slide-${realIndex}-${id}`}
-							key={`slide-a-${idx}`} 
+							key={`slide-a-${idx}-${id}`} 
 							className={cn(isNavSlide && styles.nav)}
 							style={slideStyles}
 							initial={realIndex === 0 && isIntroSlide ? undefined : 'initial'}
@@ -108,7 +108,7 @@ export default function Gallery({id, slides, className, style = {}, onIndexChang
 						>
 								{image.responsiveImage ?
 									<Image 
-										key={`slide-image-${idx}`}
+										key={`slide-image-${idx}-${id}`}
 										data={image.responsiveImage}     
 										className={styles.image}
 										layout="responsive"
@@ -119,16 +119,16 @@ export default function Gallery({id, slides, className, style = {}, onIndexChang
 										lazyLoad={true}
 										style={{width:`${width}px`, height:'100vh'}}
 										//onLoad={()=>setLoaded(loaded+1)}
-										intersectionMargin={'0px 0px 0px 0px'}
-										intersectionThreshold={0.0}
+										//intersectionMargin={'0px 0px 0px 0px'}
+										//intersectionThreshold={0.0}
 										
 									/>										
 								: image.mimeType.startsWith('video') ? 
-									<Video key={`slide-video-${idx}`} data={image} active={index === realIndex}/>
+									<Video key={`slide-video-${idx}-${id}`} data={image} active={index === realIndex}/>
 								:
 									null
 							}
-								<div className={cn(styles.caption, isCenterSlide && styles.show)}>
+								<div key={`slide-caption-${idx}-${id}`} className={cn(styles.caption, isCenterSlide && styles.show)}>
 									<span>{title}</span>
 								</div>
 							</li>

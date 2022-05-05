@@ -25,12 +25,12 @@ export default function Start({assignments}){
 	const [active, setActive] = useState('upper')
 	const [animating, setAnimating] = useState(false)
 	const [lowerIndex, setLowerIndex] = useState()
-
-	useEffect(()=>setTimeout(()=>setLowerIndex(active === 'upper' ? 0 : undefined), duration*1000), [active])
+	useEffect(()=>{ setTimeout(()=>setLowerIndex(active === 'upper' ? 0 : undefined), duration*1000) }, [active])
 	
 	return (
-		<Content id="container" className={styles.container}>
+		<Content id="container" key={'container'} className={styles.container}>
 			<motion.div
+				key={'animation'}
 				initial={false}
 				animate={active}
 				variants={variants}
@@ -55,18 +55,16 @@ export default function Start({assignments}){
 					index={lowerIndex}
 				/>
 			</motion.div>
-			{assignment && 
-				<Gallery 
-					id={'temp'}
-					key={'temp'}
-					slides={[{image:assignment.images[0], title:assignment.images[0].title, slug:assignment.slug}]} 
-					style={{display: animating && active === 'lower' ? 'flex' : 'none'}}
-					active={false}
-					nocaption={true}
-					className={styles.temp}
-					onIndexChange={(idx)=>{}}
-				/>
-			}
+			<Gallery 
+				id={'temp'}
+				key={'temp'}
+				slides={!assignment ? [] : [{image:assignment.images[0], title:assignment.images[0].title, slug:assignment.slug}]} 
+				style={{display: animating && active === 'lower' ? 'flex' : 'none'}}
+				active={false}
+				nocaption={true}
+				className={styles.temp}
+				onIndexChange={(idx)=>{}}
+			/>
 		</Content>
 	)
 }
