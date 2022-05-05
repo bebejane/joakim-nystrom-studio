@@ -1,5 +1,7 @@
 import { Dato } from "/lib/dato/api"
 
+const timeout = 8000;
+
 const getPathsFromPayload = async (payload) => {
   
   const record = await getRecordFromPayload(payload)
@@ -32,11 +34,7 @@ export default async (req, res) => {
       throw new Error(`Nothing to revalidate`);
     
     const t = new Date().getTime()
-
-    for (let i = 0; i < paths.length; i++) {
-      console.log(`revalidate path: ${paths[i]}`)
-      await res.unstable_revalidate(paths[i])
-    }
+    const res = Promise.all(paths.map(path => res.unstable_revalidate(path)))
     const duration = (new Date().getTime()-t)/1000
     res.json({ revalidated: true, paths, duration })
 
