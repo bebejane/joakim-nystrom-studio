@@ -1,6 +1,7 @@
 #import "./ImageFragment.graphql"
 
 fragment ArtworkFragment on ArtworkRecord {
+  id
   title
   dimensions
   image{

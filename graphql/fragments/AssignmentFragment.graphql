@@ -1,6 +1,7 @@
 #import "./ImageFragment.graphql"
 
 fragment AssignmentFragment on AssignmentRecord {
+  id
   title
   description
   images{

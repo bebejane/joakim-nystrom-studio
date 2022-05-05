@@ -5,7 +5,7 @@ import { Image } from 'react-datocms';
 import { useState, useEffect, useRef } from 'react';
 import { useWindowSize } from 'rooks';
 import smoothscroll from 'smoothscroll-polyfill';
-import { motion, useForceUpdate } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { useRouter } from 'next/router';
 
 const duration = 0.7;
@@ -33,7 +33,7 @@ const galleryTransition = {
 	}
 }
 
-export default function Gallery({id, slides, className, style = {}, onIndexChange, onIndexSelected, active}){	
+export default function Gallery({slides, className, style = {}}){	
 	
   const router = useRouter()
   const [index, setIndex] = useState(0)
@@ -49,11 +49,11 @@ export default function Gallery({id, slides, className, style = {}, onIndexChang
 	const backRef = useRef(null)
 	const forwardRef = useRef(null)
 	
-  const scrollTo = (idx, behavior = active ? 'smooth' : 'instant', skipIndex = false) => {
+  const scrollTo = (idx, behavior = 'smooth', skipIndex = false) => {
 		
 		if(dimensions.innerWidth === 0) return
 		
-		const slide = document.getElementById(`slide-${idx}-${id}`)
+		const slide = document.getElementById(`slide-${idx}`)
     const left = Math.floor(slide.offsetLeft - ((dimensions.innerWidth-slide.clientWidth)/2))
 		const navWidth = (dimensions.innerWidth-slide.clientWidth)/2
 
@@ -61,15 +61,14 @@ export default function Gallery({id, slides, className, style = {}, onIndexChang
 		captionRef.current.innerHTML = ''
 		forwardRef.current.style.width = `${navWidth}px`
 		backRef.current.style.width = `${navWidth}px`
+		
+		galleryRef.current?.scrollTo({left, top:0, behavior: init ? behavior : 'instant'})
 
-		galleryRef.current.scrollTo({left, top:0, behavior : init ? behavior : 'instant'})
-		console.log('scroll', id, behavior)
 		if(!skipIndex){	
 			clearTimeout(timer.current)
 			timer.current = setTimeout(() => {
-				captionRef.current.innerHTML = slides[index]?.title
+				captionRef.current.innerHTML = slides[index].title
 				captionRef.current.style.display = 'flex'
-				
 			}, 750)
 		}
 		
@@ -88,7 +87,7 @@ export default function Gallery({id, slides, className, style = {}, onIndexChang
 	}
 
 	useEffect(()=>{ smoothscroll.polyfill(); }, [])
-	useEffect(()=> scrollTo(index), [index, slides.length, dimensions, id, onIndexChange])
+	useEffect(()=> scrollTo(index), [index, slides.length, dimensions])
 	useEffect(()=> setDimensions({innerHeight, innerWidth}), [innerHeight, innerWidth])
 	useEffect(()=>{
 		const handleKeyDown = ({key}) => key === 'ArrowRight' ?  forward() : key === 'ArrowLeft' ? back() : null
@@ -96,44 +95,40 @@ export default function Gallery({id, slides, className, style = {}, onIndexChang
 		return () => window.removeEventListener('keydown', handleKeyDown)
 	}, [index])
 	
-	useEffect(()=>onIndexChange(index), [index])
-
   return (
 		<div ref={galleryRef} className={cn(styles.gallery, className)} style={style}>
 			<ul>
 				{allSlides.map(({title, slug, image}, idx) => {
-					if(!image) return null
+
 					const maxWidth = dimensions.innerWidth * 0.8;
 					const width = Math.min((dimensions.innerHeight/image.height)*image.width, maxWidth);
 					const realIndex = idx-(slides.length);
 					const isIntroSlide = realIndex >= -1 && realIndex <= 1;
-					const isNavSlide = (index-1 === realIndex || index+1 === realIndex)
 					const allExit = ['/artwork', '/studio'].includes(router.asPath) 
 					
 					return (
-						
-							<li
-								id={`slide-${realIndex}-${id}`}
+						<Link key={`slide-${idx}-${image.id}`} href={`/${slug}`}>
+							<motion.a
+								id={`slide-${realIndex}`}
 								key={`slide-a-${idx}`} 
-								className={cn(isNavSlide && styles.nav)}
 								style={{maxWidth:`${width}px`, width:`${width}px`, height:`${dimensions.innerHeight}px`}}
 								initial={realIndex === 0 && isIntroSlide ? undefined : 'initial'}
 								animate={realIndex !== 0 ? 'enter' : undefined}
 								exit={allExit ? 'fadeOut' : realIndex !== index ? "exit" : undefined}
 								variants={galleryTransition} 
-								onClick={()=> index-1 == realIndex ? back() : index+1 == realIndex ? forward() : onIndexSelected(index)}
               >
+								<li key={`slide-li-${idx}`}>
 									{image.responsiveImage ?
                     <Image 
 											key={`slide-image-${idx}`}
-                      data={image.responsiveImage}     
-                      className={styles.image}
+                      data={image.responsiveImage} 
+                      className={styles.image}                      
                       layout="responsive"
                       objectFit="contain"
                       objectPosition="50% 50%"
                       fadeInDuration={0}
                       usePlaceholder={true}
-											lazyLoad={false}
+											lazyLoad={true}
 											//onLoad={()=>setLoaded(loaded+1)}
                       intersectionMargin={'0px 0px 0px 0px'}
 											intersectionThreshold={0.0}
@@ -145,18 +140,24 @@ export default function Gallery({id, slides, className, style = {}, onIndexChang
 										null
 								}
 								</li>
-							
-						
+							</motion.a>
+						</Link>
 					)})}
 			</ul>
+
 			<div key={'caption'} className={styles.caption}>
 				<span ref={captionRef}></span>
 			</div>
-			<div ref={backRef} key={'back'} className={styles.back} onClick={back}></div>
-			<div ref={forwardRef} key={'forward'} className={styles.forward} onClick={forward}></div>
+			
+			<div key={'nav'} className={styles.nav}>
+				<div ref={backRef} key={'back'} className={styles.back} onClick={back}></div>
+				<div ref={forwardRef} key={'forward'} className={styles.forward} onClick={forward}></div>
+			</div>
+		{false && !init && <div key={'loading'} className={styles.loading}>Loading...</div>}
 		</div>
 	)
 }
+
 
 const Video = ({data, active}) => {
 	

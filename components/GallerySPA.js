@@ -1,11 +1,11 @@
-import styles from './Gallery.module.scss'
+import styles from './GallerySPA.module.scss'
 import cn from 'classnames'
 import Link from 'next/link';
 import { Image } from 'react-datocms';
 import { useState, useEffect, useRef } from 'react';
 import { useWindowSize } from 'rooks';
 import smoothscroll from 'smoothscroll-polyfill';
-import { motion } from 'framer-motion';
+import { motion, useForceUpdate } from 'framer-motion';
 import { useRouter } from 'next/router';
 
 const duration = 0.7;
@@ -33,7 +33,7 @@ const galleryTransition = {
 	}
 }
 
-export default function Gallery({slides, className, style = {}}){	
+export default function Gallery({id, slides, className, style = {}, onIndexChange, onIndexSelected, active}){	
 	
   const router = useRouter()
   const [index, setIndex] = useState(0)
@@ -46,33 +46,31 @@ export default function Gallery({slides, className, style = {}}){
 	const timer = useRef(null);
   const galleryRef = useRef(null)
 	const captionRef = useRef(null)
-	const backRef = useRef(null)
-	const forwardRef = useRef(null)
 	
-  const scrollTo = (idx, behavior = 'smooth', skipIndex = false) => {
+  const scrollTo = (idx, behavior = active ? 'smooth' : 'instant', skipIndex = false) => {
 		
 		if(dimensions.innerWidth === 0) return
 		
-		const slide = document.getElementById(`slide-${idx}`)
+		const slide = document.getElementById(`slide-${idx}-${id}`)
+		if(!slide) return console.log('slide not found')
     const left = Math.floor(slide.offsetLeft - ((dimensions.innerWidth-slide.clientWidth)/2))
 		const navWidth = (dimensions.innerWidth-slide.clientWidth)/2
-
-		captionRef.current.style.display = 'none'
-		captionRef.current.innerHTML = ''
-		forwardRef.current.style.width = `${navWidth}px`
-		backRef.current.style.width = `${navWidth}px`
 		
-		galleryRef.current?.scrollTo({left, top:0, behavior: init ? behavior : 'instant'})
+		//captionRef.current.style.display = 'none'
+		//captionRef.current.innerHTML = ''
+		galleryRef.current.scrollTo({left, top:0, behavior : init ? behavior : 'instant'})
+		//console.log('scroll', id, behavior)
+		if(!init) setInit(true)
 
-		if(!skipIndex){	
-			clearTimeout(timer.current)
-			timer.current = setTimeout(() => {
-				captionRef.current.innerHTML = slides[index].title
-				captionRef.current.style.display = 'flex'
-			}, 750)
-		}
-		
-    if(!init) setInit(true)
+		return
+		if(skipIndex) return
+
+		clearTimeout(timer.current)
+		timer.current = setTimeout(() => {
+			if(!captionRef.current) return
+			captionRef.current.innerHTML = slides[index]?.title
+			captionRef.current.style.display = 'flex'
+		}, 750)
   }
 
 	const back = () => {
@@ -85,44 +83,44 @@ export default function Gallery({slides, className, style = {}}){
 		if(index+1 >= slides.length) scrollTo(-1, 'instant', true)
 		setIndex(index+1 < slides.length ? index+1 : 0)
 	}
-
-	useEffect(()=>{ smoothscroll.polyfill(); }, [])
-	useEffect(()=> scrollTo(index), [index, slides.length, dimensions])
-	useEffect(()=> setDimensions({innerHeight, innerWidth}), [innerHeight, innerWidth])
-	useEffect(()=>{
-		const handleKeyDown = ({key}) => key === 'ArrowRight' ?  forward() : key === 'ArrowLeft' ? back() : null
-		window.addEventListener('keydown', handleKeyDown)
-		return () => window.removeEventListener('keydown', handleKeyDown)
-	}, [index])
 	
+	//useEffect(()=>{ smoothscroll.polyfill(); }, [])
+	useEffect(()=> scrollTo(index), [index, slides.length, dimensions, id])
+	useEffect(()=> setDimensions({innerHeight, innerWidth}), [innerHeight, innerWidth])
+	useEffect(()=> onIndexChange(index), [index])
+	
+	
+
   return (
 		<div ref={galleryRef} className={cn(styles.gallery, className)} style={style}>
 			<ul>
 				{allSlides.map(({title, slug, image}, idx) => {
-
+					if(!image) return null
 					const maxWidth = dimensions.innerWidth * 0.8;
 					const width = Math.min((dimensions.innerHeight/image.height)*image.width, maxWidth);
 					const realIndex = idx-(slides.length);
 					const isIntroSlide = realIndex >= -1 && realIndex <= 1;
+					const isNavSlide = (index-1 === realIndex || index+1 === realIndex)
 					const allExit = ['/artwork', '/studio'].includes(router.asPath) 
 					
 					return (
-						<Link key={`slide-${idx}-${image.id}`} href={`/${slug}`}>
-							<motion.a
-								id={`slide-${realIndex}`}
+						
+							<li
+								id={`slide-${realIndex}-${id}`}
 								key={`slide-a-${idx}`} 
+								className={cn(isNavSlide && styles.nav)}
 								style={{maxWidth:`${width}px`, width:`${width}px`, height:`${dimensions.innerHeight}px`}}
 								initial={realIndex === 0 && isIntroSlide ? undefined : 'initial'}
 								animate={realIndex !== 0 ? 'enter' : undefined}
 								exit={allExit ? 'fadeOut' : realIndex !== index ? "exit" : undefined}
 								variants={galleryTransition} 
+								onClick={()=> index-1 == realIndex ? back() : index+1 == realIndex ? forward() : onIndexSelected(index)}
               >
-								<li key={`slide-li-${idx}`}>
 									{image.responsiveImage ?
                     <Image 
 											key={`slide-image-${idx}`}
-                      data={image.responsiveImage} 
-                      className={styles.image}                      
+                      data={image.responsiveImage}     
+                      className={styles.image}
                       layout="responsive"
                       objectFit="contain"
                       objectPosition="50% 50%"
@@ -140,24 +138,16 @@ export default function Gallery({slides, className, style = {}}){
 										null
 								}
 								</li>
-							</motion.a>
-						</Link>
+							
+						
 					)})}
 			</ul>
-
-			<div key={'caption'} className={styles.caption}>
+			{/*<div key={'caption'} className={styles.caption}>
 				<span ref={captionRef}></span>
-			</div>
-			
-			<div key={'nav'} className={styles.nav}>
-				<div ref={backRef} key={'back'} className={styles.back} onClick={back}></div>
-				<div ref={forwardRef} key={'forward'} className={styles.forward} onClick={forward}></div>
-			</div>
-		{false && !init && <div key={'loading'} className={styles.loading}>Loading...</div>}
+							</div>*/}
 		</div>
 	)
 }
-
 
 const Video = ({data, active}) => {
 	

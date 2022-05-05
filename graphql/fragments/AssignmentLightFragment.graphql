@@ -1,4 +1,5 @@
 fragment AssignmentLightFragment on AssignmentRecord {
+  id
   title
   images{
     ...ImageFragment

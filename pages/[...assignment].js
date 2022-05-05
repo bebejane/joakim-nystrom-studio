@@ -3,7 +3,7 @@ import { withGlobalProps } from "/lib/hoc";
 import { apiQuery } from '/lib/dato/api';
 import { GetAllAssignments, GetAssignment } from '/graphql';
 import Content from '/components/Content';
-import Gallery from '/components/Gallery';
+import Gallery from '../components/Gallery';
 
 export default function Assignment({assignment:{ title, description, images, slug, open, assignmentTypes}}){
 	
