@@ -1,29 +1,57 @@
-.container {
-	display: flex;
-	flex-direction: row; 
-	flex-wrap: wrap;
-	justify-content: flex-start;
-	.artwork {
+$grid-space: 30px;
+$grid-space-small: 20px;
+
+.artwork {
+	width: 100%;
+	ul {
 		display: flex;
-		flex-direction: column;
-		justify-content: center;
-		flex: 0 0 20%;
-		width: 100%;
-		margin-bottom: 1rem;
-    padding: 1rem;
-		.dimensions,
-		.availability {
-			margin-top: 0.5rem;
+		flex-direction: row;
+		flex-wrap: wrap;
+		justify-content: space-between;
+		width: calc(100% + $grid-space);
+		margin-left: math.div(-$grid-space, 2);
+		li {
 			display: flex;
-			justify-content: center;
-      line-height: 1;
+			flex-direction: column;
+			flex: 0 0 20%;
+			margin: 0;
+			margin-bottom: 1rem;
+			max-width: 20%;
+			min-width: 20%;
+			&:last-child {
+				margin-right: auto;
+			}
+			
+			padding-left: math.div($grid-space, 2);
+			padding-right: math.div($grid-space, 2);
+			text-indent: 0;
+			list-style-type: none;
+			.dimensions,
+			.availability {
+				margin-top: 0.5rem;
+				display: flex;
+				justify-content: center;
+				line-height: 1;
+			}
+			.dimensions{
+				font-weight: 700;
+			}
+			.availability {
+				&.sold {
+					color: gray;
+				}
+			}
 		}
-    .dimensions{
-      font-weight: 700;
-    }
-		.availability {
-			&.sold {
-				color: gray;
+		@include mq($until: tablet) {
+			width: calc(100% + $grid-space-small);
+			margin-left: math.div(-$grid-space-small, 2);
+			li {
+				flex: 0 0 50%;
+				max-width: 50%;
+				min-width: 50%;
+		
+				padding-left: math.div($grid-space-small, 2);
+				padding-right: math.div($grid-space-small, 2);
 			}
 		}
 	}

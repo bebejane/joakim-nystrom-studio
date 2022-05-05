@@ -9,14 +9,16 @@ import { motion } from 'framer-motion';
 export default function Artwork({artwork}){	
 	return (
 		<motion.div initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} transition={{duration:0.3}}>
-			<Content className={styles.container}>
-				{artwork.map(({image, dimensions, sold}, idx) => 
-					<div key={idx} className={styles.artwork}>
-						<Image data={image.responsiveImage} className={styles.image} pictureClassName={styles.picture}/>
-						<span className={styles.dimensions}>{dimensions}</span>
-						<span className={cn(styles.availability, sold && styles.sold)}>{sold ? 'Sold' : 'Buy'}</span>
-					</div>
-				)}
+			<Content className={styles.artwork}>
+				<ul>
+					{artwork.map(({image, dimensions, sold}, idx) => 
+						<li key={idx}>
+							<Image data={image.responsiveImage} className={styles.image} pictureClassName={styles.picture}/>
+							<span className={styles.dimensions}>{dimensions}</span>
+							<span className={cn(styles.availability, sold && styles.sold)}>{sold ? 'Sold' : 'Buy'}</span>
+						</li>
+					)}
+				</ul>
 			</Content>
 		</motion.div>
 	)
