@@ -33,7 +33,7 @@ const galleryTransition = {
 	}
 }
 
-export default function Gallery({id, slides, className, style = {}, onIndexChange, onIndexSelected, active}){	
+export default function Gallery({id, slides, className, style = {}, onIndexChange, onIndexSelected, active, index:indexFromProps}){	
 	
   const router = useRouter()
   const [index, setIndex] = useState(0)
@@ -73,6 +73,7 @@ export default function Gallery({id, slides, className, style = {}, onIndexChang
 	useEffect(()=> scrollTo(index), [index, slides.length, dimensions, id])
 	useEffect(()=> onIndexChange(index), [index])
 	useEffect(()=>{ smoothscroll.polyfill(); }, [])
+	useEffect(()=> indexFromProps !== undefined && setIndex(indexFromProps), [indexFromProps])
 	
 	return (
 		<div ref={galleryRef} className={cn(styles.gallery, className)} style={style}>

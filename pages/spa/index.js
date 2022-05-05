@@ -3,10 +3,10 @@ import { withGlobalProps } from "/lib/hoc";
 import Content from '/components/Content';
 import Gallery from '/components/GallerySPA';
 import { GetAllAssignments } from '/graphql';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion'
 
-const duration = .4;
+const duration = 0.4;
 const variants =  { 
 	initial:{
 		translateY:'0vh'
@@ -24,6 +24,9 @@ export default function Start({assignments}){
 	const [assignment, loadAssignment] = useState()
 	const [active, setActive] = useState('upper')
 	const [animating, setAnimating] = useState(false)
+	const [lowerIndex, setLowerIndex] = useState()
+
+	useEffect(()=>setTimeout(()=>setLowerIndex(active === 'upper' ? 0 : undefined), duration*1000), [active])
 	
 	return (
 		<Content id="container" className={styles.container}>
@@ -49,6 +52,7 @@ export default function Start({assignments}){
 					onIndexChange={(idx)=>{}}
 					onIndexSelected={(idx)=>setActive('upper')}
 					active={active === 'lower'}
+					index={lowerIndex}
 				/>
 			</motion.div>
 			{assignment && 
