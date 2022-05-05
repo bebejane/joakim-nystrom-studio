@@ -123,6 +123,7 @@ export default function Gallery({slides, className, style = {}}){
 											key={`slide-image-${idx}`}
                       data={image.responsiveImage} 
                       className={styles.image}                      
+											style={{width:`${width}px`, height:'100vh'}}
                       layout="responsive"
                       objectFit="contain"
                       objectPosition="50% 50%"

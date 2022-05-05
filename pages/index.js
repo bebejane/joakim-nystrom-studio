@@ -3,7 +3,10 @@ import { withGlobalProps } from "/lib/hoc";
 import Content from '/components/Content';
 import Gallery from '/components/Gallery';
 import { GetAllAssignments } from '/graphql';
+import GallerySPA from './spa'
 
+export default GallerySPA;
+/*
 export default function Start({assignments}){		
 	return (
 		<Content id="container" className={styles.container}>
@@ -11,7 +14,7 @@ export default function Start({assignments}){
 		</Content>
 	)
 }
-
+*/
 export const getStaticProps = withGlobalProps({queries:[GetAllAssignments]}, async ({props, revalidate }) => {
 	
 	return {

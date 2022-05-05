@@ -23,13 +23,16 @@ const variants =  {
 export default function Start({assignments}){
 	const [assignment, loadAssignment] = useState()
 	const [active, setActive] = useState('upper')
-	console.log('render', assignment?.id)
+	const [animating, setAnimating] = useState(false)
+	
 	return (
 		<Content id="container" className={styles.container}>
 			<motion.div
 				initial={false}
 				animate={active}
 				variants={variants}
+				onAnimationStart={()=>setAnimating(true)}
+				onAnimationComplete={()=>setAnimating(false)}
 			>
 				<Gallery 
 					id={'upper'}
@@ -48,6 +51,18 @@ export default function Start({assignments}){
 					active={active === 'lower'}
 				/>
 			</motion.div>
+			{assignment && 
+				<Gallery 
+					id={'temp'}
+					key={'temp'}
+					slides={[{image:assignment.images[0], title:assignment.images[0].title, slug:assignment.slug}]} 
+					style={{display: animating && active === 'lower' ? 'flex' : 'none'}}
+					active={false}
+					nocaption={true}
+					className={styles.temp}
+					onIndexChange={(idx)=>{}}
+				/>
+			}
 		</Content>
 	)
 }

@@ -43,9 +43,8 @@ export default function Gallery({id, slides, className, style = {}, onIndexChang
 	const { innerWidth, innerHeight } = useWindowSize();
 	
 	const allSlides = slides.concat(slides).concat(slides)
-	const timer = useRef(null);
-  const galleryRef = useRef(null)
-	const captionRef = useRef(null)
+	const galleryRef = useRef(null)
+	const initRef = useRef(false)
 	
   const scrollTo = (idx, behavior = active ? 'smooth' : 'instant', skipIndex = false) => {
 		
@@ -54,23 +53,9 @@ export default function Gallery({id, slides, className, style = {}, onIndexChang
 		const slide = document.getElementById(`slide-${idx}-${id}`)
 		if(!slide) return console.log('slide not found')
     const left = Math.floor(slide.offsetLeft - ((dimensions.innerWidth-slide.clientWidth)/2))
-		const navWidth = (dimensions.innerWidth-slide.clientWidth)/2
-		
-		//captionRef.current.style.display = 'none'
-		//captionRef.current.innerHTML = ''
-		galleryRef.current.scrollTo({left, top:0, behavior : init ? behavior : 'instant'})
-		//console.log('scroll', id, behavior)
-		if(!init) setInit(true)
+		galleryRef.current.scrollTo({left, top:0, behavior : initRef.current === true ? behavior : 'instant'})
+		initRef.current = true;
 
-		return
-		if(skipIndex) return
-
-		clearTimeout(timer.current)
-		timer.current = setTimeout(() => {
-			if(!captionRef.current) return
-			captionRef.current.innerHTML = slides[index]?.title
-			captionRef.current.style.display = 'flex'
-		}, 750)
   }
 
 	const back = () => {
@@ -84,67 +69,72 @@ export default function Gallery({id, slides, className, style = {}, onIndexChang
 		setIndex(index+1 < slides.length ? index+1 : 0)
 	}
 	
-	//useEffect(()=>{ smoothscroll.polyfill(); }, [])
-	useEffect(()=> scrollTo(index), [index, slides.length, dimensions, id])
 	useEffect(()=> setDimensions({innerHeight, innerWidth}), [innerHeight, innerWidth])
+	useEffect(()=> scrollTo(index), [index, slides.length, dimensions, id])
 	useEffect(()=> onIndexChange(index), [index])
+	useEffect(()=>{ smoothscroll.polyfill(); }, [])
 	
-	
-
-  return (
+	return (
 		<div ref={galleryRef} className={cn(styles.gallery, className)} style={style}>
 			<ul>
 				{allSlides.map(({title, slug, image}, idx) => {
 					if(!image) return null
+
 					const maxWidth = dimensions.innerWidth * 0.8;
 					const width = Math.min((dimensions.innerHeight/image.height)*image.width, maxWidth);
 					const realIndex = idx-(slides.length);
 					const isIntroSlide = realIndex >= -1 && realIndex <= 1;
 					const isNavSlide = (index-1 === realIndex || index+1 === realIndex)
+					const isCenterSlide = realIndex === index
 					const allExit = ['/artwork', '/studio'].includes(router.asPath) 
-					
+					const slideStyles = {
+						maxWidth:`${width}px`, 
+						width:`${width}px`, 
+						height:`${dimensions.innerHeight}px`, 
+						visibility: `${slides.length <= 3 && isNavSlide ? 'hidden' : 'visible'}`
+					}
 					return (
-						
-							<li
-								id={`slide-${realIndex}-${id}`}
-								key={`slide-a-${idx}`} 
-								className={cn(isNavSlide && styles.nav)}
-								style={{maxWidth:`${width}px`, width:`${width}px`, height:`${dimensions.innerHeight}px`}}
-								initial={realIndex === 0 && isIntroSlide ? undefined : 'initial'}
-								animate={realIndex !== 0 ? 'enter' : undefined}
-								exit={allExit ? 'fadeOut' : realIndex !== index ? "exit" : undefined}
-								variants={galleryTransition} 
-								onClick={()=> index-1 == realIndex ? back() : index+1 == realIndex ? forward() : onIndexSelected(index)}
-              >
-									{image.responsiveImage ?
-                    <Image 
-											key={`slide-image-${idx}`}
-                      data={image.responsiveImage}     
-                      className={styles.image}
-                      layout="responsive"
-                      objectFit="contain"
-                      objectPosition="50% 50%"
-                      fadeInDuration={0}
-                      usePlaceholder={true}
-											lazyLoad={true}
-											//onLoad={()=>setLoaded(loaded+1)}
-                      intersectionMargin={'0px 0px 0px 0px'}
-											intersectionThreshold={0.0}
-											
-                    />										
-                  : image.mimeType.startsWith('video') ? 
-										<Video key={`slide-video-${idx}`} data={image} active={index === realIndex}/>
-									:
-										null
-								}
-								</li>
-							
-						
+						<li
+							id={`slide-${realIndex}-${id}`}
+							key={`slide-a-${idx}`} 
+							className={cn(isNavSlide && styles.nav)}
+							style={slideStyles}
+							initial={realIndex === 0 && isIntroSlide ? undefined : 'initial'}
+							animate={realIndex !== 0 ? 'enter' : undefined}
+							exit={allExit ? 'fadeOut' : realIndex !== index ? "exit" : undefined}
+							variants={galleryTransition} 
+							onClick={()=> index-1 == realIndex ? back() : index+1 == realIndex ? forward() : onIndexSelected(index)}
+						>
+								{image.responsiveImage ?
+									<Image 
+										key={`slide-image-${idx}`}
+										data={image.responsiveImage}     
+										className={styles.image}
+										layout="responsive"
+										objectFit="contain"
+										objectPosition="50% 50%"
+										fadeInDuration={0}
+										usePlaceholder={true}
+										lazyLoad={true}
+										style={{width:`${width}px`, height:'100vh'}}
+										//onLoad={()=>setLoaded(loaded+1)}
+										intersectionMargin={'0px 0px 0px 0px'}
+										intersectionThreshold={0.0}
+										
+									/>										
+								: image.mimeType.startsWith('video') ? 
+									<Video key={`slide-video-${idx}`} data={image} active={index === realIndex}/>
+								:
+									null
+							}
+								<div className={cn(styles.caption, isCenterSlide && styles.show)}>
+									<span>{title}</span>
+								</div>
+							</li>
 					)})}
+					
 			</ul>
-			{/*<div key={'caption'} className={styles.caption}>
-				<span ref={captionRef}></span>
-							</div>*/}
+			
 		</div>
 	)
 }
