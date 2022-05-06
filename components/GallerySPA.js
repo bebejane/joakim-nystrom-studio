@@ -40,6 +40,7 @@ export default function Gallery({id, slides, className, style = {}, onIndexChang
 	const [dimensions, setDimensions] = useState({innerHeight: 0, innerWidth: 0})
 	const { innerWidth, innerHeight } = useWindowSize();
 	
+	
 	const allSlides = slides.concat(slides).concat(slides)
 	const galleryRef = useRef(null)
 	const initRef = useRef(false)
@@ -50,11 +51,13 @@ export default function Gallery({id, slides, className, style = {}, onIndexChang
 		
 		const slide = document.getElementById(`slide-${idx}-${id}`)
 		if(!slide) return console.log('slide not found')
+		
     const left = Math.floor(slide.offsetLeft - ((dimensions.innerWidth-slide.clientWidth)/2))
 		
-		galleryRef.current.scrollTo({left, top:0, behavior : initRef.current === true ? behavior : 'instant'})
-
-		if(!initRef.current) initRef.current = true;
+		galleryRef.current.scrollTo({left, behavior : initRef.current === true ? behavior : 'instant'})
+		if(!initRef.current)
+			setTimeout(()=>initRef.current = true, 100);
+	
   }
 
 	const back = () => {
@@ -68,16 +71,14 @@ export default function Gallery({id, slides, className, style = {}, onIndexChang
 		setIndex(index+1 < slides.length ? index+1 : 0)
 	}
 	
-	useEffect(()=> { setDimensions({innerHeight, innerWidth}) }, [innerHeight, innerWidth])
+	useEffect(()=> { setDimensions({innerHeight, innerWidth}); }, [innerHeight, innerWidth])
 	useEffect(()=> { scrollTo(index) }, [index, slides.length, dimensions, id])
 	useEffect(()=> { onIndexChange(index) }, [index])
 	useEffect(()=> { indexFromProps !== undefined && setIndex(indexFromProps) }, [indexFromProps])
 	useEffect(()=>{ smoothscroll.polyfill()}, []) // Safari
 	
-	//console.log('render', id, index)
-
 	return (
-		<div ref={galleryRef} className={cn(styles.gallery, className)} style={style}>
+		<div ref={galleryRef} key={`gallery-${id}`} className={cn(styles.gallery, className)} style={style}>
 			<ul>
 				{allSlides.map(({title, slug, image}, idx) => {
 					if(!image) return null
@@ -92,7 +93,8 @@ export default function Gallery({id, slides, className, style = {}, onIndexChang
 						maxWidth:`${width}px`, 
 						width:`${width}px`, 
 						height:`${dimensions.innerHeight}px`, 
-						visibility: `${slides.length <= 1 && isNavSlide ? 'hidden' : 'visible'}`
+						visibility: `${(slides.length <= 1 && isNavSlide) ? 'hidden' : 'visible'}`,
+						
 					}
 					return (
 						<li
@@ -107,7 +109,7 @@ export default function Gallery({id, slides, className, style = {}, onIndexChang
 							onClick={()=> index-1 == realIndex ? back() : index+1 == realIndex ? forward() : onIndexSelected(index)}
 						>
 								{image.responsiveImage ?
-									<Image 
+									/*<Image 
 										key={`slide-image-${idx}-${id}`}
 										data={image.responsiveImage}     
 										className={styles.image}
@@ -119,10 +121,15 @@ export default function Gallery({id, slides, className, style = {}, onIndexChang
 										lazyLoad={true}
 										style={{width:`${width}px`, height:'100vh'}}
 										//onLoad={()=>setLoaded(loaded+1)}
-										//intersectionMargin={'0px 0px 0px 0px'}
-										//intersectionThreshold={0.0}
+										intersectionMargin={'1px 1px 1px 1px'}
+										intersectionThreshold={0.1}
 										
-									/>										
+									/>*/
+									<img 
+										src={`${image.url}?w=1400`} 
+										style={{width:`${width}px`, height:'100vh'}} 
+										className={styles.image}
+									/>
 								: image.mimeType.startsWith('video') ? 
 									<Video key={`slide-video-${idx}-${id}`} data={image} active={index === realIndex}/>
 								:

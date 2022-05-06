@@ -31,7 +31,7 @@ export default function Start({assignments}){
 		<Content id="container" key={'container'} className={styles.container}>
 			<motion.div
 				key={'animation'}
-				initial={false}
+				//initial={false}
 				animate={active}
 				variants={variants}
 				onAnimationStart={()=>setAnimating(true)}
@@ -55,16 +55,16 @@ export default function Start({assignments}){
 					index={lowerIndex}
 				/>
 			</motion.div>
-			<Gallery 
+			{assignment && <Gallery 
 				id={'temp'}
 				key={'temp'}
-				slides={!assignment ? [] : [{image:assignment.images[0], title:assignment.images[0].title, slug:assignment.slug}]} 
+				slides={[{image:assignment.images[0], title:assignment.images[0].title, slug:assignment.slug}]} 
 				style={{display: animating && active === 'lower' ? 'flex' : 'none'}}
 				active={false}
 				nocaption={true}
 				className={styles.temp}
 				onIndexChange={(idx)=>{}}
-			/>
+			/>}
 		</Content>
 	)
 }

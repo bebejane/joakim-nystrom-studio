@@ -37,6 +37,7 @@ export default function Gallery({slides, className, style = {}}){
 	
   const router = useRouter()
   const [index, setIndex] = useState(0)
+	const [offset, setOffset] = useState(0)
 	const [loaded, setLoaded] = useState(0)
   const [init, setInit] = useState(false)
 	const [dimensions, setDimensions] = useState({innerHeight: 0, innerWidth: 0})
@@ -62,7 +63,7 @@ export default function Gallery({slides, className, style = {}}){
 		forwardRef.current.style.width = `${navWidth}px`
 		backRef.current.style.width = `${navWidth}px`
 		
-		galleryRef.current?.scrollTo({left, top:0, behavior: init ? behavior : 'instant'})
+		//galleryRef.current?.scrollTo({left, top:0, behavior: init ? behavior : 'instant'})
 
 		if(!skipIndex){	
 			clearTimeout(timer.current)
@@ -97,7 +98,7 @@ export default function Gallery({slides, className, style = {}}){
 	
   return (
 		<div ref={galleryRef} className={cn(styles.gallery, className)} style={style}>
-			<ul>
+			<motion.ul animate={{translateX:`${offset}px`}}>
 				{allSlides.map(({title, slug, image}, idx) => {
 
 					const maxWidth = dimensions.innerWidth * 0.8;
@@ -144,7 +145,7 @@ export default function Gallery({slides, className, style = {}}){
 							</motion.a>
 						</Link>
 					)})}
-			</ul>
+			</motion.ul>
 
 			<div key={'caption'} className={styles.caption}>
 				<span ref={captionRef}></span>
