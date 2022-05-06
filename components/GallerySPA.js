@@ -109,7 +109,8 @@ export default function Gallery({id, slides, className, style = {}, onIndexChang
 							onClick={()=> index-1 == realIndex ? back() : index+1 == realIndex ? forward() : onIndexSelected(index)}
 						>
 								{image.responsiveImage ?
-									/*<Image 
+									/*
+									<Image 
 										key={`slide-image-${idx}-${id}`}
 										data={image.responsiveImage}     
 										className={styles.image}
@@ -121,15 +122,17 @@ export default function Gallery({id, slides, className, style = {}, onIndexChang
 										lazyLoad={true}
 										style={{width:`${width}px`, height:'100vh'}}
 										//onLoad={()=>setLoaded(loaded+1)}
-										intersectionMargin={'1px 1px 1px 1px'}
-										intersectionThreshold={0.1}
+										//intersectionMargin={'1px 1px 1px 1px'}
+										//intersectionThreshold=}
 										
-									/>*/
+									/>
+									*/
 									<img 
 										src={`${image.url}?w=1400`} 
-										style={{width:`${width}px`, height:'100vh'}} 
+										style={{minWidth:`${width}px`, height:'100vh'}} 
 										className={styles.image}
 									/>
+									
 								: image.mimeType.startsWith('video') ? 
 									<Video key={`slide-video-${idx}-${id}`} data={image} active={index === realIndex}/>
 								:

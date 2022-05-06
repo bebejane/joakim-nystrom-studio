@@ -55,7 +55,7 @@ export default function Start({assignments}){
 					index={lowerIndex}
 				/>
 			</motion.div>
-			{assignment && <Gallery 
+			<Gallery 
 				id={'temp'}
 				key={'temp'}
 				slides={[{image:assignment.images[0], title:assignment.images[0].title, slug:assignment.slug}]} 
@@ -64,7 +64,7 @@ export default function Start({assignments}){
 				nocaption={true}
 				className={styles.temp}
 				onIndexChange={(idx)=>{}}
-			/>}
+			/>
 		</Content>
 	)
 }
