@@ -1,11 +1,10 @@
 import '/styles/index.scss'
 import 'swiper/css';
 import DatoSEO from '/lib/dato/components/DatoSEO';
+import useTransitionFix from '/lib/hooks/useTransitionFix';
 import { GoogleAnalytics, usePagesViews } from "nextjs-google-analytics";
 import { useRouter } from 'next/router';
 import Menu from '/components/Menu';
-import { AnimatePresence, AnimateSharedLayout } from "framer-motion";
-import useTransitionFix from '/lib/hooks/useTransitionFix';
 
 function MyApp({ Component, pageProps, pageProps: { site, seo, backgroundImage }}) {
   
@@ -19,11 +18,15 @@ function MyApp({ Component, pageProps, pageProps: { site, seo, backgroundImage }
   return (
     <>
       <GoogleAnalytics />
-      <DatoSEO seo={seo} site={site} title={`Joakim Nyström Studio${title ? ` · ${title}` : ''}`} pathname={pathname} key={pathname}/>
+      <DatoSEO 
+        seo={seo} 
+        site={site} 
+        title={`Joakim Nyström Studio${title ? ` · ${title}` : ''}`} 
+        pathname={pathname} 
+        key={pathname}
+      />
       <Menu {...pageProps}/>
-      <AnimatePresence exitBeforeEnter initial={false}>
-        <Component {...pageProps} key={router.asPath}/>
-      </AnimatePresence>
+      <Component {...pageProps} key={router.asPath}/>
     </>
   )
 }

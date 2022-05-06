@@ -115,18 +115,19 @@ export default function Gallery({id, slides, className, style = {}, onIndexChang
 										data={image.responsiveImage}     
 										className={styles.image}
 										layout="responsive"
-										objectFit="contain"
+										objectFit="cover"
 										objectPosition="50% 50%"
 										fadeInDuration={0}
-										usePlaceholder={true}
-										lazyLoad={true}
-										style={{width:`${width}px`, height:'100vh'}}
+										usePlaceholder={false}
+										lazyLoad={false}
+										style={{width:`${width}px`, minHeight:'100vh'}}
 										//onLoad={()=>setLoaded(loaded+1)}
 										//intersectionMargin={'1px 1px 1px 1px'}
 										//intersectionThreshold=}
 										
 									/>
 									*/
+									
 									<img 
 										src={`${image.url}?w=1400`} 
 										style={{minWidth:`${width}px`, height:'100vh'}} 
