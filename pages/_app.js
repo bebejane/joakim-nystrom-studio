@@ -23,7 +23,6 @@ function MyApp({ Component, pageProps, pageProps: { site, seo, backgroundImage }
         site={site} 
         title={`Joakim Nyström Studio${title ? ` · ${title}` : ''}`} 
         pathname={pathname} 
-        key={pathname}
       />
       <Menu {...pageProps}/>
       <Component {...pageProps} key={router.asPath}/>

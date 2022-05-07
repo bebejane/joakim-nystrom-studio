@@ -1,0 +1,7 @@
+fragment TextSlideFragment on TextSlideRecord {
+  id
+  text
+  link{
+    type: __typename
+  }
+}

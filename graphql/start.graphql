@@ -1,0 +1,18 @@
+#import "./fragments/AssignmentFragment.graphql"
+#import "./fragments/TextSlideFragment.graphql"
+
+query GetStart {
+	start {
+    id
+    slides {
+      ... on AssignmentRecord {
+        ...AssignmentFragment
+        _modelApiKey
+      }
+      ... on TextSlideRecord {
+        ...TextSlideFragment
+        _modelApiKey
+      }
+    }
+  }
+}
