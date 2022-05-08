@@ -20,12 +20,16 @@ const variants =  {
 		transition:{ease:'easeOut', duration, delay:0.01}
 	}
 }
-export default function Start({start:{slides}}){
+export default function Start({slides}){
 	
 	const [assignment, setAssignment] = useState()
 	const [active, setActive] = useState('upper')
 	const [animating, setAnimating] = useState(false)
 	const [lowerIndex, setLowerIndex] = useState(0)
+
+	const upperSlides = slides.map(({images, title, slug, text, type}) => ({image:images?.[0], title, slug, text, type}))
+	const lowerSlides = (assignment ? assignment.images : []).map((image) => ({image, title:image.title, slug:assignment.slug, type: image.mimeType.startsWith('video') ? 'video' : 'image' }))
+	const overlaySlides = !assignment ? [] : [{image:assignment.images[0], title:assignment.images[0].title, slug:assignment.slug, type: assignment.images[0].mimeType.startsWith('video') ? 'video' : 'image' }]
 
 	useEffect(()=>{ setTimeout(()=>setLowerIndex(active === 'upper' ? 0 : undefined), duration*1000) }, [active])
 	
@@ -42,7 +46,7 @@ export default function Start({start:{slides}}){
 				<Gallery 
 					id={'upper'}
 					key={'upper'}
-					slides={slides.map(({images, title, slug, text, link}) => ({image:images?.[0], title, slug, text, link}))} 
+					slides={upperSlides} 
 					onIndexChange={(idx)=> !slides[idx].text && setAssignment(slides[idx])}
 					onIndexSelected={(idx)=>setActive('lower')}
 					active={active === 'upper'}
@@ -50,7 +54,7 @@ export default function Start({start:{slides}}){
 				<Gallery 
 					id={'lower'}
 					key={assignment?.id}
-					slides={(assignment ? assignment.images : []).map((image) => ({image, title:image.title, slug:assignment.slug}))} 
+					slides={lowerSlides} 
 					onIndexChange={(idx)=>{}}
 					onIndexSelected={(idx)=>setActive('upper')}
 					active={active === 'lower'}
@@ -60,7 +64,7 @@ export default function Start({start:{slides}}){
 			<Gallery 
 				id={'overlay'}
 				key={'overlay'}
-				slides={!assignment ? [] : [{image:assignment.images[0], title:assignment.images[0].title, slug:assignment.slug}]} 
+				slides={overlaySlides} 
 				style={{display: animating && (active === 'lower' || lowerIndex == 0) ? 'flex' : 'none'}}
 				active={false}
 				nocaption={true}
@@ -72,10 +76,16 @@ export default function Start({start:{slides}}){
 }
 
 export const getStaticProps = withGlobalProps({queries:[GetStart]}, async ({props, revalidate }) => {
+	const slides = props.start.slides.map((slide) => ({
+		...slide,
+		type: slide.text ? 'text' : slide.image?.mimeType.startsWith('video') ? 'video' : 'image',
+		slug: !slide.link ? slide.slug : slide.link.__typename === 'AboutRecord' ? '/studio' : slide.link.__typename === 'ArtworkRecord' ? '/artwork' : null
+	}))
 	
 	return {
 		props:{
-			...props,
+			...props.seo,
+			slides
 		},
 		revalidate
 	};

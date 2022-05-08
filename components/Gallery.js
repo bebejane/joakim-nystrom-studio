@@ -75,11 +75,11 @@ export default function Gallery({id, slides, className, style = {}, onIndexChang
 	useEffect(()=> { onIndexChange(index) }, [index])
 	useEffect(()=> { indexFromProps !== undefined && setIndex(indexFromProps) }, [indexFromProps])
 	useEffect(()=>{ smoothscroll.polyfill()}, []) // Safari
-	
+	if(!dimensions.innerWidth) return null
 	return (
 		<div ref={galleryRef} key={`gallery-${id}`} className={cn(styles.gallery, className)} style={style}>
 			<ul>
-				{allSlides.map(({title, slug, image, text, link}, idx) => {
+				{allSlides.map(({title, slug, image, text, type}, idx) => {
 
 					const maxWidth = dimensions.innerWidth * 0.8;
 					const width = !image ? maxWidth : Math.min((dimensions.innerHeight/image.height)*image.width, maxWidth);
@@ -97,7 +97,7 @@ export default function Gallery({id, slides, className, style = {}, onIndexChang
 						
 					}
 
-					slug = !link ? slug : link.__typename === 'AboutRecord' ? '/studio' : link.__typename === 'ArtworkRecord' ? '/artwork' : null
+					//slug = !link ? slug : link.__typename === 'AboutRecord' ? '/studio' : link.__typename === 'ArtworkRecord' ? '/artwork' : null
 
 					return (
 						<li
@@ -111,11 +111,11 @@ export default function Gallery({id, slides, className, style = {}, onIndexChang
 							variants={galleryTransition} 
 							onClick={()=> isNavSlide ? (index-1 === realIndex ? back() : forward()) : text ? router.push(slug) : onIndexSelected(index)}
 						>
-								{ text ? 
+								{ type === 'text' ? 
 									<TextSlide text={text} width={maxWidth}/>
-								: image?.responsiveImage ?
+								: type === 'image' ?
 									<ImageSlide image={image} width={width}/>	
-								: image?.mimeType.startsWith('video') ? 
+								: type === 'video' ?
 									<VideoSlide key={`slide-video-${idx}-${id}`} data={image} active={index === realIndex}/>
 								:
 									null
@@ -134,7 +134,7 @@ export default function Gallery({id, slides, className, style = {}, onIndexChang
 const TextSlide = ({text, slug, width}) => {
 
 	return (
-		<div className={styles.text} style={{minWidth:`${width}px`}}>
+		<div className={styles.textSlide} style={{minWidth:`${width}px`}}>
 			<div className={styles.content} style={{minWidth:`${width}px`}}>
 				{text}
 			</div>
@@ -149,7 +149,7 @@ const ImageSlide = ({image, width}) => {
 	return (
 		<picture>
 			<img 
-			className={styles.image}
+			className={styles.imageSlide}
 			src={`${image.url}?w=1400`} 
 			style={{ width:`${width}px`, maxWidth:`${width}px`, height:'100vh'}} 
 		/>	
@@ -173,7 +173,7 @@ const VideoSlide = ({data, active}) => {
 	}, [active])
 
 	return (
-		<div className={styles.video}>
+		<div className={styles.videoSlide}>
 			<video 
 				src={data.url} 
 				ref={videoRef} 
