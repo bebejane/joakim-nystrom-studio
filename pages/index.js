@@ -37,7 +37,7 @@ export default function Start({slides, assignment : assignmentFromProps}){
 	
 	if(assignment){
 		const text = assignment.description.split('\n\n').pop()
-		lowerSlides.splice(2, 0, {type:'text', text, title:null})
+		lowerSlides.splice(1, 0, {type:'text', text, title:null})
 	}
 	
 	const showOverlay = animating && (active === 'lower' || lowerIndex == 0)
