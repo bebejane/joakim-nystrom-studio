@@ -1,18 +1,12 @@
 import create from "zustand";
 
 const useStore = create((set) => ({
-	backgroundImage: null,
-  isTransitioning: false,
-	setBackgroundImage: (image) =>  
+	showMenu: true,
+	setShowMenu: (show) =>  
     set((state) => ({
-      backgroundImage: image
+      showMenu: show
     })
   ),
-  setIsTransitioning: (isTransitioning) =>  
-    set((state) => ({
-      isTransitioning
-    })
-  )
 }));
 
 export default useStore;

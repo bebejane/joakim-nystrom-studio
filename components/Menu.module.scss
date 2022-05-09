@@ -15,6 +15,7 @@
     flex: 1 1 100%;
   }
   .nav{
+    transition: transform 0.3s;
     flex: 1 1 auto;
     ul{
       display: flex;
@@ -25,8 +26,20 @@
         text-indent: 0;
         list-style-type: none;
         margin-left: 1rem;
-        cursor: pointer;
-        
+        cursor: pointer; 
+      }
+    }
+    
+  }
+  &.hideNav{
+    .nav{
+      transform: translateY(-100px);
+    }
+    animation: hide 0.3s forwards;
+    animation-delay: 0.3s;
+    @keyframes hide { // Delay smaller width
+      to{
+        width: auto;
       }
     }
   }

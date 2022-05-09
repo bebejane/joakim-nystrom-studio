@@ -1,11 +1,8 @@
 import styles from './Gallery.module.scss'
 import cn from 'classnames'
-import Link from 'next/link';
-//import { Image } from 'react-datocms';
 import { useState, useEffect, useRef } from 'react';
 import { useWindowSize } from 'rooks';
-import smoothscroll from 'smoothscroll-polyfill';
-//import { motion, useForceUpdate } from 'framer-motion';
+import { motion,} from 'framer-motion';
 import { useRouter } from 'next/router';
 
 const duration = 0.7;
@@ -33,100 +30,116 @@ const galleryTransition = {
 	}
 }
 
-export default function Gallery({id, slides, className, style = {}, onIndexChange, onIndexSelected, active, index:indexFromProps}){	
+export default function Gallery({
+	id, 
+	slides, 
+	className, 
+	style = {}, 
+	active,
+	loop = true,
+	index:indexFromProps,
+	onIndexChange, 
+	onIndexSelected, 
+	onClose
+}){	
 	
   const router = useRouter()
-  const [index, setIndex] = useState(0)
-	const [dimensions, setDimensions] = useState({innerHeight: 0, innerWidth: 0})
+  const [index, setIndex] = useState(0)	
+	const [transition, setTransition] = useState({offset:undefined, duration:undefined})
+
+	const [dimensions, setDimensions] = useState({ innerHeight: 0, innerWidth: 0 })
 	const { innerWidth, innerHeight } = useWindowSize();
 	
-	const allSlides = slides.concat(slides).concat(slides)
-	const galleryRef = useRef(null)
-	const initRef = useRef(false)
+	const allSlides = slides.concat(slides).concat(slides);
+	if(!loop){
+		allSlides[slides.length-1] = { type:'empty'}
+		allSlides[slides.length*2] = { type:'empty'}
+	}
 	
-  const scrollTo = (idx, behavior = active ? 'smooth' : 'instant', skipIndex = false) => {
+	const isReady = dimensions.innerWidth !== 0 && transition.offset !== undefined
+	const galleryRef = useRef(null)
+	
+  const scrollTo = (idx, duration = active ? 0.5 : 0, skipIndex = false) => {
 		
 		if(dimensions.innerWidth === 0) return
 		
 		const slide = document.getElementById(`slide-${idx}-${id}`)
 		if(!slide) return console.log('slide not found')
-		
-    const left = Math.floor(slide.offsetLeft - ((dimensions.innerWidth-slide.clientWidth)/2))
-		galleryRef.current.scrollTo({left, behavior : initRef.current === true ? behavior : 'instant'})
-
-		if(!initRef.current)
-			setTimeout(()=>initRef.current = true, 100);
-	
+    const offset = -Math.floor(slide.offsetLeft - ((dimensions.innerWidth-slide.clientWidth)/2))
+		setTransition({offset, duration})
   }
 
 	const back = () => {
 		if(index-1 >= 0) return setIndex(index-1)
-		scrollTo(slides.length, 'instant', true)
-		setIndex(slides.length-1)
+		if(!loop) return 
+		scrollTo(slides.length, 0)
+		setTimeout(()=>setIndex(slides.length-1), 20)
 	}
 
 	const forward = () => {
-		if(index+1 >= slides.length) scrollTo(-1, 'instant', true)
-		setIndex(index+1 < slides.length ? index+1 : 0)
+		if(index+1 >= slides.length && !loop) return
+		if(index+1 >= slides.length) scrollTo(-1, 0);
+		setTimeout(()=>setIndex(index+1 < slides.length ? index+1 : 0), 20)
 	}
 	
 	useEffect(()=> { setDimensions({innerHeight, innerWidth}); }, [innerHeight, innerWidth])
 	useEffect(()=> { scrollTo(index) }, [index, slides.length, dimensions, id])
-	useEffect(()=> { onIndexChange(index) }, [index])
+	useEffect(()=> { onIndexChange && onIndexChange(index) }, [index])
 	useEffect(()=> { indexFromProps !== undefined && setIndex(indexFromProps) }, [indexFromProps])
-	useEffect(()=>{ smoothscroll.polyfill()}, []) // Safari
-	if(!dimensions.innerWidth) return null
+	
 	return (
-		<div ref={galleryRef} key={`gallery-${id}`} className={cn(styles.gallery, className)} style={style}>
-			<ul>
-				{allSlides.map(({title, slug, image, text, type}, idx) => {
+		<div ref={galleryRef} key={`gallery-${id}`} className={cn(styles.gallery, className)} style={{...style, visibility: !isReady ? 'hidden' : 'visible'}}>
+			<motion.ul
+				id={'slide-list'}
+				layoutScroll
+				animate={{translateX: `${transition.offset}px`}}
+				transition={{duration: transition.duration}}
+			>
+			{allSlides.map(({title, slug, image, text, type}, idx) => {
 
-					const maxWidth = dimensions.innerWidth * 0.8;
-					const width = !image ? maxWidth : Math.min((dimensions.innerHeight/image.height)*image.width, maxWidth);
-					const realIndex = idx-(slides.length);
-					const isIntroSlide = realIndex >= -1 && realIndex <= 1;
-					const isNavSlide = (index-1 === realIndex || index+1 === realIndex)
-					const isCenterSlide = realIndex === index
-					const allExit = ['/artwork', '/studio'].includes(router.asPath) 
-					
-					const slideStyles = {
-						maxWidth:`${width}px`, 
-						width:`${width}px`, 
-						height:`${dimensions.innerHeight}px`, 
-						visibility: `${(slides.length <= 1 && isNavSlide) ? 'hidden' : 'visible'}`,
-						
-					}
-
-					//slug = !link ? slug : link.__typename === 'AboutRecord' ? '/studio' : link.__typename === 'ArtworkRecord' ? '/artwork' : null
-
-					return (
-						<li
-							id={`slide-${realIndex}-${id}`}
-							key={`slide-a-${idx}-${id}`} 
-							className={cn(isNavSlide && styles.nav)}
-							style={slideStyles}
-							initial={realIndex === 0 && isIntroSlide ? undefined : 'initial'}
-							animate={realIndex !== 0 ? 'enter' : undefined}
-							exit={allExit ? 'fadeOut' : realIndex !== index ? "exit" : undefined}
-							variants={galleryTransition} 
-							onClick={()=> isNavSlide ? (index-1 === realIndex ? back() : forward()) : text ? router.push(slug) : onIndexSelected(index)}
-						>
-								{ type === 'text' ? 
-									<TextSlide text={text} width={maxWidth}/>
-								: type === 'image' ?
-									<ImageSlide image={image} width={width}/>	
-								: type === 'video' ?
-									<VideoSlide key={`slide-video-${idx}-${id}`} data={image} active={index === realIndex}/>
-								:
-									null
-							}
-								<div key={`slide-caption-${idx}-${id}`} className={cn(styles.caption, isCenterSlide && styles.show)}>
-									<span>{title}</span>
-								</div>
-							</li>
-					)})}
-
-			</ul>
+				const maxWidth = dimensions.innerWidth * 0.8;
+				const width = !image ? maxWidth : Math.min((dimensions.innerHeight/image.height)*image.width, maxWidth);
+				const realIndex = idx-(slides.length);
+				const isIntroSlide = realIndex >= -1 && realIndex <= 1;
+				const isNavSlide = (index-1 === realIndex || index+1 === realIndex)
+				const isCenterSlide = realIndex === index
+				const allExit = ['/artwork', '/studio'].includes(router.asPath) 
+				
+				const slideStyles = {
+					maxWidth:`${width}px`, 
+					width:`${width}px`, 
+					height:`${dimensions.innerHeight}px`, 
+					visibility: `${(slides.length <= 1 && isNavSlide)  ? 'hidden' : 'visible'}`,	
+				}
+				
+				return (
+					<li
+						id={`slide-${realIndex}-${id}`}
+						key={`slide-a-${idx}-${id}`} 
+						className={cn(isNavSlide && styles.nav)}
+						style={slideStyles}
+						initial={realIndex === 0 && isIntroSlide ? undefined : 'initial'}
+						animate={realIndex !== 0 ? 'enter' : undefined}
+						exit={allExit ? 'fadeOut' : realIndex !== index ? "exit" : undefined}
+						variants={galleryTransition} 
+						onClick={()=> isNavSlide ? (index-1 === realIndex ? back() : forward()) : onIndexSelected && onIndexSelected(index)}
+					>
+							{ type === 'text' || type == 'empty' ? 
+								<TextSlide text={text} width={maxWidth}/>
+							: type === 'image' ?
+								<ImageSlide image={image} width={width}/>	
+							: type === 'video' ?
+								<VideoSlide key={`slide-video-${idx}-${id}`} data={image} active={index === realIndex} width={width}/>
+							:
+								null
+						}
+							<div key={`slide-caption-${idx}-${id}`} className={cn(styles.caption, isCenterSlide && styles.show)}>
+								<span>{title}</span>
+							</div>
+						</li>
+				)})}
+			</motion.ul>
+			{onClose && <div className={styles.close} onClick={onClose}>CLOSE</div>}
 		</div>
 	)
 }
@@ -157,14 +170,14 @@ const ImageSlide = ({image, width}) => {
 	)
 }
 
-const VideoSlide = ({data, active}) => {
+const VideoSlide = ({data, active, width}) => {
 	
 	const videoRef = useRef();
 	
 	useEffect(()=>{
 		if(!videoRef.current) return
 		if(active) {
-			videoRef.current.currentTime = 0
+			//videoRef.current.currentTime = 0
 			videoRef.current.play()
 		}else{
 			videoRef.current.pause();
@@ -173,18 +186,15 @@ const VideoSlide = ({data, active}) => {
 	}, [active])
 
 	return (
-		
-			<video 
-			 className={styles.videoSlide}
-				src={data.url} 
-				ref={videoRef} 
-				autoPlay={false} 
-				type={data.mimeType} 
-				disablePictureInPicture={true} 
-				loop={true}
-			/>
-			
-		
+		<video 
+			src={data.url} 
+			ref={videoRef} 
+			autoPlay={false} 
+			type={data.mimeType} 
+			disablePictureInPicture={true} 
+			loop={true}
+			className={styles.videoSlide}
+			style={{ width:`${width}px`, maxWidth:`${width}px`}}
+		/>
 	)
-
 }

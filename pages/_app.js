@@ -1,10 +1,12 @@
 import '/styles/index.scss'
-import 'swiper/css';
-import DatoSEO from '/lib/dato/components/DatoSEO';
 import useTransitionFix from '/lib/hooks/useTransitionFix';
 import { GoogleAnalytics, usePagesViews } from "nextjs-google-analytics";
 import { useRouter } from 'next/router';
+import { useEffect } from 'react';
+import smoothscroll from 'smoothscroll-polyfill';
+import { AnimatePresence } from 'framer-motion'
 import Menu from '/components/Menu';
+import DatoSEO from '/lib/dato/components/DatoSEO';
 
 function MyApp({ Component, pageProps, pageProps: { site, seo, backgroundImage }}) {
   
@@ -14,6 +16,8 @@ function MyApp({ Component, pageProps, pageProps: { site, seo, backgroundImage }
   const router = useRouter()
   const { asPath : pathname } = router  
   const title = ''
+
+  useEffect(()=>{ smoothscroll.polyfill()}, []) // Safari
 
   return (
     <>
@@ -25,7 +29,9 @@ function MyApp({ Component, pageProps, pageProps: { site, seo, backgroundImage }
         pathname={pathname} 
       />
       <Menu {...pageProps}/>
-      <Component {...pageProps} key={router.asPath}/>
+      <AnimatePresence exitBeforeEnter initial={false}>
+        <Component {...pageProps} key={router.asPath}/>
+      </AnimatePresence>
     </>
   )
 }

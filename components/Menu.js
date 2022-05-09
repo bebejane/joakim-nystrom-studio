@@ -2,15 +2,20 @@ import styles from "./Menu.module.scss";
 import Link from "next/link";
 import cn from "classnames";
 import { useState, useEffect } from "react";
-import { useRouter } from "next/router";
 import { Twirl as Hamburger } from "hamburger-react";
+import useStore from "/store";
 
 export default function Menu({}) {
+	
+	const showMenu = useStore((state) => state.showMenu)
+	const setShowMenu = useStore((state) => state.setShowMenu)
 
 	return (
-		<menu id="menu" className={styles.menu}>
+		<menu id="menu" className={cn(styles.menu, !showMenu && styles.hideNav)}>
 			<div className={styles.logo}>
-        <Link href="/">Joakim Nyström Studio</Link>
+        <Link href="/">
+					<a onClick={()=>setShowMenu(true)}>Joakim Nyström Studio</a>
+				</Link>
       </div>
 			<nav className={styles.nav}>
 				<ul>

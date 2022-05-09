@@ -4,7 +4,9 @@ import Content from '/components/Content';
 import Gallery from '../components/Gallery';
 import { GetStart} from '/graphql';
 import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
+import { useRouter } from 'next/router';
+import useStore from '/store';
 
 const duration = 0.4;
 const variants =  { 
@@ -20,18 +22,33 @@ const variants =  {
 		transition:{ease:'easeOut', duration, delay:0.01}
 	}
 }
-export default function Start({slides}){
-	console.log(slides)
-	const [assignment, setAssignment] = useState()
-	const [active, setActive] = useState('upper')
+export default function Start({slides, assignment : assignmentFromProps}){
+	
+	const router = useRouter()
+	const setShowMenu = useStore((state) => state.setShowMenu)
+	const showMenu = useStore((state) => state.showMenu)
+	const [assignment, setAssignment] = useState(assignmentFromProps || undefined)
+	const [active, setActive] = useState(assignmentFromProps ? 'lower' : 'upper')
 	const [animating, setAnimating] = useState(false)
 	const [lowerIndex, setLowerIndex] = useState(0)
 
 	const upperSlides = slides.map(({images, title, slug, text, type}) => ({image:images?.[0], title, slug, text, type}))
-	const lowerSlides = (assignment ? assignment.images : []).map((image) => ({image, title:image.title, slug:assignment.slug, type: image.mimeType.startsWith('video') ? 'video' : 'image' }))
-	const overlaySlides = !assignment ? [] : [{image:assignment.images[0], title:assignment.images[0].title, slug:assignment.slug, type: assignment.images[0].mimeType.startsWith('video') ? 'video' : 'image' }]
+	const lowerSlides = assignment ? assignment.images.map((image) => ({image, title:image.title, slug:assignment.slug, type: image.mimeType.startsWith('video') ? 'video' : 'image' })) : []
+	
+	if(assignment){
+		const text = assignment.description.split('\n\n').pop()
+		lowerSlides.splice(2, 0, {type:'text', text, title:null})
+	}
+	
+	const showOverlay = animating && (active === 'lower' || lowerIndex == 0)
+	const overlayUrl = assignment && !assignment.images[0].mimeType.startsWith('video') ? `${assignment?.images[0].url}?w=1400` : null
+	
+	useEffect(()=>{ 
+		setTimeout(()=>setLowerIndex(active === 'upper' ? 0 : undefined), duration*1000) 
+		setShowMenu(active === 'upper')
+	}, [active])
 
-	useEffect(()=>{ setTimeout(()=>setLowerIndex(active === 'upper' ? 0 : undefined), duration*1000) }, [active])
+	useEffect(()=> { showMenu && setActive('upper')}, [showMenu])
 	
 	return (
 		<Content id="container" key={'container'} className={styles.container}>
@@ -47,30 +64,29 @@ export default function Start({slides}){
 					id={'upper'}
 					key={'upper'}
 					slides={upperSlides} 
-					onIndexChange={(idx)=> !slides[idx].text && setAssignment(slides[idx])}
+					onIndexChange={(idx)=> slides[idx].type !== 'text' && active === 'upper' && setAssignment(slides[idx])}
 					onIndexSelected={(idx)=>setActive('lower')}
 					active={active === 'upper'}
 				/>
 				<Gallery 
 					id={'lower'}
-					key={assignment?.id}
+					key={'lower'}
 					slides={lowerSlides} 
 					onIndexChange={(idx)=>{}}
-					onIndexSelected={(idx)=>setActive('upper')}
+					onClose={()=> setActive('upper')}
 					active={active === 'lower'}
 					index={lowerIndex}
+					loop={false}
 				/>
 			</motion.div>
-			<Gallery 
+			<div 
 				id={'overlay'}
 				key={'overlay'}
-				slides={overlaySlides} 
-				style={{display: animating && (active === 'lower' || lowerIndex == 0) ? 'flex' : 'none'}}
-				active={false}
-				nocaption={true}
+				style={{display: showOverlay ? 'flex' : 'none'}}
 				className={styles.overlay}
-				onIndexChange={(idx)=>{}}
-			/>
+			>
+				{overlayUrl && <img src={`${overlayUrl}`}/>}
+			</div>
 		</Content>
 	)
 }
