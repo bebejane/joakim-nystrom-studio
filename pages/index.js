@@ -46,8 +46,15 @@ export default function Start({slides, assignment : assignmentFromProps}){
 	useEffect(()=>{ 
 		setTimeout(()=>setLowerIndex(active === 'upper' ? 0 : undefined), duration*1000) 
 		setShowMenu(active === 'upper')
+		if(active === 'lower') 
+			window.history.pushState({}, "", `/${assignment.slug}`)	
 	}, [active])
-
+	useEffect(()=>{ 
+		const handlePopState = ({state:{url}}) => url === '/' && setActive('upper')
+		window.addEventListener('popstate', handlePopState);
+		return () => window.removeEventListener('popstate', handlePopState);
+	}, [])
+	
 	useEffect(()=> { showMenu && setActive('upper')}, [showMenu])
 	
 	return (
@@ -73,7 +80,7 @@ export default function Start({slides, assignment : assignmentFromProps}){
 					key={'lower'}
 					slides={lowerSlides} 
 					onIndexChange={(idx)=>{}}
-					onClose={()=> setActive('upper')}
+					onClose={()=> window.history.back()}
 					active={active === 'lower'}
 					index={lowerIndex}
 					loop={false}

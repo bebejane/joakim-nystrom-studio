@@ -152,7 +152,7 @@ const TextSlide = ({text, slug, width}) => {
 				{text}
 			</div>
 			<div className={styles.label}>
-				Read more
+				
 			</div>
 		</div>
 	)
