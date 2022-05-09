@@ -173,8 +173,9 @@ const VideoSlide = ({data, active}) => {
 	}, [active])
 
 	return (
-		<div className={styles.videoSlide}>
+		
 			<video 
+			 className={styles.videoSlide}
 				src={data.url} 
 				ref={videoRef} 
 				autoPlay={false} 
@@ -182,8 +183,8 @@ const VideoSlide = ({data, active}) => {
 				disablePictureInPicture={true} 
 				loop={true}
 			/>
-			<div className={styles.play}></div>
-		</div>
+			
+		
 	)
 
 }

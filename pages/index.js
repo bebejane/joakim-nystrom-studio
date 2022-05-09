@@ -21,7 +21,7 @@ const variants =  {
 	}
 }
 export default function Start({slides}){
-	
+	console.log(slides)
 	const [assignment, setAssignment] = useState()
 	const [active, setActive] = useState('upper')
 	const [animating, setAnimating] = useState(false)
@@ -78,7 +78,7 @@ export default function Start({slides}){
 export const getStaticProps = withGlobalProps({queries:[GetStart]}, async ({props, revalidate }) => {
 	const slides = props.start.slides.map((slide) => ({
 		...slide,
-		type: slide.text ? 'text' : slide.image?.mimeType.startsWith('video') ? 'video' : 'image',
+		type: slide.text ? 'text' : slide.images?.[0].mimeType.startsWith('video') ? 'video' : 'image',
 		slug: !slide.link ? slide.slug : slide.link.__typename === 'AboutRecord' ? '/studio' : slide.link.__typename === 'ArtworkRecord' ? '/artwork' : null
 	}))
 	
