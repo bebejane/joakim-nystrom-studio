@@ -32,7 +32,7 @@ export default function Start({slides, assignment : assignmentFromProps}){
 	const [animating, setAnimating] = useState(false)
 	const [lowerIndex, setLowerIndex] = useState(0)
 
-	const upperSlides = slides.map(({images, title, slug, text, type}) => ({image:images?.[0], title, slug, text, type}))
+	const upperSlides = slides.map(({image, title, slug, text, type}, idx) => ({image, title, slug, text, type}))
 	const lowerSlides = assignment ? assignment.images.map((image) => ({image, title:image.title, slug:assignment.slug, type: image.mimeType.startsWith('video') ? 'video' : 'image' })) : []
 	
 	if(assignment){
@@ -41,7 +41,7 @@ export default function Start({slides, assignment : assignmentFromProps}){
 	}
 	
 	const showOverlay = animating && (active === 'lower' || lowerIndex == 0)
-	const overlayUrl = assignment && !assignment.images[0].mimeType.startsWith('video') ? `${assignment?.images[0].url}?w=1400` : null
+	const overlayUrl = assignment && !assignment.images[assignment.imageIndex].mimeType.startsWith('video') ? `${assignment?.images[assignment.imageIndex].url}?w=1400` : null
 	
 	useEffect(()=>{ 
 		setTimeout(()=>setLowerIndex(active === 'upper' ? 0 : undefined), duration*1000) 
@@ -49,6 +49,7 @@ export default function Start({slides, assignment : assignmentFromProps}){
 		if(active === 'lower') 
 			window.history.pushState({}, "", `/${assignment.slug}`)	
 	}, [active])
+
 	useEffect(()=>{ 
 		const handlePopState = ({state:{url}}) => url === '/' && setActive('upper')
 		window.addEventListener('popstate', handlePopState);
@@ -56,6 +57,10 @@ export default function Start({slides, assignment : assignmentFromProps}){
 	}, [])
 	
 	useEffect(()=> { showMenu && setActive('upper')}, [showMenu])
+
+	useEffect(()=>{
+		assignment && setLowerIndex(assignment.imageIndex === 1 ? 2 : 0)
+	}, [assignment])
 	
 	return (
 		<Content id="container" key={'container'} className={styles.container}>
@@ -84,6 +89,7 @@ export default function Start({slides, assignment : assignmentFromProps}){
 					active={active === 'lower'}
 					index={lowerIndex}
 					loop={false}
+					caption={assignment?.title}
 				/>
 			</motion.div>
 			<div 
@@ -101,10 +107,19 @@ export default function Start({slides, assignment : assignmentFromProps}){
 export const getStaticProps = withGlobalProps({queries:[GetStart]}, async ({props, revalidate }) => {
 	const slides = props.start.slides.map((slide) => ({
 		...slide,
+		image : slide.images?.[0] || null,
 		type: slide.text ? 'text' : slide.images?.[0].mimeType.startsWith('video') ? 'video' : 'image',
-		slug: !slide.link ? slide.slug : slide.link.__typename === 'AboutRecord' ? '/studio' : slide.link.__typename === 'ArtworkRecord' ? '/artwork' : null
+		slug: !slide.link ? slide.slug : slide.link.__typename === 'AboutRecord' ? '/studio' : slide.link.__typename === 'ArtworkRecord' ? '/artwork' : null,
+		imageIndex:0
 	}))
 	
+	slides.push.apply(slides, slides.map(s => ({
+		...s, 
+		image:s.images?.[1] || null,
+		type: s.text ? 'text' : s.images?.[1].mimeType.startsWith('video') ? 'video' : 'image',
+		imageIndex: s.images?.[1] ? 1 : 0
+	})))
+
 	return {
 		props:{
 			...props.seo,

@@ -36,6 +36,7 @@ export default function Gallery({
 	className, 
 	style = {}, 
 	active,
+	caption,
 	loop = true,
 	index:indexFromProps,
 	onIndexChange, 
@@ -51,6 +52,7 @@ export default function Gallery({
 	const { innerWidth, innerHeight } = useWindowSize();
 	
 	const allSlides = slides.concat(slides).concat(slides);
+	
 	if(!loop){
 		allSlides[slides.length-1] = { type:'empty'}
 		allSlides[slides.length*2] = { type:'empty'}
@@ -133,13 +135,21 @@ export default function Gallery({
 							:
 								null
 						}
-							<div key={`slide-caption-${idx}-${id}`} className={cn(styles.caption, isCenterSlide && styles.show)}>
-								<span>{title}</span>
-							</div>
+							{!caption &&
+								<div key={`slide-caption-${idx}-${id}`} className={cn(styles.slideCaption, isCenterSlide && styles.show)}>
+									<span>{title}</span>
+								</div>
+							}
 						</li>
 				)})}
 			</motion.ul>
 			{onClose && <div className={styles.close} onClick={onClose}>CLOSE</div>}
+
+			{caption && 
+				<div className={cn(styles.caption, styles.show)}>
+					<span>{caption}</span>
+				</div>
+			}
 		</div>
 	)
 }

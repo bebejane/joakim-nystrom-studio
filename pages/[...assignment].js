@@ -53,7 +53,8 @@ export const getStaticProps = withGlobalProps({queries:[GetStart]}, async ({prop
 	const slides = props.start.slides.map((slide) => ({
 		...slide,
 		type: slide.text ? 'text' : slide.images?.[0].mimeType.startsWith('video') ? 'video' : 'image',
-		slug: !slide.link ? slide.slug : slide.link.__typename === 'AboutRecord' ? '/studio' : slide.link.__typename === 'ArtworkRecord' ? '/artwork' : null
+		slug: !slide.link ? slide.slug : slide.link.__typename === 'AboutRecord' ? '/studio' : slide.link.__typename === 'ArtworkRecord' ? '/artwork' : null,
+		imageIndex:0
 	}))
 	
 	return {
