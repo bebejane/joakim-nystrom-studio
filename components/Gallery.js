@@ -2,7 +2,7 @@ import styles from './Gallery.module.scss'
 import cn from 'classnames'
 import { useState, useEffect, useRef } from 'react';
 import { useWindowSize } from 'rooks';
-import { motion} from 'framer-motion';
+import { motion, useElementScroll} from 'framer-motion';
 import { useRouter } from 'next/router';
 
 const duration = 0.7;
@@ -44,25 +44,26 @@ export default function Gallery({
 	onClose
 }){	
 	
+	
   const router = useRouter()
-	
 	const [isMobile, setIsMobile] = useState(false)
-  const [index, setIndex] = useState(indexFromProps !== undefined ? indexFromProps : 0)	
-	const [transition, setTransition] = useState({offset:undefined, duration:undefined})
+	const [index, setIndex] = useState(indexFromProps !== undefined ? indexFromProps : 0)	
+	const [transition, setTransition] = useState({ offset:undefined, duration:undefined})
 	const [dimensions, setDimensions] = useState({ innerHeight: 0, innerWidth: 0 })
-	const { innerWidth, innerHeight } = useWindowSize();
-	const galleryRef = useRef(null)
-	const allSlides = slides.concat(slides).concat(slides)
 	
-	if(!loop){
+	const { innerWidth, innerHeight } = useWindowSize();
+	const isReady = dimensions.innerWidth > 0 && transition.offset !== undefined
+	const galleryRef = useRef(null)
+	const { scrollXProgress } = useElementScroll(galleryRef)
+	const allSlides = isMobile ? slides : slides.concat(slides).concat(slides)
+	
+	if(!loop && !isMobile){
 		allSlides[slides.length-1] = { type:'empty'}
 		allSlides[slides.length*2] = { type:'empty'}
 	}
 	
-	const isReady = dimensions.innerWidth !== 0 && transition.offset !== undefined
-	
-	
-  const scrollTo = (idx, duration = active ? 0.5 : 0, skipIndex = false) => {	
+  const scrollTo = (idx, duration = active && isReady ? 0.5 : 0, skipIndex = false) => {	
+		
 		if(dimensions.innerWidth === 0) return
 		
 		const slide = document.getElementById(`slide-${idx}-${id}`)
@@ -85,30 +86,30 @@ export default function Gallery({
 		setTimeout(()=>setIndex(index+1 < slides.length ? index+1 : 0), 20)
 	}
 	
-	useEffect(()=> { 
-		setDimensions({innerHeight, innerWidth});
-		const isMobile = document.getElementById(id) ? getComputedStyle(document.getElementById(id), null).getPropertyValue('overflow-x') === 'scroll' : false
-		setIsMobile(isMobile)
-	}, [innerHeight, innerWidth])
+	useEffect(()=> { setDimensions({innerHeight, innerWidth}) }, [innerHeight, innerWidth])
 	useEffect(()=> { scrollTo(index) }, [index, slides, dimensions, id])
 	useEffect(()=> { onIndexChange && onIndexChange(index) }, [index])
 	useEffect(()=> { indexFromProps !== undefined && setIndex(indexFromProps) }, [indexFromProps])
-	
+	useEffect(()=>{ setIsMobile(innerWidth && innerWidth <= 768)}, [innerWidth])
+	useEffect(()=>{
+		isMobile && scrollXProgress.onChange((p)=>isMobile && onIndexChange && onIndexChange(Math.floor(slides.length*p)))
+	}, [isMobile])
+	console.log(isReady)
 	return (
 		<div id={id} ref={galleryRef} key={`gallery-${id}`} className={cn(styles.gallery, className)} style={{...style, visibility: !isReady ? 'hidden' : 'visible'}}>
 			<motion.ul
 				id={'slide-list'}
 				layoutScroll
-				animate={{translateX: `${transition.offset}px`}}
-				transition={{duration: transition.duration}}
+				animate={{translateX: `${transition.offset || 0}px`}}
+				transition={{duration: transition.duration || 0}}
 			>
 			{allSlides.map(({title, slug, image, text, type}, idx) => {
 
 				const maxWidth = dimensions.innerWidth * (isMobile ? 1 : 0.8);
 				const width = !image ? maxWidth : Math.min((dimensions.innerHeight/image.height)*image.width, maxWidth);
-				const realIndex = idx-(slides.length);
+				const realIndex = isMobile ? idx : idx-(slides.length);
 				const isIntroSlide = realIndex >= -1 && realIndex <= 1;
-				const isNavSlide = (index-1 === realIndex || index+1 === realIndex)
+				const isNavSlide = isMobile ? false : (index-1 === realIndex || index+1 === realIndex)
 				const isCenterSlide = realIndex === index
 				const allExit = ['/artwork', '/studio'].includes(router.asPath) 
 				
@@ -129,7 +130,7 @@ export default function Gallery({
 						animate={realIndex !== 0 ? 'enter' : undefined}
 						exit={allExit ? 'fadeOut' : realIndex !== index ? "exit" : undefined}
 						variants={galleryTransition} 
-						onClick={()=> isNavSlide ? (index-1 === realIndex ? back() : forward()) : onIndexSelected && onIndexSelected(index)}
+						onClick={()=> isNavSlide ? (index-1 === realIndex ? back() : forward()) : onIndexSelected && onIndexSelected(realIndex)}
 					>
 							{ type === 'text' || type == 'empty' ? 
 								<TextSlide text={text} width={maxWidth}/>
@@ -191,7 +192,7 @@ const VideoSlide = ({data, active, width}) => {
 		if(!videoRef.current) return
 		if(active) {
 			//videoRef.current.currentTime = 0
-			videoRef.current.play()
+			videoRef.current.play().catch(()=>{})
 		}else{
 			videoRef.current.pause();
 			

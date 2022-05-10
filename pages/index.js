@@ -27,7 +27,9 @@ export default function Start({slides, assignments, assignment : assignmentFromP
 	
 	const setShowMenu = useStore((state) => state.setShowMenu)
 	const showMenu = useStore((state) => state.showMenu)
+	const [isMobile, setIsMobile] = useState(false)
 	const { innerWidth, innerHeight } = useWindowSize();
+	
 	const [assignment, setAssignment] = useState(assignmentFromProps || undefined)
 	const [active, setActive] = useState(assignmentFromProps ? 'lower' : 'upper')
 	const [animating, setAnimating] = useState(false)
@@ -35,8 +37,7 @@ export default function Start({slides, assignments, assignment : assignmentFromP
 	const [lowerIndex, setLowerIndex] = useState(0)
 
 	const isDuplicate = upperIndex > assignments.length-1
-	const isMobile = innerWidth <= 926;
-
+	
 	const handleIndexChange = (idx) => {
 		const assignment = assignments.find(a => a.id === slides[idx].assignmentId)
 		setAssignment(assignment)
@@ -46,7 +47,9 @@ export default function Start({slides, assignments, assignment : assignmentFromP
 
 	useEffect(()=>{ 
 		const isUpper = active === 'upper'
+		isUpper && setTimeout(()=>setLowerIndex(0), duration*1000)
 		setShowMenu(isUpper)
+
 		!isUpper && window.history.pushState({}, "", `/${assignment.slug}`)	
 	}, [active])
 
@@ -64,7 +67,8 @@ export default function Start({slides, assignments, assignment : assignmentFromP
 	}, [])
 	
 	useEffect(()=> { showMenu && setActive('upper') }, [showMenu])
-	
+	useEffect(()=>{setIsMobile(innerWidth && innerWidth <= 768)}, [innerWidth])
+
 	const lowerSlides = assignment ? (isDuplicate ? arrayMoveImmutable(assignment.images, 0, 1) : assignment.images).map((image) => ({image, title:image.title, slug:assignment.slug, type: image.mimeType.startsWith('video') ? 'video' : 'image' })) : []	
 	if(lowerSlides.length)
 		lowerSlides.splice(1, 0, {type:'text', text:assignment.description.split('\n\n').pop(), title:null})
@@ -88,7 +92,7 @@ export default function Start({slides, assignments, assignment : assignmentFromP
 					key={'upper'}
 					slides={slides} 
 					onIndexChange={handleIndexChange}
-					onIndexSelected={(idx)=>setActive('lower')}
+					onIndexSelected={(idx)=>{ handleIndexChange(idx); setActive('lower'); }}
 					active={active === 'upper'}
 				/>
 				
@@ -97,7 +101,6 @@ export default function Start({slides, assignments, assignment : assignmentFromP
 					key={assignment?.id}
 					slides={lowerSlides} 
 					onIndexChange={(idx)=>{}}
-					//onClose={()=> window.history.back()}
 					active={active === 'lower'}
 					index={lowerIndex}
 					loop={false}
@@ -107,7 +110,7 @@ export default function Start({slides, assignments, assignment : assignmentFromP
 			<div 
 				id={'overlay'}
 				key={'overlay'}
-				style={{visibility: showOverlay ? 'visible' : 'hidden', width:isMobile ? '100%' : 'auto'}}
+				style={{visibility: showOverlay ? 'visible' : 'hidden'}}
 				className={styles.overlay}
 			>
 				{overlayUrl && <img src={`${overlayUrl}`}/>}
