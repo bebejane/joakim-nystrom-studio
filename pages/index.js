@@ -6,6 +6,7 @@ import { GetStart} from '/graphql';
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion'
 import { arrayMoveImmutable } from 'array-move';
+import { useWindowSize } from 'rooks';
 import useStore from '/store';
 
 const duration = 0.4;
@@ -26,6 +27,7 @@ export default function Start({slides, assignments, assignment : assignmentFromP
 	
 	const setShowMenu = useStore((state) => state.setShowMenu)
 	const showMenu = useStore((state) => state.showMenu)
+	const { innerWidth, innerHeight } = useWindowSize();
 	const [assignment, setAssignment] = useState(assignmentFromProps || undefined)
 	const [active, setActive] = useState(assignmentFromProps ? 'lower' : 'upper')
 	const [animating, setAnimating] = useState(false)
@@ -33,7 +35,8 @@ export default function Start({slides, assignments, assignment : assignmentFromP
 	const [lowerIndex, setLowerIndex] = useState(0)
 
 	const isDuplicate = upperIndex > assignments.length-1
-	
+	const isMobile = innerWidth <= 926;
+
 	const handleIndexChange = (idx) => {
 		const assignment = assignments.find(a => a.id === slides[idx].assignmentId)
 		setAssignment(assignment)
@@ -104,7 +107,7 @@ export default function Start({slides, assignments, assignment : assignmentFromP
 			<div 
 				id={'overlay'}
 				key={'overlay'}
-				style={{visibility: showOverlay ? 'visible' : 'hidden'}}
+				style={{visibility: showOverlay ? 'visible' : 'hidden', width:isMobile ? '100%' : 'auto'}}
 				className={styles.overlay}
 			>
 				{overlayUrl && <img src={`${overlayUrl}`}/>}
