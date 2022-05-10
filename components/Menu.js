@@ -31,6 +31,10 @@ export default function Menu({}) {
 					</Link>
 				</ul>
 			</nav>
+			<div 
+				className={cn(styles.close, !showMenu && styles.show)}
+				onClick={()=>window.history.back()}
+			>BACK</div>
 		</menu>
 	);
 }

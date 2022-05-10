@@ -2,10 +2,8 @@ import styles from './Gallery.module.scss'
 import cn from 'classnames'
 import { useState, useEffect, useRef } from 'react';
 import { useWindowSize } from 'rooks';
-import { motion, useForceUpdate,} from 'framer-motion';
+import { motion} from 'framer-motion';
 import { useRouter } from 'next/router';
-import { isServer } from '/utils';
-import useElementScroll from '/lib/hooks/useElementScroll';
 
 const duration = 0.7;
 const galleryTransition = {
@@ -53,7 +51,7 @@ export default function Gallery({
 	const [transition, setTransition] = useState({offset:undefined, duration:undefined})
 	const [dimensions, setDimensions] = useState({ innerHeight: 0, innerWidth: 0 })
 	const { innerWidth, innerHeight } = useWindowSize();
-	const [scrollInfo, galleryRef] = useElementScroll();
+	const galleryRef = useRef(null)
 	const allSlides = slides.concat(slides).concat(slides)
 	
 	if(!loop){
@@ -150,7 +148,6 @@ export default function Gallery({
 						</li>
 				)})}
 			</motion.ul>
-			{onClose && <div className={styles.close} onClick={onClose}>CLOSE</div>}
 			{caption && 
 				<div className={cn(styles.caption, styles.show, isMobile && styles.mobile)}>
 					<span>{caption}</span>

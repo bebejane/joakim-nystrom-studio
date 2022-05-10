@@ -94,7 +94,7 @@ export default function Start({slides, assignments, assignment : assignmentFromP
 					key={assignment?.id}
 					slides={lowerSlides} 
 					onIndexChange={(idx)=>{}}
-					onClose={()=> window.history.back()}
+					//onClose={()=> window.history.back()}
 					active={active === 'lower'}
 					index={lowerIndex}
 					loop={false}
