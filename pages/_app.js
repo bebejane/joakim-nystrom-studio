@@ -8,17 +8,17 @@ import { AnimatePresence } from 'framer-motion'
 import Menu from '/components/Menu';
 import DatoSEO from '/lib/dato/components/DatoSEO';
 
-function MyApp({ Component, pageProps, pageProps: { site, seo, backgroundImage }}) {
+function MyApp({ Component, pageProps, pageProps: { site, seo, assignment, backgroundImage }}) {
   
   if(process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID) usePagesViews(); // Google Analytics page view tracker
   
+  useEffect(()=>{ smoothscroll.polyfill()}, []) // Safari
+
   const fix = useTransitionFix()
   const router = useRouter()
   const { asPath : pathname } = router  
-  const title = ''
-
-  useEffect(()=>{ smoothscroll.polyfill()}, []) // Safari
-
+  const title = assignment ? assignment.title : router.asPath === '/artwork' ? 'Artwork' : router.asPath === '/studio' ? 'Studio' : ''
+  
   return (
     <>
       <GoogleAnalytics />

@@ -2,8 +2,10 @@ import styles from './Gallery.module.scss'
 import cn from 'classnames'
 import { useState, useEffect, useRef } from 'react';
 import { useWindowSize } from 'rooks';
-import { motion,} from 'framer-motion';
+import { motion, useForceUpdate,} from 'framer-motion';
 import { useRouter } from 'next/router';
+import { isServer } from '/utils';
+import useElementScroll from '/lib/hooks/useElementScroll';
 
 const duration = 0.7;
 const galleryTransition = {
@@ -45,13 +47,14 @@ export default function Gallery({
 }){	
 	
   const router = useRouter()
-  const [index, setIndex] = useState(0)	
+	
+	const [isMobile, setIsMobile] = useState(false)
+  const [index, setIndex] = useState(indexFromProps !== undefined ? indexFromProps : 0)	
 	const [transition, setTransition] = useState({offset:undefined, duration:undefined})
-
 	const [dimensions, setDimensions] = useState({ innerHeight: 0, innerWidth: 0 })
 	const { innerWidth, innerHeight } = useWindowSize();
-	
-	const allSlides = slides.concat(slides).concat(slides);
+	const [scrollInfo, galleryRef] = useElementScroll();
+	const allSlides = slides.concat(slides).concat(slides)
 	
 	if(!loop){
 		allSlides[slides.length-1] = { type:'empty'}
@@ -59,14 +62,14 @@ export default function Gallery({
 	}
 	
 	const isReady = dimensions.innerWidth !== 0 && transition.offset !== undefined
-	const galleryRef = useRef(null)
 	
-  const scrollTo = (idx, duration = active ? 0.5 : 0, skipIndex = false) => {
-		
+	
+  const scrollTo = (idx, duration = active ? 0.5 : 0, skipIndex = false) => {	
 		if(dimensions.innerWidth === 0) return
 		
 		const slide = document.getElementById(`slide-${idx}-${id}`)
 		if(!slide) return console.log('slide not found')
+
     const offset = -Math.floor(slide.offsetLeft - ((dimensions.innerWidth-slide.clientWidth)/2))
 		setTransition({offset, duration})
   }
@@ -84,13 +87,17 @@ export default function Gallery({
 		setTimeout(()=>setIndex(index+1 < slides.length ? index+1 : 0), 20)
 	}
 	
-	useEffect(()=> { setDimensions({innerHeight, innerWidth}); }, [innerHeight, innerWidth])
-	useEffect(()=> { scrollTo(index) }, [index, slides.length, dimensions, id])
+	useEffect(()=> { 
+		setDimensions({innerHeight, innerWidth});
+		const isMobile = document.getElementById(id) ? getComputedStyle(document.getElementById(id), null).getPropertyValue('overflow-x') === 'scroll' : false
+		setIsMobile(isMobile)
+	}, [innerHeight, innerWidth])
+	useEffect(()=> { scrollTo(index) }, [index, slides, dimensions, id])
 	useEffect(()=> { onIndexChange && onIndexChange(index) }, [index])
 	useEffect(()=> { indexFromProps !== undefined && setIndex(indexFromProps) }, [indexFromProps])
 	
 	return (
-		<div ref={galleryRef} key={`gallery-${id}`} className={cn(styles.gallery, className)} style={{...style, visibility: !isReady ? 'hidden' : 'visible'}}>
+		<div id={id} ref={galleryRef} key={`gallery-${id}`} className={cn(styles.gallery, className)} style={{...style, visibility: !isReady ? 'hidden' : 'visible'}}>
 			<motion.ul
 				id={'slide-list'}
 				layoutScroll
@@ -99,7 +106,7 @@ export default function Gallery({
 			>
 			{allSlides.map(({title, slug, image, text, type}, idx) => {
 
-				const maxWidth = dimensions.innerWidth * 0.8;
+				const maxWidth = dimensions.innerWidth * (isMobile ? 1 : 0.8);
 				const width = !image ? maxWidth : Math.min((dimensions.innerHeight/image.height)*image.width, maxWidth);
 				const realIndex = idx-(slides.length);
 				const isIntroSlide = realIndex >= -1 && realIndex <= 1;
@@ -111,7 +118,7 @@ export default function Gallery({
 					maxWidth:`${width}px`, 
 					width:`${width}px`, 
 					height:`${dimensions.innerHeight}px`, 
-					visibility: `${(slides.length <= 1 && isNavSlide)  ? 'hidden' : 'visible'}`,	
+					visibility: `${(slides.length <= 1 && isNavSlide) || !isReady ? 'hidden' : 'visible'}`,	
 				}
 				
 				return (
@@ -136,7 +143,7 @@ export default function Gallery({
 								null
 						}
 							{!caption &&
-								<div key={`slide-caption-${idx}-${id}`} className={cn(styles.slideCaption, isCenterSlide && styles.show)}>
+								<div key={`slide-caption-${idx}-${id}`} className={cn(styles.slideCaption, (isCenterSlide || isMobile) && styles.show)}>
 									<span>{title}</span>
 								</div>
 							}
@@ -144,9 +151,8 @@ export default function Gallery({
 				)})}
 			</motion.ul>
 			{onClose && <div className={styles.close} onClick={onClose}>CLOSE</div>}
-
 			{caption && 
-				<div className={cn(styles.caption, styles.show)}>
+				<div className={cn(styles.caption, styles.show, isMobile && styles.mobile)}>
 					<span>{caption}</span>
 				</div>
 			}

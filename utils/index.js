@@ -1,4 +1,4 @@
-const pixelAverage = require('pixel-average')
+
 
 const imageColor = (image) => {
   
@@ -14,10 +14,15 @@ const imageColor = (image) => {
 
 const imageBrightness = async (image) => {
 	if(!image) return 1;
+  const pixelAverage = require('pixel-average')
 	const url = `${image.url}?fmt=jpg`
 	return new Promise((resolve, reject)=> pixelAverage(url, (err, {brightness}) => err ? reject(err) : resolve(brightness/255)))
 }
+
+const isServer = typeof window === 'undefined'
+
 export {
  imageColor,
- imageBrightness
+ imageBrightness,
+ isServer
 }
