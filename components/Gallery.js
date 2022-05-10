@@ -130,7 +130,7 @@ export default function Gallery({
 						animate={realIndex !== 0 ? 'enter' : undefined}
 						exit={allExit ? 'fadeOut' : realIndex !== index ? "exit" : undefined}
 						variants={galleryTransition} 
-						onClick={()=> isNavSlide ? (index-1 === realIndex ? back() : forward()) : onIndexSelected && onIndexSelected(realIndex)}
+						onClick={()=> isNavSlide ? (index-1 === realIndex ? back() : forward()) : onIndexSelected && type !== 'text' && onIndexSelected(realIndex)}
 					>
 							{ type === 'text' || type == 'empty' ? 
 								<TextSlide text={text} width={maxWidth}/>

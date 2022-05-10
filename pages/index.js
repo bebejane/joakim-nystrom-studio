@@ -86,7 +86,6 @@ export default function Start({slides, assignments, assignment : assignmentFromP
 				onAnimationStart={()=>setAnimating(true)}
 				onAnimationComplete={()=>setAnimating(false)}
 			>
-			
 				<Gallery 
 					id={'upper'}
 					key={'upper'}
@@ -94,8 +93,7 @@ export default function Start({slides, assignments, assignment : assignmentFromP
 					onIndexChange={handleIndexChange}
 					onIndexSelected={(idx)=>{ handleIndexChange(idx); setActive('lower'); }}
 					active={active === 'upper'}
-				/>
-				
+				/>	
 				<Gallery 
 					id={'lower'}
 					key={assignment?.id}
