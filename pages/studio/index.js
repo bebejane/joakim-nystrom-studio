@@ -7,22 +7,25 @@ import { motion } from 'framer-motion'
 import { useRouter } from 'next/router';
 import usePreviousRoute from '/lib/hooks/usePreviousRoute';
 
-const duration = 0.4;
+const duration = .4;
 const variants =  { 
+	initial:{
+		opacity:0
+	},
 	fromIndex:{
 		opacity:[0, 1],
 		transition:{ease:'easeOut', duration}
 	},
 	fromArtwork:{
-		opacity:[0,1],
-		transition:{ease:'easeOut', duration}
+		opacity:1,
+		transition:{ease:'easeOut', duration:duration*4}
 	},
 	toIndex:{
 		opacity:0,
 		transition:{ease:'easeOut', duration}
 	},
 	toArtwork:{
-		opacity:[1, 0],
+		opacity:0,
 		transition:{ease:'easeOut', duration}
 	}
 }
@@ -31,9 +34,10 @@ export default function Studio({about : {email, phone, description, background, 
 
 	const router = useRouter()
 	const prevRoute = usePreviousRoute()
-
+	
 	return (
 		<motion.div 
+			initial={'initial'}
 			animate={prevRoute === '/' ? 'fromIndex' : 'fromArtwork'} 
 			exit={router.asPath === '/' ? 'toIndex' : 'toArtwork' }
 			variants={variants}
