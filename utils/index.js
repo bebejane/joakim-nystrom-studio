@@ -19,10 +19,15 @@ const imageBrightness = async (image) => {
 	return new Promise((resolve, reject)=> pixelAverage(url, (err, {brightness}) => err ? reject(err) : resolve(brightness/255)))
 }
 
+const clamp = (number, min, max) => {
+  return Math.max(min, Math.min(number, max));
+}
+
 const isServer = typeof window === 'undefined'
 
 export {
  imageColor,
  imageBrightness,
- isServer
+ isServer,
+ clamp
 }

@@ -8,11 +8,30 @@ import { motion } from 'framer-motion'
 import { arrayMoveImmutable } from 'array-move';
 import { useWindowSize } from 'rooks';
 import useStore from '/store';
+import { useRouter } from 'next/router';
+import usePreviousRoute from '/lib/hooks/usePreviousRoute';
 
 const duration = 0.4;
 const variants =  { 
 	initial:{
-		translateY:'0vh'
+		translateY:['100vh', '0vh'],
+		transition:{ease:'easeOut', duration}
+	},
+	fromArtwork:{
+		translateY:['100vh', '0vh'],
+		transition:{ease:'easeOut', duration}
+	},
+	fromStudio:{
+		opacity:1,
+		transition:{ease:'easeOut', duration}
+	},
+	toArtwork:{
+		translateY:'100vh',
+		transition:{ease:'linear', duration}
+	},
+	toStudio:{
+		opacity:0,
+		transition:{ease:'easeOut', duration}
 	},
 	upper:{
 		translateY:'0vh',
@@ -21,10 +40,13 @@ const variants =  {
 	lower:{
 		translateY:'-100vh',
 		transition:{ease:'easeOut', duration, delay:0.01}
-	}
+	},
 }
+
 export default function Start({slides, assignments, assignment : assignmentFromProps}){
 	
+	const router = useRouter()
+	const prevRoute = usePreviousRoute()
 	const setShowMenu = useStore((state) => state.setShowMenu)
 	const showMenu = useStore((state) => state.showMenu)
 	const [isMobile, setIsMobile] = useState(false)
@@ -74,14 +96,16 @@ export default function Start({slides, assignments, assignment : assignmentFromP
 		lowerSlides.splice(1, 0, {type:'text', text:assignment.description.split('\n\n').pop(), title:null})
 	
 	const overlayUrl = slides[upperIndex].type === 'image' ? `${slides[upperIndex].image.url}?w=1400` : null
-	const showOverlay = animating && active === 'lower'  && overlayUrl
+	const showOverlay = animating && active === 'lower' && overlayUrl && !isMobile
 	
 	return (
 		<Content id="container" key={'container'} className={styles.container}>
 			<motion.div
 				key={'animation'}
-				initial={false}
+				initial={prevRoute === '/artwork' ? 'initial': undefined}
+				//animate={prevRoute === '/artwork' ? 'fromArtwork' : prevRoute === '/artwork' ? 'fromArtwork'  : undefined}
 				animate={active}
+				exit={router.asPath === '/studio' ? 'toStudio' : 'toArtwork'}	
 				variants={variants}
 				onAnimationStart={()=>setAnimating(true)}
 				onAnimationComplete={()=>setAnimating(false)}
@@ -91,7 +115,7 @@ export default function Start({slides, assignments, assignment : assignmentFromP
 					key={'upper'}
 					slides={slides} 
 					onIndexChange={handleIndexChange}
-					onIndexSelected={(idx)=>{ handleIndexChange(idx); setActive('lower'); }}
+					onIndexSelected={(idx)=>{ setActive('lower') }}
 					active={active === 'upper'}
 				/>	
 				<Gallery 

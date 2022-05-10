@@ -4,17 +4,46 @@ import cn from 'classnames'
 import { Image } from 'react-datocms';
 import { GetAllArtwork } from '/graphql';
 import Content from '/components/Content';
-import { motion } from 'framer-motion';
+import { animate, motion } from 'framer-motion';
 import ArtworkGallery from '/components/ArtworkGallery';
 import { useState } from 'react';
+import { useRouter } from 'next/router';
+import usePreviousRoute from '/lib/hooks/usePreviousRoute';
+
+const duration = 0.4;
+const variants =  { 
+	fromIndex:{
+		translateY:['-100vh', '0vh'],
+		transition:{ease:'easeOut', duration}
+	},
+	fromStudio:{
+		opacity:1,
+		transition:{ease:'easeOut', duration}
+	},
+	toIndex:{
+		translateY:'-100%',
+		transition:{ease:'linear', duration}
+	},
+	toStudio:{
+		opacity:0,
+		transition:{ease:'easeOut', duration}
+	}
+}
 
 export default function Artwork({artwork}){	
 
+	
+	const prevRoute = usePreviousRoute()
+	const router = useRouter()
 	const [galleryIndex, setGalleryIndex] = useState()
-
+	
 	return (
 		<>
-		<motion.div initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} transition={{duration:0.3}}>
+		<motion.div 
+			animate={prevRoute === '/' ? 'fromIndex' : 'fromStudio'} 
+			exit={router.asPath === '/' ? 'toIndex' : undefined }
+			variants={variants}
+		>
 			<Content className={styles.artwork}>
 				<ul>
 					{artwork.map(({image, dimensions, sold}, idx) => 

@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useWindowSize } from 'rooks';
 import { motion, useElementScroll} from 'framer-motion';
 import { useRouter } from 'next/router';
+import { clamp } from '/utils';
 
 const duration = 0.7;
 const galleryTransition = {
@@ -69,7 +70,7 @@ export default function Gallery({
 		const slide = document.getElementById(`slide-${idx}-${id}`)
 		if(!slide) return console.log('slide not found')
 
-    const offset = -Math.floor(slide.offsetLeft - ((dimensions.innerWidth-slide.clientWidth)/2))
+    const offset = -Math.floor(slide.offsetLeft - (isMobile ? 0 : ((dimensions.innerWidth-slide.clientWidth)/2)))
 		setTransition({offset, duration})
   }
 
@@ -92,9 +93,9 @@ export default function Gallery({
 	useEffect(()=> { indexFromProps !== undefined && setIndex(indexFromProps) }, [indexFromProps])
 	useEffect(()=>{ setIsMobile(innerWidth && innerWidth <= 768)}, [innerWidth])
 	useEffect(()=>{
-		isMobile && scrollXProgress.onChange((p)=>isMobile && onIndexChange && onIndexChange(Math.floor(slides.length*p)))
+		isMobile && onIndexChange && scrollXProgress.onChange((p)=>onIndexChange(clamp(Math.floor(slides.length*p), 0, slides.length-1)))
 	}, [isMobile])
-	console.log(isReady)
+	
 	return (
 		<div id={id} ref={galleryRef} key={`gallery-${id}`} className={cn(styles.gallery, className)} style={{...style, visibility: !isReady ? 'hidden' : 'visible'}}>
 			<motion.ul
@@ -106,7 +107,7 @@ export default function Gallery({
 			{allSlides.map(({title, slug, image, text, type}, idx) => {
 
 				const maxWidth = dimensions.innerWidth * (isMobile ? 1 : 0.8);
-				const width = !image ? maxWidth : Math.min((dimensions.innerHeight/image.height)*image.width, maxWidth);
+				const width = !image ? maxWidth : Math.min((dimensions.innerHeight/image.height)*image.width, isMobile ? image.width : maxWidth );
 				const realIndex = isMobile ? idx : idx-(slides.length);
 				const isIntroSlide = realIndex >= -1 && realIndex <= 1;
 				const isNavSlide = isMobile ? false : (index-1 === realIndex || index+1 === realIndex)
@@ -114,8 +115,8 @@ export default function Gallery({
 				const allExit = ['/artwork', '/studio'].includes(router.asPath) 
 				
 				const slideStyles = {
-					maxWidth:`${width}px`, 
-					width:`${width}px`, 
+					maxWidth: isMobile ? 'unset' : `${width}px`, 
+					width: isMobile ? 'auto' : `${width}px`, 
 					height:`${dimensions.innerHeight}px`, 
 					visibility: `${(slides.length <= 1 && isNavSlide) || !isReady ? 'hidden' : 'visible'}`,	
 				}
@@ -133,11 +134,11 @@ export default function Gallery({
 						onClick={()=> isNavSlide ? (index-1 === realIndex ? back() : forward()) : onIndexSelected && type !== 'text' && onIndexSelected(realIndex)}
 					>
 							{ type === 'text' || type == 'empty' ? 
-								<TextSlide text={text} width={maxWidth}/>
+								<TextSlide text={text} width={maxWidth} isMobile={isMobile}/>
 							: type === 'image' ?
-								<ImageSlide image={image} width={width}/>	
+								<ImageSlide image={image} width={width} isMobile={isMobile}/>
 							: type === 'video' ?
-								<VideoSlide key={`slide-video-${idx}-${id}`} data={image} active={index === realIndex} width={width}/>
+								<VideoSlide key={`slide-video-${idx}-${id}`} data={image} active={index === realIndex} width={width} isMobile={isMobile}/>
 							:
 								null
 						}

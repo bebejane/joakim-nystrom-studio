@@ -15,7 +15,7 @@
 		flex-direction: row;
 		position: relative;
 		z-index: 1;
-		width: 100vw;
+		min-width: 100vw;
 		max-height: 100vh;
 		height: 100vh;
 		//min-height: calc(100vh - 1px);
