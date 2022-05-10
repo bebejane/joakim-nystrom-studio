@@ -16,6 +16,13 @@ $margin: 30px;
   max-width: 100vw;
   .logo{
     flex: 1 1 100%;
+    a{
+      @include mq($until: tablet) {
+        writing-mode: vertical-lr;
+        white-space: pre;
+        transform: rotate(-180deg);
+      }
+    }
   }
   .nav{
     transition: transform 0.3s;
