@@ -74,7 +74,7 @@ export default function Start({slides, assignments, assignment : assignmentFromP
 		lowerSlides.splice(1, 0, {type:'text', text:assignment.description.split('\n\n').pop(), title:null})
 	
 	const overlayUrl = slides[upperIndex].type === 'image' ? `${slides[upperIndex].image.url}?w=1400` : null
-	const showOverlay = animating && (active === 'lower' || lowerIndex == 0) && overlayUrl
+	const showOverlay = animating && active === 'lower'  && overlayUrl
 	
 	return (
 		<Content id="container" key={'container'} className={styles.container}>
