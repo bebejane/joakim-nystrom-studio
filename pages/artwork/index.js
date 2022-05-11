@@ -8,7 +8,6 @@ import { animate, motion } from 'framer-motion';
 import ArtworkGallery from '/components/ArtworkGallery';
 import { useState } from 'react';
 import { useRouter } from 'next/router';
-import usePreviousRoute from '/lib/hooks/usePreviousRoute';
 
 const duration = 0.4;
 const variants =  { 
@@ -33,10 +32,8 @@ const variants =  {
 	}
 }
 
-export default function Artwork({artwork}){	
+export default function Artwork({artwork, prevRoute}){	
 
-	
-	const prevRoute = usePreviousRoute()
 	const router = useRouter()
 	const [galleryIndex, setGalleryIndex] = useState()
 	

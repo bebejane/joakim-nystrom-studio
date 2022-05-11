@@ -4,12 +4,13 @@ import cn from "classnames";
 import { useState, useEffect } from "react";
 import { Twirl as Hamburger } from "hamburger-react";
 import useStore from "/store";
+import usePreviousRoute from "/lib/hooks/usePreviousRoute";
 
 export default function Menu({}) {
 	
 	const showMenu = useStore((state) => state.showMenu)
 	const setShowMenu = useStore((state) => state.setShowMenu)
-
+	
 	return (
 		<menu id="menu" className={cn(styles.menu, !showMenu && styles.hideNav)}>
 			<div className={styles.logo}>

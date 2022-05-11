@@ -5,7 +5,6 @@ import Content from '/components/Content';
 import Markdown from '/lib/dato/components/Markdown';
 import { motion } from 'framer-motion'
 import { useRouter } from 'next/router';
-import usePreviousRoute from '/lib/hooks/usePreviousRoute';
 
 const duration = .4;
 const variants =  { 
@@ -30,10 +29,9 @@ const variants =  {
 	}
 }
 
-export default function Studio({studio : {email, phone, description, background, clients}}){	
+export default function Studio({studio : {email, phone, description, background, clients}, prevRoute}){	
 
 	const router = useRouter()
-	const prevRoute = usePreviousRoute()
 	
 	return (
 		<motion.div 

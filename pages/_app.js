@@ -31,7 +31,7 @@ function MyApp({ Component, pageProps, pageProps: { site, seo, assignment, backg
       />
       <Menu {...pageProps}/>
       <AnimatePresence exitBeforeEnter initial={false}>
-        <Component {...pageProps} key={router.asPath}/>
+        <Component {...pageProps} key={router.asPath} prevRoute={prevRoute}/>
       </AnimatePresence>
     </>
   )

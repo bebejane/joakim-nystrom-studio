@@ -9,7 +9,6 @@ import { arrayMoveImmutable } from 'array-move';
 import { useWindowSize } from 'rooks';
 import useStore from '/store';
 import { useRouter } from 'next/router';
-import usePreviousRoute from '/lib/hooks/usePreviousRoute';
 
 const duration = 0.4;
 const variants =  { 
@@ -49,10 +48,9 @@ const variants =  {
 	},
 }
 
-export default function Start({slides, assignments, assignment : assignmentFromProps}){
+export default function Start({slides, assignments, assignment : assignmentFromProps, prevRoute}){
 	
 	const router = useRouter()
-	const prevRoute = usePreviousRoute()
 	const setShowMenu = useStore((state) => state.setShowMenu)
 	const showMenu = useStore((state) => state.showMenu)
 	const [isMobile, setIsMobile] = useState(false)
@@ -78,7 +76,6 @@ export default function Start({slides, assignments, assignment : assignmentFromP
 		const isUpper = active === 'upper'
 		isUpper && setTimeout(()=>setLowerIndex(0), duration*1000)
 		setShowMenu(isUpper)
-
 		!isUpper && window.history.pushState({}, "", `/${assignment.slug}`)	
 	}, [active])
 
