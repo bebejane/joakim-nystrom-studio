@@ -22,7 +22,7 @@ const variants =  {
 		transition:{ease:'easeOut', duration}
 	},
 	fromStudio:{
-		opacity:1,
+		opacity:[0,1],
 		transition:{ease:'easeOut', duration}
 	},
 	toArtwork:{
@@ -34,10 +34,12 @@ const variants =  {
 		transition:{ease:'easeOut', duration}
 	},
 	upper:{
+		opacity:1,
 		translateY:'0vh',
 		transition:{ease:'easeOut', duration, delay:0.01}
 	},
 	lower:{
+		opacity:1,
 		translateY:'-100vh',
 		transition:{ease:'easeOut', duration, delay:0.01}
 	},
@@ -53,7 +55,7 @@ export default function Start({slides, assignments, assignment : assignmentFromP
 	const { innerWidth, innerHeight } = useWindowSize();
 	
 	const [assignment, setAssignment] = useState(assignmentFromProps || undefined)
-	const [active, setActive] = useState(assignmentFromProps ? 'lower' : 'upper')
+	const [active, setActive] = useState()
 	const [animating, setAnimating] = useState(false)
 	const [upperIndex, setUpperIndex] = useState(0)
 	const [lowerIndex, setLowerIndex] = useState(0)
@@ -68,6 +70,7 @@ export default function Start({slides, assignments, assignment : assignmentFromP
 	}
 
 	useEffect(()=>{ 
+		if(!active) return
 		const isUpper = active === 'upper'
 		isUpper && setTimeout(()=>setLowerIndex(0), duration*1000)
 		setShowMenu(isUpper)
@@ -76,6 +79,7 @@ export default function Start({slides, assignments, assignment : assignmentFromP
 	}, [active])
 
 	useEffect(()=>{ 
+		
 		const handlePopState = ({state:{url}}) => url === '/' && setActive('upper')
 		const handleKeyPress = ({key}) => key === 'Escape' && setActive('upper')
 
@@ -88,8 +92,8 @@ export default function Start({slides, assignments, assignment : assignmentFromP
 		}
 	}, [])
 	
-	useEffect(()=> { showMenu && setActive('upper') }, [showMenu])
-	useEffect(()=>{setIsMobile(innerWidth && innerWidth <= 768)}, [innerWidth])
+	useEffect(()=> { showMenu && active === 'lower' && setActive('upper') }, [showMenu])
+	useEffect(()=>{ setIsMobile(innerWidth && innerWidth <= 768)}, [innerWidth])
 
 	const lowerSlides = assignment ? (isDuplicate ? arrayMoveImmutable(assignment.images, 0, 1) : assignment.images).map((image) => ({image, title:image.title, slug:assignment.slug, type: image.mimeType.startsWith('video') ? 'video' : 'image' })) : []	
 	if(lowerSlides.length)
@@ -97,14 +101,13 @@ export default function Start({slides, assignments, assignment : assignmentFromP
 	
 	const overlayUrl = slides[upperIndex].type === 'image' ? `${slides[upperIndex].image.url}?w=1400` : null
 	const showOverlay = animating && active === 'lower' && overlayUrl && !isMobile
-	
+	console.log(active)
 	return (
 		<Content id="container" key={'container'} className={styles.container}>
 			<motion.div
 				key={'animation'}
-				initial={prevRoute === '/artwork' ? 'initial': undefined}
-				//animate={prevRoute === '/artwork' ? 'fromArtwork' : prevRoute === '/artwork' ? 'fromArtwork'  : undefined}
-				animate={active}
+				initial={prevRoute === '/artwork' ? 'initial' : undefined}
+				animate={active ? active : prevRoute === '/artwork' ? 'fromArtwork' : prevRoute === '/studio' ? 'fromStudio'  : undefined}
 				exit={router.asPath === '/studio' ? 'toStudio' : 'toArtwork'}	
 				variants={variants}
 				onAnimationStart={()=>setAnimating(true)}

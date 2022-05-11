@@ -20,7 +20,7 @@ const variants =  {
 		transition:{ease:'easeOut', duration}
 	},
 	fromStudio:{
-		opacity:[0, 1],
+		opacity:1,
 		transition:{ease:'easeOut', duration}
 	},
 	toIndex:{
