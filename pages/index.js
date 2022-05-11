@@ -17,6 +17,10 @@ const variants =  {
 		translateY:['100vh', '0vh'],
 		transition:{ease:'easeOut', duration}
 	},
+	initialStudio:{
+		opacity:0,
+		//transition:{ease:'easeOut', duration}
+	},
 	fromArtwork:{
 		translateY:['100vh', '0vh'],
 		transition:{ease:'easeOut', duration}
@@ -106,7 +110,7 @@ export default function Start({slides, assignments, assignment : assignmentFromP
 		<Content id="container" key={'container'} className={styles.container}>
 			<motion.div
 				key={'animation'}
-				initial={prevRoute === '/artwork' ? 'initial' : undefined}
+				initial={prevRoute === '/artwork' ? 'initial' : prevRoute === '/studio' ? 'initialStudio' : false}
 				//animate={active ? active : prevRoute === '/artwork' ? 'fromArtwork' : prevRoute === '/studio' ? 'fromStudio'  : undefined}
 				animate={active}
 				exit={router.asPath === '/studio' ? 'toStudio' : 'toArtwork'}	
