@@ -55,7 +55,7 @@ export default function Start({slides, assignments, assignment : assignmentFromP
 	const { innerWidth, innerHeight } = useWindowSize();
 	
 	const [assignment, setAssignment] = useState(assignmentFromProps || undefined)
-	const [active, setActive] = useState()
+	const [active, setActive] = useState(assignmentFromProps ? 'lower':'upper')
 	const [animating, setAnimating] = useState(false)
 	const [upperIndex, setUpperIndex] = useState(0)
 	const [lowerIndex, setLowerIndex] = useState(0)
@@ -107,7 +107,8 @@ export default function Start({slides, assignments, assignment : assignmentFromP
 			<motion.div
 				key={'animation'}
 				initial={prevRoute === '/artwork' ? 'initial' : undefined}
-				animate={active ? active : prevRoute === '/artwork' ? 'fromArtwork' : prevRoute === '/studio' ? 'fromStudio'  : undefined}
+				//animate={active ? active : prevRoute === '/artwork' ? 'fromArtwork' : prevRoute === '/studio' ? 'fromStudio'  : undefined}
+				animate={active}
 				exit={router.asPath === '/studio' ? 'toStudio' : 'toArtwork'}	
 				variants={variants}
 				onAnimationStart={()=>setAnimating(true)}

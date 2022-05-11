@@ -43,6 +43,7 @@ export default function Artwork({artwork}){
 	return (
 		<>
 		<motion.div 
+			initial={prevRoute === '/studio' ? 'initial':undefined}
 			animate={prevRoute === '/' ? 'fromIndex' : 'fromStudio'} 
 			exit={router.asPath === '/' ? 'toIndex' : undefined }
 			variants={variants}
