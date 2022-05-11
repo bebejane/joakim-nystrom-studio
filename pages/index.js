@@ -157,7 +157,7 @@ export const getStaticProps = withGlobalProps({queries:[GetStart]}, async ({prop
 		image : slide.images?.[0] || null,
 		text:slide.text || null,
 		type: slide.text ? 'text' : slide.images?.[0].mimeType.startsWith('video') ? 'video' : 'image',
-		slug: !slide.link ? slide.slug : slide.link.__typename === 'AboutRecord' ? '/studio' : slide.link.__typename === 'ArtworkRecord' ? '/artwork' : null,
+		slug: !slide.link ? slide.slug : slide.link.__typename === 'StudioRecord' ? '/studio' : slide.link.__typename === 'ArtworkRecord' ? '/artwork' : null,
 	}))
 	
 	// Duplicate slides temp
@@ -167,7 +167,7 @@ export const getStaticProps = withGlobalProps({queries:[GetStart]}, async ({prop
 		image : slide.images?.[1] || slide.images?.[0] || null,
 		text:slide.text || null,
 		type: slide.text ? 'text' : (slide.images?.[1] || slide.images?.[0]).mimeType.startsWith('video') ? 'video' : 'image',
-		slug: !slide.link ? slide.slug : slide.link.__typename === 'AboutRecord' ? '/studio' : slide.link.__typename === 'ArtworkRecord' ? '/artwork' : null,
+		slug: !slide.link ? slide.slug : slide.link.__typename === 'StudioRecord' ? '/studio' : slide.link.__typename === 'ArtworkRecord' ? '/artwork' : null,
 	})))
 	
 	return {

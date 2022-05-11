@@ -1,5 +1,5 @@
-query GetAbout{
-	about{
+query GetStudio{
+	studio{
     email
     phone
     description(markdown: false)

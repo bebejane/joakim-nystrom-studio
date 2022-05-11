@@ -1,6 +1,6 @@
 import styles from './Studio.module.scss'
 import { withGlobalProps } from "/lib/hoc";
-import { GetAbout } from '/graphql'
+import { GetStudio } from '/graphql'
 import Content from '/components/Content';
 import Markdown from '/lib/dato/components/Markdown';
 import { motion } from 'framer-motion'
@@ -30,7 +30,7 @@ const variants =  {
 	}
 }
 
-export default function Studio({about : {email, phone, description, background, clients}}){	
+export default function Studio({studio : {email, phone, description, background, clients}}){	
 
 	const router = useRouter()
 	const prevRoute = usePreviousRoute()
@@ -61,7 +61,7 @@ export default function Studio({about : {email, phone, description, background, 
 	)
 }
 
-export const getStaticProps = withGlobalProps({queries:[GetAbout]}, async ({props, revalidate }) => {
+export const getStaticProps = withGlobalProps({queries:[GetStudio]}, async ({props, revalidate }) => {
 	
 	return {
 		props:{
