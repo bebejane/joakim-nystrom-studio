@@ -2,8 +2,8 @@ query GetAbout{
 	about{
     email
     phone
-    description
-    background
+    description(markdown: false)
+    background(markdown: false)
     clients{
       name
       url

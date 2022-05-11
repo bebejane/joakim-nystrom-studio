@@ -105,7 +105,7 @@ export default function Start({slides, assignments, assignment : assignmentFromP
 	
 	const overlayUrl = slides[upperIndex].type === 'image' ? `${slides[upperIndex].image.url}?w=1400` : null
 	const showOverlay = animating && active === 'lower' && overlayUrl && !isMobile
-	console.log(active)
+	
 	return (
 		<Content id="container" key={'container'} className={styles.container}>
 			<motion.div
@@ -169,10 +169,10 @@ export const getStaticProps = withGlobalProps({queries:[GetStart]}, async ({prop
 		type: slide.text ? 'text' : (slide.images?.[1] || slide.images?.[0]).mimeType.startsWith('video') ? 'video' : 'image',
 		slug: !slide.link ? slide.slug : slide.link.__typename === 'AboutRecord' ? '/studio' : slide.link.__typename === 'ArtworkRecord' ? '/artwork' : null,
 	})))
-
+	
 	return {
 		props:{
-			//seo:props.seo,
+			site:props.site,
 			assignments,
 			slides
 		},
