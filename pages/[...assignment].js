@@ -51,6 +51,7 @@ export async function getStaticPaths(context) {
 
 export const getStaticProps = withGlobalProps({model:'assignment'}, async ({props, context, revalidate }) => {
 	const { assignment } = await apiQuery(GetAssignment, {slug:context.params.assignment[0]})	
+	if(!assignment) return { notFound:true}
 	const slides = assignment.images.map((image) => ({
 		image,
 		type:'image',

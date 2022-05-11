@@ -33,7 +33,10 @@
 			height: 100vh;
 			cursor: pointer;
 			&.nav {
-				//opacity: 0.8;
+				cursor: pointer;
+				.textSlide{
+					cursor: pointer !important;
+				}
 			}
 			.slideCaption {
 				position: absolute;
@@ -111,6 +114,7 @@
 	max-height: 100vh;
 	user-select: none;
 	background-color: #fff;
+	cursor: default;
 	.content{
 		position: absolute;
 		top:0;

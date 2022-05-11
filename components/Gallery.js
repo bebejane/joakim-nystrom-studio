@@ -5,6 +5,7 @@ import { useWindowSize } from 'rooks';
 import { motion, useElementScroll} from 'framer-motion';
 import { useRouter } from 'next/router';
 import { clamp } from '/utils';
+import Link from 'next/link';
 
 const duration = 0.7;
 const galleryTransition = {
@@ -134,7 +135,7 @@ export default function Gallery({
 						onClick={()=> isNavSlide ? (index-1 === realIndex ? back() : forward()) : onIndexSelected && type !== 'text' && onIndexSelected(realIndex)}
 					>
 							{ type === 'text' || type == 'empty' ? 
-								<TextSlide text={text} width={maxWidth} isMobile={isMobile}/>
+								<TextSlide text={text} width={maxWidth} isMobile={isMobile} slug={slug}/>
 							: type === 'image' ?
 								<ImageSlide image={image} width={width} isMobile={isMobile}/>
 							: type === 'video' ?
@@ -160,14 +161,11 @@ export default function Gallery({
 }
 
 const TextSlide = ({text, slug, width}) => {
-
+	
 	return (
 		<div className={styles.textSlide} style={{minWidth:`${width}px`}}>
 			<div className={styles.content} style={{minWidth:`${width}px`}}>
 				{text}
-			</div>
-			<div className={styles.label}>
-				
 			</div>
 		</div>
 	)

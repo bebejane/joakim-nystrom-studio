@@ -111,7 +111,6 @@ export default function Start({slides, assignments, assignment : assignmentFromP
 			<motion.div
 				key={'animation'}
 				initial={prevRoute === '/artwork' ? 'initial' : prevRoute === '/studio' ? 'initialStudio' : false}
-				//animate={active ? active : prevRoute === '/artwork' ? 'fromArtwork' : prevRoute === '/studio' ? 'fromStudio'  : undefined}
 				animate={active}
 				exit={router.asPath === '/studio' ? 'toStudio' : 'toArtwork'}	
 				variants={variants}
@@ -162,7 +161,7 @@ export const getStaticProps = withGlobalProps({queries:[GetStart]}, async ({prop
 	}))
 	
 	// Duplicate slides temp
-	slides.push.apply(slides, props.start.slides.map(slide => ({
+	slides.push.apply(slides, props.start.slides.filter(s=>!s.text).map(slide => ({
 		title: slide.title || null,
 		assignmentId: slide.id,
 		image : slide.images?.[1] || slide.images?.[0] || null,
