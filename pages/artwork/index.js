@@ -12,12 +12,15 @@ import usePreviousRoute from '/lib/hooks/usePreviousRoute';
 
 const duration = 0.4;
 const variants =  { 
+	initial:{
+		opacity:0
+	},
 	fromIndex:{
 		translateY:['-100vh', '0vh'],
 		transition:{ease:'easeOut', duration}
 	},
 	fromStudio:{
-		opacity:1,
+		opacity:[0, 1],
 		transition:{ease:'easeOut', duration}
 	},
 	toIndex:{
