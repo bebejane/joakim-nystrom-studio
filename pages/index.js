@@ -1,20 +1,22 @@
 import styles from './index.module.scss'
+import galleryStyles from '/components/Gallery.module.scss'
 import { withGlobalProps } from "/lib/hoc";
 import Content from '/components/Content';
-import Gallery from '../components/Gallery';
-import { GetStart} from '/graphql';
+import Gallery from '/components/Gallery';
+import Artwork from '/components/Artwork';
+import { GetAllArtwork, GetStart} from '/graphql';
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion'
 import { arrayMoveImmutable } from 'array-move';
 import { useWindowSize } from 'rooks';
+import cn from 'classnames'
 import useStore from '/store';
 import { useRouter } from 'next/router';
 
 const duration = 0.4;
 const variants =  { 
 	initial:{
-		translateY:['100vh', '0vh'],
-		transition:{ease:'easeOut', duration}
+		translateY:'-100vh'
 	},
 	initialStudio:{
 		opacity:0,
@@ -36,53 +38,60 @@ const variants =  {
 		opacity:0,
 		transition:{ease:'easeOut', duration}
 	},
-	upper:{
+	artwork:{
 		opacity:1,
 		translateY:'0vh',
 		transition:{ease:'easeOut', duration, delay:0.01}
 	},
-	lower:{
+	gallery:{
 		opacity:1,
 		translateY:'-100vh',
 		transition:{ease:'easeOut', duration, delay:0.01}
 	},
+	assignment:{
+		opacity:1,
+		translateY:'-200vh',
+		transition:{ease:'easeOut', duration, delay:0.01}
+	},
 }
 
-export default function Start({slides, assignments, assignment : assignmentFromProps, prevRoute}){
+export default function Start({slides, assignments, assignment : assignmentFromProps, artwork, prevRoute}){
 	
 	const router = useRouter()
 	const setShowMenu = useStore((state) => state.setShowMenu)
 	const showMenu = useStore((state) => state.showMenu)
+	const setActive = useStore((state) => state.setActive)
+	const active = useStore((state) => state.active)
 	const [isMobile, setIsMobile] = useState(false)
 	const { innerWidth, innerHeight } = useWindowSize();
 	
 	const [assignment, setAssignment] = useState(assignmentFromProps || undefined)
-	const [active, setActive] = useState(assignmentFromProps ? 'lower':'upper')
+	//const [active, setActive] = useState(assignmentFromProps ? 'lower':'middle')
 	const [animating, setAnimating] = useState(false)
-	const [upperIndex, setUpperIndex] = useState(0)
+	const [galleryIndex, setGalleryIndex] = useState(0)
 	const [lowerIndex, setLowerIndex] = useState(0)
 
-	const isDuplicate = upperIndex > assignments.length-1
+	const isDuplicate = galleryIndex > assignments.length-1
 	
 	const handleIndexChange = (idx) => {
 		const assignment = assignments.find(a => a.id === slides[idx].assignmentId)
 		setAssignment(assignment)
-		setUpperIndex(idx)
+		setGalleryIndex(idx)
 		setLowerIndex(0)
 	}
 
 	useEffect(()=>{ 
 		if(!active) return
-		const isUpper = active === 'upper'
-		isUpper && setTimeout(()=>setLowerIndex(0), duration*1000)
-		setShowMenu(isUpper)
-		!isUpper && window.history.pushState({}, "", `/${assignment.slug}`)	
+		const isGallery = active === 'gallery'
+		isGallery && setTimeout(()=>setLowerIndex(0), duration*1000)
+		setShowMenu(isGallery)
+		!isGallery && window.history.pushState({}, "", `/${assignment.slug}`)	
 	}, [active])
 
 	useEffect(()=>{ 
 		
-		const handlePopState = ({state:{url}}) => url === '/' && setActive('upper')
-		const handleKeyPress = ({key}) => key === 'Escape' && setActive('upper')
+		const handlePopState = ({state:{url}}) => url === '/' && setActive('gallery')
+		const handleKeyPress = ({key}) => key === 'Escape' && setActive('gallery')
 
 		window.addEventListener('popstate', handlePopState);
 		window.addEventListener('keydown', handleKeyPress);
@@ -93,41 +102,42 @@ export default function Start({slides, assignments, assignment : assignmentFromP
 		}
 	}, [])
 	
-	useEffect(()=> { showMenu && active === 'lower' && setActive('upper') }, [showMenu])
+	useEffect(()=> { showMenu && active === 'assignment' && setActive('gallery') }, [showMenu])
 	useEffect(()=>{ setIsMobile(innerWidth && innerWidth <= 768)}, [innerWidth])
 
 	const lowerSlides = assignment ? (isDuplicate ? arrayMoveImmutable(assignment.images, 0, 1) : assignment.images).map((image) => ({image, title:image.title, slug:assignment.slug, type: image.mimeType.startsWith('video') ? 'video' : 'image' })) : []	
 	if(lowerSlides.length)
 		lowerSlides.splice(1, 0, {type:'text', text:assignment.description.split('\n\n').pop(), title:null})
 	
-	const overlayUrl = slides[upperIndex].type === 'image' ? `${slides[upperIndex].image.url}?w=1400` : null
-	const showOverlay = animating && active === 'lower' && overlayUrl && !isMobile
+	const overlayUrl = slides[galleryIndex].type === 'image' ? `${slides[galleryIndex].image.url}?w=1400` : null
+	const showOverlay = animating && active === 'assignment' && overlayUrl && !isMobile
 	
 	return (
 		<Content id="container" key={'container'} className={styles.container}>
 			<motion.div
 				key={'animation'}
-				initial={prevRoute === '/artwork' ? 'initial' : prevRoute === '/studio' ? 'initialStudio' : false}
-				animate={active}
-				exit={router.asPath === '/studio' ? 'toStudio' : 'toArtwork'}	
+				initial={'initial'}
+				animate={active}	
 				variants={variants}
 				onAnimationStart={()=>setAnimating(true)}
 				onAnimationComplete={()=>setAnimating(false)}
 			>
+				<Artwork artwork={artwork}/>
 				<Gallery 
-					id={'upper'}
-					key={'upper'}
+					id={'gallery'}
+					key={'gallery'}
 					slides={slides} 
 					onIndexChange={handleIndexChange}
-					onIndexSelected={(idx)=>{ setActive('lower') }}
-					active={active === 'upper'}
+					onIndexSelected={(idx)=>setActive('assignment')}
+					active={active === 'gallery'}
 				/>	
 				<Gallery 
-					id={'lower'}
+					id={'assignment'}
 					key={assignment?.id}
 					slides={lowerSlides} 
-					onIndexChange={(idx)=>{}}
-					active={active === 'lower'}
+					onIndexChange={(idx)=>!isMobile && setLowerIndex(idx)}
+					onClose={()=>setActive('gallery')}
+					active={active === 'assignment'}
 					index={lowerIndex}
 					loop={false}
 					caption={assignment?.title}
@@ -139,13 +149,20 @@ export default function Start({slides, assignments, assignment : assignmentFromP
 				style={{visibility: showOverlay ? 'visible' : 'hidden'}}
 				className={styles.overlay}
 			>
-				{overlayUrl && <img src={`${overlayUrl}`}/>}
+				{overlayUrl && 
+					<>
+						<img src={`${overlayUrl}`}/>
+						<div className={cn(galleryStyles.caption, galleryStyles.show, isMobile && galleryStyles.mobile)}>
+							<p>{assignment?.title}</p>
+						</div>
+					</>
+				}
 			</div>
 		</Content>
 	)
 }
 
-export const getStaticProps = withGlobalProps({queries:[GetStart]}, async ({props, revalidate }) => {
+export const getStaticProps = withGlobalProps({queries:[GetStart, GetAllArtwork]}, async ({props, revalidate }) => {
 
 	const assignments = props.start.slides.filter(s => s.__typename === 'AssignmentRecord')
 	const slides = props.start.slides.map((slide) => ({
@@ -170,6 +187,7 @@ export const getStaticProps = withGlobalProps({queries:[GetStart]}, async ({prop
 	return {
 		props:{
 			site:props.site,
+			artwork:props.artwork,
 			assignments,
 			slides
 		},

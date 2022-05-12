@@ -1,4 +1,5 @@
 import styles from './Gallery.module.scss'
+import pageStyles from '/pages/index.module.scss'
 import cn from 'classnames'
 import { useState, useEffect, useRef } from 'react';
 import { useWindowSize } from 'rooks';
@@ -45,7 +46,6 @@ export default function Gallery({
 	onIndexSelected,
 	onClose
 }) {
-
 
 	const router = useRouter()
 	const [isMobile, setIsMobile] = useState(false)
@@ -144,8 +144,8 @@ export default function Gallery({
 										null
 							}
 							{!caption &&
-								<div key={`slide-caption-${idx}-${id}`} className={cn(styles.slideCaption, (isCenterSlide || isMobile) && styles.show)}>
-									<p>{title} <span classnName={styles.arrow}>→</span></p>
+								<div key={`slide-caption-${idx}-${id}`} className={cn(styles.caption, (isCenterSlide || isMobile) && styles.show)}>
+									<p>{title}<span className={styles.arrow}>→</span></p>
 								</div>
 							}
 						</li>
@@ -153,8 +153,8 @@ export default function Gallery({
 				})}
 			</motion.ul>
 			{caption &&
-				<div className={cn(styles.caption, styles.show, isMobile && styles.mobile)}>
-					<span>{caption}</span>
+				<div className={cn(styles.caption, styles.reverse, styles.fixed, styles.show, isMobile && styles.mobile)} onClick={onClose}>
+					<p>{caption}<span className={cn(styles.arrow)}>→</span></p>
 				</div>
 			}
 		</div>

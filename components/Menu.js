@@ -10,21 +10,20 @@ export default function Menu({ }) {
 
 	const showMenu = useStore((state) => state.showMenu)
 	const setShowMenu = useStore((state) => state.setShowMenu)
-
+	const setActive = useStore((state) => state.setActive)
+	
 	return (
 		<menu id="menu" className={cn(styles.menu, !showMenu && styles.hideNav)}>
 			<div className={styles.logo}>
 				<Link href="/">
-					<a onClick={() => setShowMenu(true)}>Joakim Nyström Studio</a>
+					<a onClick={() => setActive('gallery')}>Joakim Nyström Studio</a>
 				</Link>
 			</div>
 			<nav className={styles.nav}>
 				<ul>
-					<Link href="/artwork">
-						<a>
-							<li>Artwork</li>
-						</a>
-					</Link>
+					<a onClick={()=>setActive('artwork')}>
+						<li>Artwork</li>
+					</a>
 					<Link href="/studio">
 						<a>
 							<li>Studio</li>
@@ -32,10 +31,7 @@ export default function Menu({ }) {
 					</Link>
 				</ul>
 			</nav>
-			<div
-				className={cn(styles.close, !showMenu && styles.show)}
-				onClick={() => window.history.back()}
-			>Back</div>
+			<div className={cn(styles.close, !showMenu && styles.show)} onClick={() => window.history.back()}>Back</div>
 		</menu>
 	);
 }

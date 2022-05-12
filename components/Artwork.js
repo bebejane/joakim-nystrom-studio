@@ -1,11 +1,10 @@
-import styles from './Artwork.module.scss'
-import { withGlobalProps } from "/lib/hoc";
+import styles from './Artwork.module.scss';
 import cn from 'classnames'
 import { Image } from 'react-datocms';
 import { GetAllArtwork } from '/graphql';
-import Content from '/components/Content';
+import Content from './Content';
+import ArtworkGallery from './ArtworkGallery';
 import { motion } from 'framer-motion';
-import ArtworkGallery from '/components/ArtworkGallery';
 import { useState } from 'react';
 import { useRouter } from 'next/router';
 
@@ -40,10 +39,10 @@ export default function Artwork({artwork, prevRoute}){
 	return (
 		<>
 		<motion.div 
-			initial={prevRoute === '/studio' ? 'initial':undefined}
-			animate={prevRoute === '/' ? 'fromIndex' : 'fromStudio'} 
-			exit={router.asPath === '/' ? 'toIndex' : undefined }
-			variants={variants}
+			//initial={prevRoute === '/studio' ? 'initial':undefined}
+			//animate={prevRoute === '/' ? 'fromIndex' : 'fromStudio'} 
+			//exit={router.asPath === '/' ? 'toIndex' : undefined }
+			//variants={variants}
 		>
 			<Content className={styles.artwork}>
 				<ul>
@@ -67,13 +66,3 @@ export default function Artwork({artwork, prevRoute}){
 		</>
 	)
 }
-
-export const getStaticProps = withGlobalProps({queries:[GetAllArtwork]}, async ({props, revalidate }) => {
-	
-	return {
-		props:{
-			...props,
-		},
-		revalidate
-	};
-});
