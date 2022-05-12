@@ -1,118 +1,16 @@
 $body-line-height: 1.25em;
 
-h1,
-h2 {
-  line-height: 1;
-  font-family: $headline-font;
-  text-transform: uppercase;
-  font-variation-settings: "wght" 700;
+body,
+html {
+  font-size: 16px;
+  line-height: 1.25em;
+  color: $black;
   font-weight: normal;
-}
-
-h1 {
-  font-feature-settings: "ss01" 1;
-  font-size: 50px;
 
   @include mq($from: tablet) {
-    font-size: 4.2vw;
+    font-size: 24px;
   }
-
-  &.sub {
-    font-variation-settings: "wght" 300;
-    font-size: 4.2vw;
+  @include mq($from: wide) {
+    font-size: 28px;
   }
-}
-
-h2,
-article h1 {
-  font-size: 26px;
-  font-feature-settings: "ss00" 1;
-  font-variation-settings: "wght" 600;
-
-  @include mq($from: tablet) {
-    font-size: 40px;
-  }
-
-  &.sub {
-    font-variation-settings: "wght" 300;
-  }
-}
-
-article h1 {
-  font-variation-settings: "wght" 500;
-  padding-top: 0.5em;
-  padding-bottom: 0.5em;
-}
-
-article h2 {
-  font-size: 18px;
-  font-variation-settings: "wght" 500;
-  text-align: left !important;
-
-  @include mq($from: tablet) {
-    font-size: 22px;
-  }
-}
-
-h3 {
-  font-size: 18px;
-  text-transform: uppercase;
-  font-family: $headline-font;
-  font-weight: normal;
-}
-
-p {
-  font-family: $body-font;
-  font-size: 18px;
-  line-height: $body-line-height;
-
-  @include mq($from: tablet) {
-    font-size: 22px;
-  }
-
-  &.small,
-  &.small p {
-    font-size: 16px;
-  }
-
-  &.summary,
-  &.summary p {
-    font-variation-settings: "wght" 300;
-    font-size: 18px;
-    line-height: 1.25;
-
-    @include mq($from: tablet) {
-      font-size: 26px;
-    }
-  }
-
-  a {
-    font-family: $headline-font;
-    color: $black !important;
-    border-bottom: 2px solid black;
-    &:hover {
-      font-variation-settings: "wght" 600;
-    }
-  }
-
-  strong {
-    font-family: $headline-font;
-    font-weight: normal;
-    font-variation-settings: "wght" 400;
-  }
-}
-
-em {
-  font-family: $body-font-italic;
-  font-weight: normal;
-  font-style: normal;
-}
-
-article li p {
-  margin-bottom: 0.3em !important;
-}
-
-caption {
-  line-height: $body-line-height;
-  text-align: left;
 }

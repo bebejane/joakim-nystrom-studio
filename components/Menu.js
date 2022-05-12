@@ -6,18 +6,18 @@ import { Twirl as Hamburger } from "hamburger-react";
 import useStore from "/store";
 import usePreviousRoute from "/lib/hooks/usePreviousRoute";
 
-export default function Menu({}) {
-	
+export default function Menu({ }) {
+
 	const showMenu = useStore((state) => state.showMenu)
 	const setShowMenu = useStore((state) => state.setShowMenu)
-	
+
 	return (
 		<menu id="menu" className={cn(styles.menu, !showMenu && styles.hideNav)}>
 			<div className={styles.logo}>
-        <Link href="/">
-					<a onClick={()=>setShowMenu(true)}>Joakim Nyström Studio</a>
+				<Link href="/">
+					<a onClick={() => setShowMenu(true)}>Joakim Nyström Studio</a>
 				</Link>
-      </div>
+			</div>
 			<nav className={styles.nav}>
 				<ul>
 					<Link href="/artwork">
@@ -32,10 +32,10 @@ export default function Menu({}) {
 					</Link>
 				</ul>
 			</nav>
-			<div 
+			<div
 				className={cn(styles.close, !showMenu && styles.show)}
-				onClick={()=>window.history.back()}
-			>BACK</div>
+				onClick={() => window.history.back()}
+			>Back</div>
 		</menu>
 	);
 }
