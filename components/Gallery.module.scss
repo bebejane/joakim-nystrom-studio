@@ -35,6 +35,10 @@
 				.textSlide {
 					cursor: pointer !important;
 				}
+				transition: opacity 0.5s;
+				&:hover {
+					opacity: 0.9;
+				}
 			}
 			.slideCaption {
 				position: absolute;
@@ -126,11 +130,21 @@
 		width: 100%;
 		height: 100%;
 		display: flex;
-		align-items: center;
+		align-items: flex-end;
 		justify-content: center;
 		padding: $space;
 		line-height: 2rem;
+		flex-wrap: wrap;
 	}
+
+	.meta {
+		width: 100%;
+		font-size: 0.6rem;
+		text-transform: uppercase;
+		text-align: center;
+		letter-spacing: 1px;
+	}
+
 	.label {
 		position: absolute;
 		left: 0;

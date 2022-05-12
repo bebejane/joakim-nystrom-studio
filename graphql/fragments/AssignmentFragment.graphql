@@ -4,6 +4,7 @@ fragment AssignmentFragment on AssignmentRecord {
   id
   title
   description
+  year
   images{
     ...ImageFragment
   }
