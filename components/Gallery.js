@@ -105,7 +105,7 @@ export default function Gallery({
 				animate={{ translateX: `${transition.offset || 0}px` }}
 				transition={{ duration: transition.duration || 0 }}
 			>
-				{allSlides.map(({ title, slug, image, text, type }, idx) => {
+				{allSlides.map(({ title, slug, image, text, year, type }, idx) => {
 
 					const maxWidth = dimensions.innerWidth * (isMobile ? 1 : 0.8);
 					const width = !image ? maxWidth : Math.min((dimensions.innerHeight / image.height) * image.width, isMobile ? image.width : maxWidth);
@@ -135,7 +135,7 @@ export default function Gallery({
 							onClick={() => isNavSlide ? (index - 1 === realIndex ? back() : forward()) : onIndexSelected && type !== 'text' && onIndexSelected(realIndex)}
 						>
 							{type === 'text' || type == 'empty' ?
-								<TextSlide text={text} width={maxWidth} isMobile={isMobile} slug={slug} />
+								<TextSlide text={text} year={year} width={maxWidth} isMobile={isMobile} slug={slug} />
 								: type === 'image' ?
 									<ImageSlide image={image} width={width} isMobile={isMobile} />
 									: type === 'video' ?
@@ -161,12 +161,14 @@ export default function Gallery({
 	)
 }
 
-const TextSlide = ({ text, slug, width }) => {
+const TextSlide = ({ text, year, slug, width }) => {
 
 	return (
 		<div className={styles.textSlide} style={{ minWidth: `${width}px` }}>
 			<div className={styles.content} style={{ minWidth: `${width}px` }}>
-				{text}
+				<div>{text}</div>
+				{year}
+				<div className={styles.meta}>Client: Bonobo • Year: 2021 • Type: Exhibition design</div>
 			</div>
 		</div>
 	)

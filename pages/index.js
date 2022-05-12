@@ -18,25 +18,25 @@ const variants =  {
 	initial:{
 		translateY:'-100vh'
 	},
-	initialStudio:{
-		opacity:0,
+	initialStudio: {
+		opacity: 0,
 		//transition:{ease:'easeOut', duration}
 	},
-	fromArtwork:{
-		translateY:['100vh', '0vh'],
-		transition:{ease:'easeOut', duration}
+	fromArtwork: {
+		translateY: ['100vh', '0vh'],
+		transition: { ease: 'easeOut', duration }
 	},
-	fromStudio:{
-		opacity:[0,1],
-		transition:{ease:'easeOut', duration}
+	fromStudio: {
+		opacity: [0, 1],
+		transition: { ease: 'easeOut', duration }
 	},
-	toArtwork:{
-		translateY:'100vh',
-		transition:{ease:'linear', duration}
+	toArtwork: {
+		translateY: '100vh',
+		transition: { ease: 'linear', duration }
 	},
-	toStudio:{
-		opacity:0,
-		transition:{ease:'easeOut', duration}
+	toStudio: {
+		opacity: 0,
+		transition: { ease: 'easeOut', duration }
 	},
 	artwork:{
 		opacity:1,
@@ -64,7 +64,7 @@ export default function Start({slides, assignments, assignment : assignmentFromP
 	const active = useStore((state) => state.active)
 	const [isMobile, setIsMobile] = useState(false)
 	const { innerWidth, innerHeight } = useWindowSize();
-	
+
 	const [assignment, setAssignment] = useState(assignmentFromProps || undefined)
 	//const [active, setActive] = useState(assignmentFromProps ? 'lower':'middle')
 	const [animating, setAnimating] = useState(false)
@@ -119,8 +119,8 @@ export default function Start({slides, assignments, assignment : assignmentFromP
 				initial={'initial'}
 				animate={active}	
 				variants={variants}
-				onAnimationStart={()=>setAnimating(true)}
-				onAnimationComplete={()=>setAnimating(false)}
+				onAnimationStart={() => setAnimating(true)}
+				onAnimationComplete={() => setAnimating(false)}
 			>
 				<Artwork artwork={artwork}/>
 				<Gallery 
@@ -143,10 +143,10 @@ export default function Start({slides, assignments, assignment : assignmentFromP
 					caption={assignment?.title}
 				/>
 			</motion.div>
-			<div 
+			<div
 				id={'overlay'}
 				key={'overlay'}
-				style={{visibility: showOverlay ? 'visible' : 'hidden'}}
+				style={{ visibility: showOverlay ? 'visible' : 'hidden' }}
 				className={styles.overlay}
 			>
 				{overlayUrl && 
@@ -166,24 +166,25 @@ export const getStaticProps = withGlobalProps({queries:[GetStart, GetAllArtwork]
 
 	const assignments = props.start.slides.filter(s => s.__typename === 'AssignmentRecord')
 	const slides = props.start.slides.map((slide) => ({
-		assignmentId:slide.id,
+		assignmentId: slide.id,
 		title: slide.title || null,
-		image : slide.images?.[0] || null,
-		text:slide.text || null,
+		image: slide.images?.[0] || null,
+		text: slide.text || null,
+		year: slide.text || null,
 		type: slide.text ? 'text' : slide.images?.[0].mimeType.startsWith('video') ? 'video' : 'image',
 		slug: !slide.link ? slide.slug : slide.link.__typename === 'StudioRecord' ? '/studio' : slide.link.__typename === 'ArtworkRecord' ? '/artwork' : null,
 	}))
-	
+
 	// Duplicate slides temp
-	slides.push.apply(slides, props.start.slides.filter(s=>!s.text).map(slide => ({
+	slides.push.apply(slides, props.start.slides.filter(s => !s.text).map(slide => ({
 		title: slide.title || null,
 		assignmentId: slide.id,
-		image : slide.images?.[1] || slide.images?.[0] || null,
-		text:slide.text || null,
+		image: slide.images?.[1] || slide.images?.[0] || null,
+		text: slide.text || null,
 		type: slide.text ? 'text' : (slide.images?.[1] || slide.images?.[0]).mimeType.startsWith('video') ? 'video' : 'image',
 		slug: !slide.link ? slide.slug : slide.link.__typename === 'StudioRecord' ? '/studio' : slide.link.__typename === 'ArtworkRecord' ? '/artwork' : null,
 	})))
-	
+
 	return {
 		props:{
 			site:props.site,
