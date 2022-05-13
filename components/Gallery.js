@@ -23,9 +23,6 @@ const galleryTransition = {
 			translateY: 'unset',
 		}
 	},
-	fadeIn: {
-		opacity: 1
-	},
 	fadeOut: {
 		opacity: 1
 	}
@@ -139,10 +136,6 @@ export default function Gallery({
 							key={`slide-a-${idx}-${id}`}
 							className={cn(isNavSlide && styles.nav)}
 							style={slideStyles}
-							initial={realIndex === 0 && isIntroSlide ? undefined : 'initial'}
-							animate={realIndex !== 0 ? 'enter' : undefined}
-							exit={allExit ? 'fadeOut' : realIndex !== index ? "exit" : undefined}
-							variants={galleryTransition}
 							onClick={() => isNavSlide ? (index - 1 === realIndex ? back() : forward()) : type !== 'text' && handleIndexSelected(realIndex)}
 							onMouseMove={()=>{
 								if(!isCenterSlide || idx === hoverIndex) return
@@ -219,7 +212,6 @@ const VideoSlide = ({ data, active, width }) => {
 	useEffect(() => {
 		if (!videoRef.current) return
 		if (active) {
-			//videoRef.current.currentTime = 0
 			videoRef.current.play().catch(() => { })
 		} else {
 			videoRef.current.pause();
