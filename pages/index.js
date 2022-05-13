@@ -68,19 +68,16 @@ export default function Start({slides, assignments, assignment : assignmentFromP
 
 	useEffect(()=>{ 
 		if(!active) return
-
 		const isGallery = active === 'gallery'
-		isGallery && setTimeout(()=>setLowerIndex(0), duration*1000)
 		setShowMenu(isGallery)
-		activeToSlug(active) !== document.location.pathname && window.history.pushState({slug:activeToSlug(active)}, "", activeToSlug(active))
+		isGallery && setTimeout(()=>setLowerIndex(0), duration*1000)
+		if(activeToSlug(active) !== document.location.pathname)
+			window.history.pushState({url:activeToSlug(active)}, "", activeToSlug(active))
 	}, [active])
 
 	useEffect(()=>{ 
 		
-		const handlePopState = ({state, state:{url}}) => {
-			console.log(urlToActive(url))
-			setActive(urlToActive(url))
-		}
+		const handlePopState = ({state, state:{url}}) => setActive(urlToActive(url))
 		const handleKeyPress = ({key}) => key === 'Escape' && setActive('gallery')
 
 		window.addEventListener('popstate', handlePopState);
