@@ -21,7 +21,7 @@ export default function Menu({ }) {
 				{children}
 			</a>
 		)
-		return isIndexPage ? <Link href={href}>{content}</Link> : content
+		return !isIndexPage ? <Link href={href}>{content}</Link> : content
 	}
 
 	return (
