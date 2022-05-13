@@ -166,9 +166,13 @@ const TextSlide = ({ text, year, slug, width }) => {
 	return (
 		<div className={styles.textSlide} style={{ minWidth: `${width}px` }}>
 			<div className={styles.content} style={{ minWidth: `${width}px` }}>
-				<div>{text}</div>
-				{year}
-				<div className={styles.meta}>Client: Bonobo • Year: 2021 • Type: Exhibition design</div>
+				{text &&
+					<>
+						<div>{text}</div>
+						{year}
+						<div className={styles.meta}>Client: Bonobo • Year: 2021 • Type: Exhibition design</div>
+					</>
+				}
 			</div>
 		</div>
 	)

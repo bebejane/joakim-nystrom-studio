@@ -1,10 +1,7 @@
 import styles from "./Menu.module.scss";
 import Link from "next/link";
 import cn from "classnames";
-import { useState, useEffect } from "react";
-import { Twirl as Hamburger } from "hamburger-react";
 import useStore from "/store";
-import usePreviousRoute from "/lib/hooks/usePreviousRoute";
 import { useRouter } from "next/router";
 
 export default function Menu({ }) {
@@ -14,22 +11,34 @@ export default function Menu({ }) {
 	const setActive = useStore((state) => state.setActive)
 	const active = useStore((state) => state.active)
 	const isIndexPage = router.asPath === '/'
+	
+	const WrapLink = ({href, type, children}) => {
+		const content = (
+			<a 
+				onClick={() => isIndexPage && setActive(active)} href={!isIndexPage ? href : undefined} 
+				className={cn(active === type && styles.selected)}
+			>
+				{children}
+			</a>
+		)
+		return isIndexPage ? <Link href={href}>{content}</Link> : content
+	}
 
 	return (
 		<menu id="menu" className={cn(styles.menu, !showMenu && styles.hideNav)}>
 			<div className={styles.logo}>
-				<a onClick={() => isIndexPage && setActive('gallery')} href={!isIndexPage ? '/' : undefined}>
+				<WrapLink href="/" type="gallery">
 					Joakim Nyström Studio
-				</a>
+				</WrapLink>
 			</div>
 			<nav className={styles.nav}>
 				<ul>
-					<a onClick={()=>isIndexPage && setActive('artwork')} href={!isIndexPage ? '/artwork' : undefined}>
+					<WrapLink href="/artwork" type="artwork">
 						<li>Artwork</li>
-					</a>
-					<a onClick={()=>isIndexPage && setActive('studio')} href={!isIndexPage ? '/studio' : undefined}>
+					</WrapLink>
+					<WrapLink href="/studio" type="studio">
 						<li>Studio</li>
-					</a>				
+					</WrapLink>
 				</ul>
 			</nav>			
 		</menu>
