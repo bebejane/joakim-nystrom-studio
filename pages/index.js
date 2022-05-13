@@ -122,9 +122,7 @@ export default function Start({slides, assignments, assignment : assignmentFromP
 	return (
 		<>
 		<Content id="container" key={'container'} className={styles.container}>
-			
 			<Studio studio={studio} show={active === 'studio'}/>	
-			
 			<motion.div
 				key={'animation'}
 				initial={'initial'}
