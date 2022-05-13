@@ -1,12 +1,10 @@
 import styles from './Gallery.module.scss'
-import pageStyles from '/pages/index.module.scss'
 import cn from 'classnames'
 import { useState, useEffect, useRef } from 'react';
 import { useWindowSize } from 'rooks';
 import { motion, useElementScroll } from 'framer-motion';
 import { useRouter } from 'next/router';
 import { clamp } from '/utils';
-import Link from 'next/link';
 
 const duration = 0.7;
 const galleryTransition = {

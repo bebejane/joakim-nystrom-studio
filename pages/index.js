@@ -118,64 +118,55 @@ export default function Start({slides, assignments, assignment : assignmentFromP
 	
 	const overlayUrl = slides[galleryIndex].type === 'image' ? `${slides[galleryIndex].image.url}?w=1400` : null
 	const showOverlay = animating && active === 'assignment' && overlayUrl && !isMobile
-	
+	const backStyles = cn(styles.back, !showMenu && !isShowingArtworkGallery ? active === 'assignment' ? styles.slide : styles.show : false)
+
 	return (
 		<>
-		<Content id="container" key={'container'} className={styles.container}>
-			<Studio studio={studio} show={active === 'studio'}/>	
-			<motion.div
-				key={'animation'}
-				initial={'initial'}
-				animate={active !== 'studio' ? active : false}	
-				variants={variants}
-				onAnimationStart={() => setAnimating(true)}
-				onAnimationComplete={() => setAnimating(false)}
-			>	
-				<Artwork artwork={artwork} onShowGallery={setIsShowingArtworkGallery}/>
-				<Gallery 
-					id={'gallery'}
-					key={'gallery'}
-					slides={slides} 
-					onIndexChange={handleIndexChange}
-					onIndexSelected={(idx)=>setActive('assignment')}
-					active={active === 'gallery'}
-				/>	
-				<Gallery 
-					id={'assignment'}
-					key={assignment?.id}
-					slides={lowerSlides} 
-					onIndexChange={(idx)=>!isMobile && setLowerIndex(idx)}
-					onClose={()=>setActive('gallery')}
-					active={active === 'assignment'}
-					index={lowerIndex}
-					loop={false}
-					caption={assignment?.title}
-				/>
-			
-			</motion.div>
-			
-			<div
-				id={'overlay'}
-				key={'overlay'}
-				style={{ visibility: showOverlay ? 'visible' : 'hidden' }}
-				className={styles.overlay}
-			>
-				{overlayUrl && 
-					<>
-						<img src={`${overlayUrl}`}/>
-						<div className={cn(galleryStyles.caption, galleryStyles.show, isMobile && galleryStyles.mobile)}>
-							<p>{assignment?.title}</p>
-						</div>
-					</>
-				}
-			</div>
-		</Content>
-		<div 
-			className={cn(styles.back, !showMenu && !isShowingArtworkGallery ? active === 'assignment' ? styles.slide : styles.show : false)} 
-			onClick={() => setActive('gallery')}
-		>
-			Back
-		</div>
+			<Content id="container" key={'container'} className={styles.container}>
+				<Studio studio={studio} show={active === 'studio'}/>	
+				<motion.div
+					key={'animation'}
+					initial={'initial'}
+					animate={active !== 'studio' ? active : false}	
+					variants={variants}
+					onAnimationStart={() => setAnimating(true)}
+					onAnimationComplete={() => setAnimating(false)}
+				>	
+					<Artwork artwork={artwork} onShowGallery={setIsShowingArtworkGallery}/>
+					<Gallery 
+						id={'gallery'}
+						key={'gallery'}
+						slides={slides} 
+						onIndexChange={handleIndexChange}
+						onIndexSelected={(idx)=>setActive('assignment')}
+						active={active === 'gallery'}
+					/>	
+					<Gallery 
+						id={'assignment'}
+						key={assignment?.id}
+						slides={lowerSlides} 
+						onIndexChange={(idx)=>!isMobile && setLowerIndex(idx)}
+						onClose={()=>setActive('gallery')}
+						active={active === 'assignment'}
+						index={lowerIndex}
+						loop={false}
+						caption={assignment?.title}
+					/>
+				
+				</motion.div>
+				
+				<div id={'overlay'} key={'overlay'} style={{ visibility: showOverlay ? 'visible' : 'hidden' }} className={styles.overlay}>
+					{overlayUrl && 
+						<>
+							<img src={`${overlayUrl}`}/>
+							<div className={cn(galleryStyles.caption, galleryStyles.show, isMobile && galleryStyles.mobile)}>
+								<p>{assignment?.title}</p>
+							</div>
+						</>
+					}
+				</div>
+			</Content>
+			<div className={backStyles} onClick={() => setActive('gallery')}>Back</div>
 		</>
 	)
 }

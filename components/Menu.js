@@ -14,10 +14,7 @@ export default function Menu({ }) {
 	
 	const WrapLink = ({href, type, children}) => {
 		const content = (
-			<a 
-				onClick={() => isIndexPage && setActive(active)} href={!isIndexPage ? href : undefined} 
-				className={cn(active === type && styles.selected)}
-			>
+			<a onClick={() => setActive(type)} className={cn(active === type && styles.selected)}>
 				{children}
 			</a>
 		)

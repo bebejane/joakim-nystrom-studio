@@ -1,12 +1,9 @@
 import styles from './Assignment.module.scss'
 import { withGlobalProps } from "/lib/hoc";
 import { apiQuery } from '/lib/dato/api';
-import { GetAllAssignments, GetAssignment, GetStart } from '/graphql';
+import { GetAllAssignments, GetAssignment } from '/graphql';
 import Content from '/components/Content';
 import Gallery from '/components/Gallery';
-
-
-//export default Start;
 
 export default function Assignment({assignment, slides}){
 	
