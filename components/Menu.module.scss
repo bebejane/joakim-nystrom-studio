@@ -4,7 +4,7 @@ $margin: 30px;
   display: flex;
   flex-direction: row;
   position: fixed;
-  z-index: 1000;
+  z-index: 10;
   top: 0px;
   left: 0px;
   margin: 0px;
@@ -14,6 +14,7 @@ $margin: 30px;
   width: 100vw;
   max-width: 100vw;
   .logo {
+    cursor: pointer;
     flex: 1 1 100%;
     @include mq($until: tablet) {
       a {
@@ -44,17 +45,30 @@ $margin: 30px;
     }
     animation: hide 0.3s forwards;
     animation-delay: 0.3s;
+    @keyframes  hide{
+      to{
+        width: auto;
+      }
+    }
   }
-  .close {
+  .back {
     position: absolute;
     top: 0;
     right: 0;
     margin: $margin;
     cursor: pointer;
-    transition: transform 0.4s;
     transform: translateY(100vh);
-    &.show {
+    &.slide {
+      transition: transform 0.4s;
       transform: translateY(0vh);
+    }
+    &.show {
+      transition: transform 0s;
+      transition-delay: 0.3s;
+      transform: translateY(0vh);
+    }
+    &.hide{
+      display: none;
     }
   }
 }

@@ -35,4 +35,27 @@
 			}
 		}
 	}
+	
+}
+
+.back {
+	position: fixed;
+	top: 0;
+	right: 0;
+	margin: 30px;
+	cursor: pointer;
+	transform: translateY(100vh);
+	z-index: 2000;
+	&.slide {
+		transition: transform 0.4s;
+		transform: translateY(0vh);
+	}
+	&.show {
+		transition: transform 0s;
+		transition-delay: 0s;
+		transform: translateY(0vh);
+	}
+	&.hide{
+		display: none;
+	}
 }

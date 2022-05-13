@@ -4,7 +4,8 @@ import { withGlobalProps } from "/lib/hoc";
 import Content from '/components/Content';
 import Gallery from '/components/Gallery';
 import Artwork from '/components/Artwork';
-import { GetAllArtwork, GetStart} from '/graphql';
+import Studio from '/components/Studio';
+import { GetAllArtwork, GetStart, GetStudio} from '/graphql';
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion'
 import { arrayMoveImmutable } from 'array-move';
@@ -38,6 +39,10 @@ const variants =  {
 		opacity: 0,
 		transition: { ease: 'easeOut', duration }
 	},
+	studio:{
+		opacity:0,
+		transition:{ease:'easeOut', duration, delay:0.01}
+	},
 	artwork:{
 		opacity:1,
 		translateY:'0vh',
@@ -55,7 +60,7 @@ const variants =  {
 	},
 }
 
-export default function Start({slides, assignments, assignment : assignmentFromProps, artwork, prevRoute}){
+export default function Start({slides, assignments, assignment : assignmentFromProps, artwork, studio, prevRoute}){
 	
 	const router = useRouter()
 	const setShowMenu = useStore((state) => state.setShowMenu)
@@ -63,6 +68,8 @@ export default function Start({slides, assignments, assignment : assignmentFromP
 	const setActive = useStore((state) => state.setActive)
 	const active = useStore((state) => state.active)
 	const [isMobile, setIsMobile] = useState(false)
+	const [isShowingArtworkGallery, setIsShowingArtworkGallery] = useState(false)
+	
 	const { innerWidth, innerHeight } = useWindowSize();
 
 	const [assignment, setAssignment] = useState(assignmentFromProps || undefined)
@@ -85,7 +92,7 @@ export default function Start({slides, assignments, assignment : assignmentFromP
 		const isGallery = active === 'gallery'
 		isGallery && setTimeout(()=>setLowerIndex(0), duration*1000)
 		setShowMenu(isGallery)
-		!isGallery && window.history.pushState({}, "", `/${assignment.slug}`)	
+		//!isGallery && window.history.pushState({}, "", `/${assignment.slug}`)	
 	}, [active])
 
 	useEffect(()=>{ 
@@ -93,11 +100,11 @@ export default function Start({slides, assignments, assignment : assignmentFromP
 		const handlePopState = ({state:{url}}) => url === '/' && setActive('gallery')
 		const handleKeyPress = ({key}) => key === 'Escape' && setActive('gallery')
 
-		window.addEventListener('popstate', handlePopState);
+		//window.addEventListener('popstate', handlePopState);
 		window.addEventListener('keydown', handleKeyPress);
 
 		return () => {
-			window.removeEventListener('popstate', handlePopState);
+			//window.removeEventListener('popstate', handlePopState);
 			window.removeEventListener('keydown', handleKeyPress);
 		}
 	}, [])
@@ -113,16 +120,19 @@ export default function Start({slides, assignments, assignment : assignmentFromP
 	const showOverlay = animating && active === 'assignment' && overlayUrl && !isMobile
 	
 	return (
+		<>
 		<Content id="container" key={'container'} className={styles.container}>
+			
+			<Studio studio={studio} show={active === 'studio'}/>	
+			<Artwork artwork={artwork} onShowGallery={setIsShowingArtworkGallery}/>
 			<motion.div
 				key={'animation'}
 				initial={'initial'}
-				animate={active}	
+				animate={active !== 'studio' ? active : false}	
 				variants={variants}
 				onAnimationStart={() => setAnimating(true)}
 				onAnimationComplete={() => setAnimating(false)}
-			>
-				<Artwork artwork={artwork}/>
+			>	
 				<Gallery 
 					id={'gallery'}
 					key={'gallery'}
@@ -142,7 +152,9 @@ export default function Start({slides, assignments, assignment : assignmentFromP
 					loop={false}
 					caption={assignment?.title}
 				/>
+			
 			</motion.div>
+			
 			<div
 				id={'overlay'}
 				key={'overlay'}
@@ -159,10 +171,17 @@ export default function Start({slides, assignments, assignment : assignmentFromP
 				}
 			</div>
 		</Content>
+		<div 
+			className={cn(styles.back, !showMenu && !isShowingArtworkGallery ? active === 'assignment' ? styles.slide : styles.show : false)} 
+			onClick={() => setActive('gallery')}
+		>
+			Back
+		</div>
+		</>
 	)
 }
 
-export const getStaticProps = withGlobalProps({queries:[GetStart, GetAllArtwork]}, async ({props, revalidate }) => {
+export const getStaticProps = withGlobalProps({queries:[GetStart, GetAllArtwork, GetStudio]}, async ({props, revalidate }) => {
 
 	const assignments = props.start.slides.filter(s => s.__typename === 'AssignmentRecord')
 	const slides = props.start.slides.map((slide) => ({
@@ -189,6 +208,7 @@ export const getStaticProps = withGlobalProps({queries:[GetStart, GetAllArtwork]
 		props:{
 			site:props.site,
 			artwork:props.artwork,
+			studio:props.studio,
 			assignments,
 			slides
 		},

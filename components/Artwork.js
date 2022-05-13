@@ -5,7 +5,7 @@ import { GetAllArtwork } from '/graphql';
 import Content from './Content';
 import ArtworkGallery from './ArtworkGallery';
 import { motion } from 'framer-motion';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 
 const duration = 0.4;
@@ -31,19 +31,13 @@ const variants =  {
 	}
 }
 
-export default function Artwork({artwork, prevRoute}){	
+export default function Artwork({artwork, onShowGallery, prevRoute}){	
 
-	const router = useRouter()
 	const [galleryIndex, setGalleryIndex] = useState()
-	
+	useEffect(()=>{ onShowGallery?.(galleryIndex !== undefined) }, [galleryIndex])
+
 	return (
 		<>
-		<motion.div 
-			//initial={prevRoute === '/studio' ? 'initial':undefined}
-			//animate={prevRoute === '/' ? 'fromIndex' : 'fromStudio'} 
-			//exit={router.asPath === '/' ? 'toIndex' : undefined }
-			//variants={variants}
-		>
 			<Content className={styles.artwork}>
 				<ul>
 					{artwork.map(({image, dimensions, sold}, idx) => 
@@ -55,14 +49,13 @@ export default function Artwork({artwork, prevRoute}){
 					)}
 				</ul>
 			</Content>
-		</motion.div>
-		{galleryIndex !== undefined && 
-			<ArtworkGallery 
-				images={artwork.map(({image}) => image)}
-				index={galleryIndex} 
-				onClose={()=>setGalleryIndex(undefined)}
-			/>
-		}
+			{galleryIndex !== undefined && 
+				<ArtworkGallery 
+					images={artwork.map(({image}) => image)}
+					index={galleryIndex} 
+					onClose={()=>setGalleryIndex(undefined)}
+				/>
+			}
 		</>
 	)
 }
