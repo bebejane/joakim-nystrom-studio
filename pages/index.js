@@ -124,7 +124,7 @@ export default function Start({slides, assignments, assignment : assignmentFromP
 		<Content id="container" key={'container'} className={styles.container}>
 			
 			<Studio studio={studio} show={active === 'studio'}/>	
-			<Artwork artwork={artwork} onShowGallery={setIsShowingArtworkGallery}/>
+			
 			<motion.div
 				key={'animation'}
 				initial={'initial'}
@@ -133,6 +133,7 @@ export default function Start({slides, assignments, assignment : assignmentFromP
 				onAnimationStart={() => setAnimating(true)}
 				onAnimationComplete={() => setAnimating(false)}
 			>	
+				<Artwork artwork={artwork} onShowGallery={setIsShowingArtworkGallery}/>
 				<Gallery 
 					id={'gallery'}
 					key={'gallery'}
