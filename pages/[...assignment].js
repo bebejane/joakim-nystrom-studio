@@ -3,8 +3,8 @@ import { withGlobalProps } from "/lib/hoc";
 import { apiQuery } from '/lib/dato/api';
 import { GetAllAssignments, GetAssignment, GetStart } from '/graphql';
 import Content from '/components/Content';
-import Gallery from '../components/Gallery';
-import Start from './'
+import Gallery from '/components/Gallery';
+
 
 //export default Start;
 

@@ -43,15 +43,18 @@
 	top: 0;
 	right: 0;
 	margin: 30px;
+	opacity: 0;
 	cursor: pointer;
 	transform: translateY(100vh);
 	z-index: 2000;
 	&.slide {
+		opacity: 1;
 		transition: transform 0.4s;
 		transform: translateY(0vh);
 	}
 	&.show {
-		transition: transform 0s;
+		opacity: 1;
+		transition: opacity 0.4s;
 		transition-delay: 0s;
 		transform: translateY(0vh);
 	}
