@@ -37,7 +37,8 @@
 	position: fixed;
 	top: 0;
 	right: 0;
-	margin: 30px;
+	padding: 1.6rem;
+  padding-top: 1rem;
 	opacity: 0;
 	cursor: pointer;
 	transform: translateY(100vh);
@@ -55,5 +56,25 @@
 	}
 	&.hide{
 		display: none;
+	}
+	.arrow {
+		position: absolute;
+		top:1.5rem;
+		left: 0.5rem;
+		opacity: 0;
+		transition: top ease-out 0.4s, opacity 0.2s;
+		display: inline-block;
+		transform: rotate(-90deg);
+		margin-right: -0.65rem;
+		
+		@include mq($until: tablet) {
+			display: inline-block;
+			margin-right: 0px;
+		}
+		&.show{
+			transition-delay: 0.5s;
+			opacity: 1;
+			top: 1rem;
+		}
 	}
 }

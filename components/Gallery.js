@@ -42,11 +42,13 @@ export default function Gallery({
 	index: indexFromProps,
 	onIndexChange,
 	onIndexSelected,
-	onClose
+	onClose,
+	onEndReached
 }) {
 
 	const router = useRouter()
 	const [isMobile, setIsMobile] = useState(false)
+	const [hoverIndex, setHoverIndex] = useState()
 	const [index, setIndex] = useState(indexFromProps !== undefined ? indexFromProps : 0)
 	const [transition, setTransition] = useState({ offset: undefined, duration: undefined })
 	const [dimensions, setDimensions] = useState({ innerHeight: 0, innerWidth: 0 })
@@ -70,7 +72,10 @@ export default function Gallery({
 		if (!slide) return console.log('slide not found')
 
 		const offset = -Math.floor(slide.offsetLeft - (isMobile ? 0 : ((dimensions.innerWidth - slide.clientWidth) / 2)))
+		setHoverIndex(undefined)
 		setTransition({ offset, duration })
+		
+		idx+1 === slides.length && onEndReached?.(true)
 	}
 
 	const back = () => {
@@ -81,10 +86,12 @@ export default function Gallery({
 	}
 
 	const forward = () => {
-		if (index + 1 >= slides.length && !loop) return
+		if (index + 1 >= slides.length && !loop) return onClose?.()
 		if (index + 1 >= slides.length) scrollTo(-1, 0);
 		setTimeout(() => setIndex(index + 1 < slides.length ? index + 1 : 0), 20)
 	}
+
+	const handleIndexSelected = () => slides[index].type !== 'text' && onIndexSelected?.(index)
 
 	useEffect(() => { setDimensions({ innerHeight, innerWidth }) }, [innerHeight, innerWidth])
 	useEffect(() => { scrollTo(index) }, [index, slides, dimensions, id])
@@ -94,6 +101,12 @@ export default function Gallery({
 	useEffect(() => {
 		isMobile && onIndexChange && scrollXProgress.onChange((p) => onIndexChange(clamp(Math.floor(slides.length * p), 0, slides.length - 1)))
 	}, [isMobile])
+	
+	const handleKeyDown = ({key}) => active && (key === 'ArrowRight' ? forward() : key === 'ArrowLeft' ? back() :  key === 'ArrowUp' ? onClose?.() : key === 'ArrowDown' ? 	handleIndexSelected(index) : null)	
+	useEffect(()=>{
+		document.addEventListener('keydown', handleKeyDown)
+		return () => document.removeEventListener('keydown', handleKeyDown)
+	}, [index, active])
 
 	return (
 		<div id={id} ref={galleryRef} key={`gallery-${id}`} className={cn(styles.gallery, className)} style={{ ...style, visibility: !isReady ? 'hidden' : 'visible' }}>
@@ -119,7 +132,7 @@ export default function Gallery({
 						height: `${dimensions.innerHeight}px`,
 						visibility: `${(slides.length <= 1 && isNavSlide) || !isReady ? 'hidden' : 'visible'}`,
 					}
-
+					
 					return (
 						<li
 							id={`slide-${realIndex}-${id}`}
@@ -130,7 +143,14 @@ export default function Gallery({
 							animate={realIndex !== 0 ? 'enter' : undefined}
 							exit={allExit ? 'fadeOut' : realIndex !== index ? "exit" : undefined}
 							variants={galleryTransition}
-							onClick={() => isNavSlide ? (index - 1 === realIndex ? back() : forward()) : onIndexSelected && type !== 'text' && onIndexSelected(realIndex)}
+							onClick={() => isNavSlide ? (index - 1 === realIndex ? back() : forward()) : type !== 'text' && handleIndexSelected(realIndex)}
+							onMouseMove={()=>{
+								if(!isCenterSlide || idx === hoverIndex) return
+								setHoverIndex(isCenterSlide ? idx : undefined)
+							}}
+							onMouseOut={()=>{
+								setHoverIndex(undefined)
+							}}
 						>
 							{type === 'text' || type == 'empty' ?
 								<TextSlide text={text} year={year} width={maxWidth} isMobile={isMobile} slug={slug} />
@@ -143,7 +163,9 @@ export default function Gallery({
 							}
 							{!caption &&
 								<div key={`slide-caption-${idx}-${id}`} className={cn(styles.caption, (isCenterSlide || isMobile) && styles.show)}>
-									<p>{title}<span className={styles.arrow}>→</span></p>
+									<p className={cn(hoverIndex === idx && !isMobile && styles.hover)}>
+										{title}<span className={styles.arrow}>→</span>
+									</p>
 								</div>
 							}
 						</li>
@@ -152,7 +174,9 @@ export default function Gallery({
 			</motion.ul>
 			{caption &&
 				<div className={cn(styles.caption, styles.reverse, styles.fixed, styles.show, isMobile && styles.mobile)} onClick={onClose}>
-					<p>{caption}<span className={cn(styles.arrow)}>→</span></p>
+					<p className={cn(hoverIndex && !isMobile && styles.hover)}>
+						{caption}<span className={styles.arrow}>→</span>
+					</p>
 				</div>
 			}
 		</div>

@@ -12,32 +12,11 @@ import { arrayMoveImmutable } from 'array-move';
 import { useWindowSize } from 'rooks';
 import cn from 'classnames'
 import useStore from '/store';
-import { useRouter } from 'next/router';
 
 const duration = 0.4;
 const variants =  { 
 	initial:{
 		translateY:'-100vh'
-	},
-	initialStudio: {
-		opacity: 0,
-		//transition:{ease:'easeOut', duration}
-	},
-	fromArtwork: {
-		translateY: ['100vh', '0vh'],
-		transition: { ease: 'easeOut', duration }
-	},
-	fromStudio: {
-		opacity: [0, 1],
-		transition: { ease: 'easeOut', duration }
-	},
-	toArtwork: {
-		translateY: '100vh',
-		transition: { ease: 'linear', duration }
-	},
-	toStudio: {
-		opacity: 0,
-		transition: { ease: 'easeOut', duration }
 	},
 	studio:{
 		opacity:0,
@@ -62,24 +41,24 @@ const variants =  {
 
 export default function Start({slides, assignments, assignment : assignmentFromProps, artwork, studio, prevRoute}){
 	
-	const router = useRouter()
 	const setShowMenu = useStore((state) => state.setShowMenu)
 	const showMenu = useStore((state) => state.showMenu)
 	const setActive = useStore((state) => state.setActive)
 	const active = useStore((state) => state.active)
+	const [galleryEndReached, setGalleryEndReached] = useState(false)
 	const [isMobile, setIsMobile] = useState(false)
 	const [isShowingArtworkGallery, setIsShowingArtworkGallery] = useState(false)
-	
-	const { innerWidth, innerHeight } = useWindowSize();
+	const { innerWidth } = useWindowSize();
 
-	const [assignment, setAssignment] = useState(assignmentFromProps || undefined)
-	//const [active, setActive] = useState(assignmentFromProps ? 'lower':'middle')
+	const [assignment, setAssignment] = useState(assignmentFromProps || undefined)	
 	const [animating, setAnimating] = useState(false)
 	const [galleryIndex, setGalleryIndex] = useState(0)
 	const [lowerIndex, setLowerIndex] = useState(0)
 
 	const isDuplicate = galleryIndex > assignments.length-1
-	
+	const activeToSlug = (active) => active === 'gallery' ? '/' : active === 'assignment' ? `/${assignment?.slug}` : active === 'artwork' ? '/artwork' : '/studio'
+	const urlToActive = (url) => url === '/' ? 'gallery' : url === '/artwork' ? `artwork` : url === '/studio' ? 'studio' : 'assignment'
+
 	const handleIndexChange = (idx) => {
 		const assignment = assignments.find(a => a.id === slides[idx].assignmentId)
 		setAssignment(assignment)
@@ -89,28 +68,33 @@ export default function Start({slides, assignments, assignment : assignmentFromP
 
 	useEffect(()=>{ 
 		if(!active) return
+
 		const isGallery = active === 'gallery'
 		isGallery && setTimeout(()=>setLowerIndex(0), duration*1000)
 		setShowMenu(isGallery)
-		//!isGallery && window.history.pushState({}, "", `/${assignment.slug}`)	
+		activeToSlug(active) !== document.location.pathname && window.history.pushState({slug:activeToSlug(active)}, "", activeToSlug(active))
 	}, [active])
 
 	useEffect(()=>{ 
 		
-		const handlePopState = ({state:{url}}) => url === '/' && setActive('gallery')
+		const handlePopState = ({state, state:{url}}) => {
+			console.log(urlToActive(url))
+			setActive(urlToActive(url))
+		}
 		const handleKeyPress = ({key}) => key === 'Escape' && setActive('gallery')
 
-		//window.addEventListener('popstate', handlePopState);
+		window.addEventListener('popstate', handlePopState);
 		window.addEventListener('keydown', handleKeyPress);
 
 		return () => {
-			//window.removeEventListener('popstate', handlePopState);
+			window.removeEventListener('popstate', handlePopState);
 			window.removeEventListener('keydown', handleKeyPress);
 		}
 	}, [])
 	
 	useEffect(()=> { showMenu && active === 'assignment' && setActive('gallery') }, [showMenu])
 	useEffect(()=>{ setIsMobile(innerWidth && innerWidth <= 768)}, [innerWidth])
+	useEffect(()=>{ setGalleryEndReached(lowerIndex === lowerSlides.length-1)}, [lowerIndex])
 
 	const lowerSlides = assignment ? (isDuplicate ? arrayMoveImmutable(assignment.images, 0, 1) : assignment.images).map((image) => ({image, title:image.title, slug:assignment.slug, type: image.mimeType.startsWith('video') ? 'video' : 'image' })) : []	
 	if(lowerSlides.length)
@@ -146,13 +130,13 @@ export default function Start({slides, assignments, assignment : assignmentFromP
 						key={assignment?.id}
 						slides={lowerSlides} 
 						onIndexChange={(idx)=>!isMobile && setLowerIndex(idx)}
+						onIndexSelected={(idx)=>setActive('gallery')}
 						onClose={()=>setActive('gallery')}
 						active={active === 'assignment'}
 						index={lowerIndex}
 						loop={false}
 						caption={assignment?.title}
 					/>
-				
 				</motion.div>
 				
 				<div id={'overlay'} key={'overlay'} style={{ visibility: showOverlay ? 'visible' : 'hidden' }} className={styles.overlay}>
@@ -166,7 +150,9 @@ export default function Start({slides, assignments, assignment : assignmentFromP
 					}
 				</div>
 			</Content>
-			<div className={backStyles} onClick={() => setActive('gallery')}>Back</div>
+			<div className={backStyles} onClick={() => setActive('gallery')}>
+				<span className={cn(styles.arrow, galleryEndReached && styles.show)}>→</span>Back
+			</div>
 		</>
 	)
 }

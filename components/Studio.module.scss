@@ -1,6 +1,5 @@
 .studio{
   position: fixed;
-  
   top:0;
   left:0;
   min-height: 100vh;
@@ -12,7 +11,7 @@
   pointer-events: none;
   transition: opacity ease .4s;
   &.show{    
-    
+    pointer-events: all;  
     opacity: 1;
   }
 }
