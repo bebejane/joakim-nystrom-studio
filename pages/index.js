@@ -89,8 +89,13 @@ export default function Start({slides, assignments, assignment : assignmentFromP
 	useEffect(()=>{ setIsMobile(innerWidth && innerWidth <= 768)}, [innerWidth])
 	useEffect(()=>{ setGalleryEndReached(lowerIndex === lowerSlides.length-1)}, [lowerIndex])
 
-	const handleIndexChange = (idx) => {
-		
+	const handleIndexSelected = (idx) => {
+		const assignment = assignments.find(a => a.id === slides[idx].assignmentId)
+		setAssignment(assignment)
+		setActive('assignment')
+	}
+	
+	const handleIndexChange = (idx) => {		
 		const assignment = assignments.find(a => a.id === slides[idx].assignmentId)
 		setAssignment(assignment)
 		setGalleryIndex(idx)
@@ -106,7 +111,7 @@ export default function Start({slides, assignments, assignment : assignmentFromP
 	const backStyles = cn(styles.back, !showMenu && !isShowingArtworkGallery ? active === 'assignment' ? styles.slide : styles.show : false)
 
 	if(!active) return null
-	
+
 	return (
 		<>
 			<Content id="container" key={'container'} className={styles.container}>
@@ -125,7 +130,7 @@ export default function Start({slides, assignments, assignment : assignmentFromP
 						key={'gallery'}
 						slides={slides} 
 						onIndexChange={handleIndexChange}
-						onIndexSelected={(idx)=>setActive('assignment')}
+						onIndexSelected={handleIndexSelected}
 						active={active === 'gallery'}
 						index={initialIndex}
 					/>	

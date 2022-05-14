@@ -66,7 +66,7 @@ export default function Gallery({
 		setTimeout(() => setIndex(index + 1 < slides.length ? index + 1 : 0), 20)
 	}
 
-	const handleIndexSelected = () => slides[index].type !== 'text' && onIndexSelected?.(index)
+	const handleIndexSelected = (idx) => slides[idx].type !== 'text' && onIndexSelected?.(idx)
 
 	useEffect(() => { setDimensions({ innerHeight, innerWidth }) }, [innerHeight, innerWidth])
 	useEffect(() => { scrollTo(index) }, [index, slides, dimensions, id])
@@ -117,7 +117,7 @@ export default function Gallery({
 							key={`slide-a-${idx}-${id}`}
 							className={cn(isNavSlide && styles.nav)}
 							style={slideStyles}
-							onClick={() => isNavSlide ? (index - 1 === realIndex ? back() : forward()) : type !== 'text' && handleIndexSelected(realIndex)}
+							onClick={() => isNavSlide ? (index - 1 === realIndex ? back() : forward()) : handleIndexSelected(realIndex)}
 							onMouseMove={()=>{
 								if(!isCenterSlide || idx === hoverIndex) return
 								setHoverIndex(isCenterSlide ? idx : undefined)
