@@ -6,28 +6,6 @@ import { motion, useElementScroll } from 'framer-motion';
 import { useRouter } from 'next/router';
 import { clamp } from '/utils';
 
-const duration = 0.7;
-const galleryTransition = {
-	initial: {
-		translateY: '100vh',
-		opacity: 1,
-	},
-	enter: {
-		translateY: '0vh',
-		transition: { duration }
-	},
-	exit: {
-		translateY: '-100vh',
-		transition: { duration },
-		transitionEnd: {
-			translateY: 'unset',
-		}
-	},
-	fadeOut: {
-		opacity: 1
-	}
-}
-
 export default function Gallery({
 	id,
 	slides,
@@ -92,11 +70,14 @@ export default function Gallery({
 
 	useEffect(() => { setDimensions({ innerHeight, innerWidth }) }, [innerHeight, innerWidth])
 	useEffect(() => { scrollTo(index) }, [index, slides, dimensions, id])
-	useEffect(() => { onIndexChange && onIndexChange(index) }, [index])
+	useEffect(() => { onIndexChange?.(index) }, [index])
 	useEffect(() => { indexFromProps !== undefined && setIndex(indexFromProps) }, [indexFromProps])
 	useEffect(() => { setIsMobile(innerWidth && innerWidth <= 768) }, [innerWidth])
-	useEffect(() => {
-		isMobile && onIndexChange && scrollXProgress.onChange((p) => onIndexChange(clamp(Math.floor(slides.length * p), 0, slides.length - 1)))
+
+	const updateIndexOnScroll = (p) => onIndexChange(clamp(Math.floor(slides.length * p), 0, slides.length - 1))
+	useEffect(() => {	
+		if(isMobile && onIndexChange)
+			return scrollXProgress.onChange(updateIndexOnScroll)
 	}, [isMobile])
 	
 	const handleKeyDown = ({key}) => active && (key === 'ArrowRight' ? forward() : key === 'ArrowLeft' ? back() :  key === 'ArrowUp' ? onClose?.() : key === 'ArrowDown' ? 	handleIndexSelected(index) : null)	

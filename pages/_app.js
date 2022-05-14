@@ -8,6 +8,7 @@ import { AnimatePresence } from 'framer-motion'
 import Menu from '/components/Menu';
 import DatoSEO from '/lib/dato/components/DatoSEO';
 import usePreviousRoute from '/lib/hooks/usePreviousRoute';
+import useStore from '/store';
 
 function MyApp({ Component, pageProps, pageProps: { site, seo, assignment, backgroundImage }}) {
   

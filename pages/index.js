@@ -5,7 +5,6 @@ import Content from '/components/Content';
 import Gallery from '/components/Gallery';
 import Artwork from '/components/Artwork';
 import Studio from '/components/Studio';
-import { GetAllArtwork, GetStart, GetStudio} from '/graphql';
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion'
 import { arrayMoveImmutable } from 'array-move';
@@ -16,7 +15,7 @@ import useStore from '/store';
 const duration = 0.4;
 const variants =  { 
 	initial:{
-		translateY:'-100vh'
+		translateY:'0vh'
 	},
 	studio:{
 		opacity:0,
@@ -39,7 +38,7 @@ const variants =  {
 	},
 }
 
-export default function Start({slides, assignments, assignment : assignmentFromProps, artwork, studio, prevRoute}){
+export default function Start({slides, assignments, assignment : assignmentFromProps, artwork, studio, slug}){
 	
 	const setShowMenu = useStore((state) => state.setShowMenu)
 	const showMenu = useStore((state) => state.showMenu)
@@ -59,12 +58,7 @@ export default function Start({slides, assignments, assignment : assignmentFromP
 	const activeToSlug = (active) => active === 'gallery' ? '/' : active === 'assignment' ? `/${assignment?.slug}` : active === 'artwork' ? '/artwork' : '/studio'
 	const urlToActive = (url) => url === '/' ? 'gallery' : url === '/artwork' ? `artwork` : url === '/studio' ? 'studio' : 'assignment'
 
-	const handleIndexChange = (idx) => {
-		const assignment = assignments.find(a => a.id === slides[idx].assignmentId)
-		setAssignment(assignment)
-		setGalleryIndex(idx)
-		setLowerIndex(0)
-	}
+	useEffect(()=>setActive(urlToActive(slug)), []) // Set initial active from props
 
 	useEffect(()=>{ 
 		if(!active) return
@@ -93,6 +87,13 @@ export default function Start({slides, assignments, assignment : assignmentFromP
 	useEffect(()=>{ setIsMobile(innerWidth && innerWidth <= 768)}, [innerWidth])
 	useEffect(()=>{ setGalleryEndReached(lowerIndex === lowerSlides.length-1)}, [lowerIndex])
 
+	const handleIndexChange = (idx) => {
+		const assignment = assignments.find(a => a.id === slides[idx].assignmentId)
+		setAssignment(assignment)
+		setGalleryIndex(idx)
+		setLowerIndex(0)
+	}
+	
 	const lowerSlides = assignment ? (isDuplicate ? arrayMoveImmutable(assignment.images, 0, 1) : assignment.images).map((image) => ({image, title:image.title, slug:assignment.slug, type: image.mimeType.startsWith('video') ? 'video' : 'image' })) : []	
 	if(lowerSlides.length)
 		lowerSlides.splice(1, 0, {type:'text', text:assignment.description.split('\n\n').pop(), title:null})
@@ -101,6 +102,8 @@ export default function Start({slides, assignments, assignment : assignmentFromP
 	const showOverlay = animating && active === 'assignment' && overlayUrl && !isMobile
 	const backStyles = cn(styles.back, !showMenu && !isShowingArtworkGallery ? active === 'assignment' ? styles.slide : styles.show : false)
 
+	if(!active) return null
+	
 	return (
 		<>
 			<Content id="container" key={'container'} className={styles.container}>
@@ -154,36 +157,12 @@ export default function Start({slides, assignments, assignment : assignmentFromP
 	)
 }
 
-export const getStaticProps = withGlobalProps({queries:[GetStart, GetAllArtwork, GetStudio]}, async ({props, revalidate }) => {
-
-	const assignments = props.start.slides.filter(s => s.__typename === 'AssignmentRecord')
-	const slides = props.start.slides.map((slide) => ({
-		assignmentId: slide.id,
-		title: slide.title || null,
-		image: slide.images?.[0] || null,
-		text: slide.text || null,
-		year: slide.text || null,
-		type: slide.text ? 'text' : slide.images?.[0].mimeType.startsWith('video') ? 'video' : 'image',
-		slug: !slide.link ? slide.slug : slide.link.__typename === 'StudioRecord' ? '/studio' : slide.link.__typename === 'ArtworkRecord' ? '/artwork' : null,
-	}))
-
-	// Duplicate slides temp
-	slides.push.apply(slides, props.start.slides.filter(s => !s.text).map(slide => ({
-		title: slide.title || null,
-		assignmentId: slide.id,
-		image: slide.images?.[1] || slide.images?.[0] || null,
-		text: slide.text || null,
-		type: slide.text ? 'text' : (slide.images?.[1] || slide.images?.[0]).mimeType.startsWith('video') ? 'video' : 'image',
-		slug: !slide.link ? slide.slug : slide.link.__typename === 'StudioRecord' ? '/studio' : slide.link.__typename === 'ArtworkRecord' ? '/artwork' : null,
-	})))
+export const getStaticProps = withGlobalProps(async ({props, revalidate }) => {
 
 	return {
 		props:{
-			site:props.site,
-			artwork:props.artwork,
-			studio:props.studio,
-			assignments,
-			slides
+			...props,
+			slug:'/'
 		},
 		revalidate
 	};

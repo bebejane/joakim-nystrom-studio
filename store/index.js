@@ -3,7 +3,7 @@ const activeToSlug = (active) => active === 'gallery' ? '/' : active === 'assign
 
 const useStore = create((set) => ({
 	showMenu: true,
-  active:'gallery',
+  active:undefined,
   galleryIndex:undefined,
   galleryEndReached:false,
 	setShowMenu: (show) =>  
