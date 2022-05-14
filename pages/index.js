@@ -57,6 +57,8 @@ export default function Start({slides, assignments, assignment : assignmentFromP
 	const isDuplicate = galleryIndex > assignments.length-1
 	const activeToSlug = (active) => active === 'gallery' ? '/' : active === 'assignment' ? `/${assignment?.slug}` : active === 'artwork' ? '/artwork' : '/studio'
 	const urlToActive = (url) => url === '/' ? 'gallery' : url === '/artwork' ? `artwork` : url === '/studio' ? 'studio' : 'assignment'
+	
+	const initialIndex = assignmentFromProps ? slides.findIndex(el => el.assignmentId === assignmentFromProps.id) : 0 
 
 	useEffect(()=>setActive(urlToActive(slug)), []) // Set initial active from props
 
@@ -88,6 +90,7 @@ export default function Start({slides, assignments, assignment : assignmentFromP
 	useEffect(()=>{ setGalleryEndReached(lowerIndex === lowerSlides.length-1)}, [lowerIndex])
 
 	const handleIndexChange = (idx) => {
+		
 		const assignment = assignments.find(a => a.id === slides[idx].assignmentId)
 		setAssignment(assignment)
 		setGalleryIndex(idx)
@@ -124,6 +127,7 @@ export default function Start({slides, assignments, assignment : assignmentFromP
 						onIndexChange={handleIndexChange}
 						onIndexSelected={(idx)=>setActive('assignment')}
 						active={active === 'gallery'}
+						index={initialIndex}
 					/>	
 					<Gallery 
 						id={'assignment'}
