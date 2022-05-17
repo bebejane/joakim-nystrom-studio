@@ -1,3 +1,4 @@
+#import "./fragments/ImageFragment.graphql"
 #import "./fragments/AssignmentFragment.graphql"
 #import "./fragments/TextSlideFragment.graphql"
 
@@ -5,13 +6,27 @@ query GetStart {
 	start {
     id
     slides {
-      ... on AssignmentRecord {
-        ...AssignmentFragment
-        _modelApiKey
-      }
       ... on TextSlideRecord {
-        ...TextSlideFragment
-        _modelApiKey
+        type: _modelApiKey
+        data: text
+      }
+      ... on ImageSlideRecord {
+       type: _modelApiKey
+        data: image {
+          ...ImageFragment
+        }
+        assignment{
+          ...AssignmentFragment
+        }
+      }
+      ... on VideoSlideRecord {
+       type: _modelApiKey
+        data: video {
+          ...ImageFragment
+        }
+        assignment{
+          ...AssignmentFragment
+        }
       }
     }
   }

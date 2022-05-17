@@ -3,7 +3,6 @@ import cn from 'classnames'
 import { useState, useEffect, useRef } from 'react';
 import { useWindowSize } from 'rooks';
 import { motion, useElementScroll } from 'framer-motion';
-import { useRouter } from 'next/router';
 import { clamp } from '/utils';
 
 export default function Gallery({
@@ -21,7 +20,6 @@ export default function Gallery({
 	onEndReached
 }) {
 
-	const router = useRouter()
 	const [isMobile, setIsMobile] = useState(false)
 	const [hoverIndex, setHoverIndex] = useState()
 	const [index, setIndex] = useState(indexFromProps !== undefined ? indexFromProps : 0)
@@ -66,7 +64,7 @@ export default function Gallery({
 		setTimeout(() => setIndex(index + 1 < slides.length ? index + 1 : 0), 20)
 	}
 
-	const handleIndexSelected = (idx) => slides[idx].type !== 'text' && onIndexSelected?.(idx)
+	const handleIndexSelected = (idx) => slides[idx] && slides[idx].type !== 'text' && onIndexSelected?.(idx)
 
 	useEffect(() => { setDimensions({ innerHeight, innerWidth }) }, [innerHeight, innerWidth])
 	useEffect(() => { scrollTo(index) }, [index, slides, dimensions, id])
@@ -94,10 +92,10 @@ export default function Gallery({
 				animate={{ translateX: `${transition.offset || 0}px` }}
 				transition={{ duration: transition.duration || 0 }}
 			>
-				{allSlides.map(({ title, slug, image, text, year, type }, idx) => {
+				{allSlides.map(({ title, slug, data, year, type }, idx) => {
 
 					const maxWidth = dimensions.innerWidth * (isMobile ? 1 : 0.8);
-					const width = !image ? maxWidth : Math.min((dimensions.innerHeight / image.height) * image.width, isMobile ? image.width : maxWidth);
+					const width = type === 'text' ? maxWidth : Math.min((dimensions.innerHeight / data.height) * data.width, isMobile ? data.width : maxWidth);
 					const realIndex = isMobile ? idx : idx - (slides.length);
 					const isNavSlide = isMobile ? false : (index - 1 === realIndex || index + 1 === realIndex)
 					const isCenterSlide = realIndex === index
@@ -113,7 +111,7 @@ export default function Gallery({
 						<li
 							id={`slide-${realIndex}-${id}`}
 							key={`slide-a-${idx}-${id}`}
-							className={cn(isNavSlide && styles.nav)}
+							className={cn(isNavSlide && styles.nav, isCenterSlide && hoverIndex === idx && style.hover)}
 							style={slideStyles}
 							onClick={() => isNavSlide ? (index - 1 === realIndex ? back() : forward()) : handleIndexSelected(realIndex)}
 							onMouseMove={()=>{
@@ -125,18 +123,18 @@ export default function Gallery({
 							}}
 						>
 							{type === 'text' || type == 'empty' ?
-								<TextSlide text={text} year={year} width={maxWidth} isMobile={isMobile} slug={slug} />
+								<TextSlide text={data} year={year} width={maxWidth} isMobile={isMobile} slug={slug} />
 								: type === 'image' ?
-									<ImageSlide image={image} width={width} isMobile={isMobile} />
+									<ImageSlide image={data} width={width} isMobile={isMobile} />
 									: type === 'video' ?
-										<VideoSlide key={`slide-video-${idx}-${id}`} data={image} active={index === realIndex} width={width} isMobile={isMobile} />
+										<VideoSlide key={`slide-video-${idx}-${id}`} data={data} active={index === realIndex} width={width} isMobile={isMobile} />
 										:
 										null
 							}
 							{!caption &&
 								<div key={`slide-caption-${idx}-${id}`} className={cn(styles.caption, (isCenterSlide || isMobile) && styles.show)}>
 									<p className={cn(hoverIndex === idx && !isMobile && styles.hover)}>
-										{title}<span className={styles.arrow}>→</span>
+										{title}
 									</p>
 								</div>
 							}
@@ -147,7 +145,7 @@ export default function Gallery({
 			{caption &&
 				<div className={cn(styles.caption, styles.reverse, styles.fixed, styles.show, isMobile && styles.mobile)} onClick={onClose}>
 					<p className={cn(hoverIndex && !isMobile && styles.hover)}>
-						{caption}<span className={styles.arrow}>→</span>
+						{caption}
 					</p>
 				</div>
 			}
