@@ -47,10 +47,10 @@ export default function Gallery({
 		if (!slide) return console.log('slide not found')
 
 		const offset = -Math.floor(slide.offsetLeft - (isMobile ? 0 : ((dimensions.innerWidth - slide.clientWidth) / 2)))
-		setHoverIndex(undefined)
-		setTransition({ offset, duration })
 		
-		idx+1 === slides.length && onEndReached?.(true)
+		setTransition({ offset, duration })	
+		setHoverIndex(undefined)
+		idx+1 === slides.length && onEndReached?.(true)		
 	}
 
 	const back = () => {
@@ -85,12 +85,12 @@ export default function Gallery({
 		document.addEventListener('keydown', handleKeyDown)
 		return () => document.removeEventListener('keydown', handleKeyDown)
 	}, [index, active])
-
+	
 	return (
 		<div id={id} ref={galleryRef} key={`gallery-${id}`} className={cn(styles.gallery, className)} style={{ ...style, visibility: !isReady ? 'hidden' : 'visible' }}>
 			<motion.ul
 				id={'slide-list'}
-				layoutScroll
+				//layoutScroll
 				animate={{ translateX: `${transition.offset || 0}px` }}
 				transition={{ duration: transition.duration || 0 }}
 			>
@@ -99,10 +99,8 @@ export default function Gallery({
 					const maxWidth = dimensions.innerWidth * (isMobile ? 1 : 0.8);
 					const width = !image ? maxWidth : Math.min((dimensions.innerHeight / image.height) * image.width, isMobile ? image.width : maxWidth);
 					const realIndex = isMobile ? idx : idx - (slides.length);
-					const isIntroSlide = realIndex >= -1 && realIndex <= 1;
 					const isNavSlide = isMobile ? false : (index - 1 === realIndex || index + 1 === realIndex)
 					const isCenterSlide = realIndex === index
-					const allExit = ['/artwork', '/studio'].includes(router.asPath)
 
 					const slideStyles = {
 						maxWidth: isMobile ? 'unset' : `${width}px`,
@@ -181,13 +179,14 @@ const ImageSlide = ({ image, width }) => {
 				className={styles.imageSlide}
 				src={`${image.url}?w=1400`}
 				style={{ width: `${width}px`, maxWidth: `${width}px`, height: '100vh' }}
+				loading={'eager'}
 			/>
 		</picture>
 	)
 }
 
 const VideoSlide = ({ data, active, width }) => {
-
+	
 	const videoRef = useRef();
 
 	useEffect(() => {
