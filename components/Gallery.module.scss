@@ -96,9 +96,10 @@
 			height: 100%;
 			z-index: 1;
 			.subtitle{
+				text-transform: uppercase;
 				font-size: 0.7rem;
-				transition: transform .5s;
-				transform: translateY(100px);
+				transition: transform .5s ease;
+				transform: translateY(150px);
 			}
 		}
 		@include mq($until: desktop) {

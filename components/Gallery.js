@@ -131,7 +131,7 @@ export default function Gallery({
 										:
 										null
 							}
-							{!caption &&
+							{!caption && title &&
 								<div key={`slide-caption-${idx}-${id}`} className={cn(styles.caption, (isCenterSlide || isMobile) && styles.show)}>
 									<p className={cn(hoverIndex === idx && !isMobile && styles.hover)}>
 										<div className={styles.title}>
