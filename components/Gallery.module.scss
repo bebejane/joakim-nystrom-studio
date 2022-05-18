@@ -83,14 +83,13 @@
 		-webkit-font-smoothing: antialiased;
 		max-height: 0px;
 		transition: max-height .8s ease-in;
-
+		
 		.title{
 			position: absolute;
 			display: flex;
 			flex-direction: column;
 			align-items: center;
 			justify-content: center;
-			
 			top:0;
 			left:0;
 			width: 100%;
@@ -102,7 +101,17 @@
 				transform: translateY(100px);
 			}
 		}
-		
+		@include mq($until: desktop) {
+			max-height: 500px;
+			.title{
+				.subtitle{
+					transform: translateY(0px);
+				}
+			}
+			.bg{
+				opacity: 1;
+			}
+		}
 		&.hover{
 			transition: max-height .5s ease-out;
 			max-height: 300px;
@@ -124,7 +133,7 @@
 			height: 100%;
 			z-index: 0;
 			background: linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(0,0,0,0.8) 100%);
-			opacity: 0;
+			opacity: 1;
 			transition: opacity 1s;
 		}
 	}
