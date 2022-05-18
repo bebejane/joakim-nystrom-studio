@@ -11,5 +11,12 @@ fragment AssignmentFragment on AssignmentRecord {
   assignmentTypes{
     value
   }
+  client{
+    name
+  }
+  collaborator{
+    name
+  }
+  
   slug
 }
