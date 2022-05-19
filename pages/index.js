@@ -41,13 +41,10 @@ export default function Start({slides, assignments, artwork, studio, slug}){
 	const { innerWidth } = useWindowSize();
 
 	const [animating, setAnimating] = useState(false)
-	const [galleryIndex, setGalleryIndex] = useState(0)
 	
 	const activeToSlug = (active) => active === 'gallery' ? '/' : active === 'assignment' ? `/${assignment?.slug}` : active === 'artwork' ? '/artwork' : '/studio'
 	const urlToActive = (url) => url === '/' ? 'gallery' : url === '/artwork' ? `artwork` : url === '/studio' ? 'studio' : 'assignment'
 	
-	//const initialIndex = assignmentFromProps ? slides.findIndex(el => el.assignmentId === assignmentFromProps.id) : 0 
-
 	useEffect(()=>setActive(urlToActive(slug)), []) // Set initial active from props
 
 	useEffect(()=>{ 

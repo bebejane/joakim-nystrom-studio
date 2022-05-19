@@ -184,18 +184,16 @@ const ImageSlide = ({ image, width }) => {
 	)
 }
 
-const VideoSlide = ({ data, active, width }) => {
+const VideoSlide = ({ data, active, width, isMobile }) => {
 	
 	const videoRef = useRef();
 
 	useEffect(() => {
-		if (!videoRef.current) return
-		if (active) {
+		if (!videoRef.current || isMobile) return	
+		if (active)
 			videoRef.current.play().catch(() => { })
-		} else {
+		else
 			videoRef.current.pause();
-
-		}
 	}, [active])
 
 	return (
@@ -206,6 +204,7 @@ const VideoSlide = ({ data, active, width }) => {
 			type={data.mimeType}
 			disablePictureInPicture={true}
 			loop={true}
+			poster={data.video?.thumbnailUrl}
 			className={styles.videoSlide}
 			style={{ width: `${width}px`, maxWidth: `${width}px` }}
 		/>
