@@ -1,5 +1,7 @@
 .studio {
   position: fixed;
+  background-color: black;
+  color: white;
   top: 0;
   left: 0;
   min-height: 100vh;
@@ -27,6 +29,11 @@
   article {
     width: 75%;
     padding-right: 10%;
+
+    h2 {
+      padding-top: 1em;
+      font-size: 0.8rem;
+    }
   }
 
   ul {
