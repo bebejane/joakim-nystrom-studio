@@ -20,9 +20,9 @@ export default function Menu({ }) {
 		)
 		return !isIndexPage ? <Link href={href}>{content}</Link> : content
 	}
-
+	console.log(active)
 	return (
-		<menu id="menu" className={cn(styles.menu, !showMenu && styles.hideNav)}>
+		<menu id="menu" className={cn(styles.menu, !showMenu && styles.hideNav, active === 'studio' && styles.reverted)}>
 			<div className={styles.logo}>
 				<WrapLink href="/" type="gallery">
 					Joakim Nyström Studio
