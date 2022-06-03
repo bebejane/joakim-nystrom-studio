@@ -29,6 +29,13 @@ $grid-space-small: 10px;
 				margin-right: auto;
 			}
 
+			div {
+				aspect-ratio: 3/4;
+				img {
+					object-fit: cover;
+				}
+			}
+
 			padding-left: math.div($grid-space, 2);
 			padding-right: math.div($grid-space, 2);
 			text-indent: 0;

@@ -65,10 +65,10 @@
     position: absolute;
     bottom: 0;
     font-size: 0.9rem;
+    padding: 1.6rem;
     color: white;
-    a{
-      color:$white;
-
+    a {
+      color: $white;
     }
   }
   .close {
@@ -95,6 +95,6 @@
     font-size: 1.5rem;
     user-select: none;
     visibility: hidden;
-    color:$white;
+    color: $white;
   }
 }
