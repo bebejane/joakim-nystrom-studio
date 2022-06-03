@@ -43,7 +43,7 @@ export default function Gallery({
 
 		const slide = document.getElementById(`slide-${idx}-${id}`)
 		if (!slide) return console.log('slide not found')
-		if(idx === 3)
+		if (idx === 3)
 			console.log(slide)
 		const offset = -Math.floor(slide.offsetLeft - (isMobile ? 0 : ((dimensions.innerWidth - slide.offsetWidth) / 2)))
 
@@ -118,7 +118,7 @@ export default function Gallery({
 							className={cn(isNavSlide && styles.nav, isCenterSlide && hoverIndex === idx && style.hover, margin && styles.padded)}
 							style={slideStyles}
 							onClick={() => isNavSlide ? (index - 1 === realIndex ? back() : forward()) : handleIndexSelected(realIndex)}
-							onMouseMove={() => { !(!isCenterSlide || idx === hoverIndex) && setHoverIndex(isCenterSlide ? idx : undefined)}}
+							onMouseMove={() => { !(!isCenterSlide || idx === hoverIndex) && setHoverIndex(isCenterSlide ? idx : undefined) }}
 							onMouseOut={() => setHoverIndex(undefined)}
 						>
 							{type === 'text' || type == 'empty' ?
@@ -136,11 +136,6 @@ export default function Gallery({
 									<p className={cn(hoverIndex === idx && !isMobile && styles.hover)}>
 										<div className={styles.title}>
 											<span className={styles.description}>{description}</span>
-											<span className={styles.subtitle}>
-												{year && <span>Year: {year}</span>}
-												{client && <span>Client: {client}</span>}
-												{collaborator && <span>Collaborator: {collaborator}</span>}
-											</span>
 										</div>
 										<div className={styles.bg}></div>
 									</p>
@@ -149,7 +144,7 @@ export default function Gallery({
 						</li>
 					)
 				})}
-			</motion.ul>		
+			</motion.ul>
 		</div>
 	)
 }
@@ -167,7 +162,7 @@ const TextSlide = ({ text, width }) => {
 	)
 }
 const ImageSlide = ({ image, width, margin, isMobile }) => {
-	
+
 	return (
 		<img
 			className={styles.imageSlide}
