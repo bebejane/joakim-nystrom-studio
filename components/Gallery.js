@@ -43,8 +43,9 @@ export default function Gallery({
 
 		const slide = document.getElementById(`slide-${idx}-${id}`)
 		if (!slide) return console.log('slide not found')
-
-		const offset = -Math.floor(slide.offsetLeft - (isMobile ? 0 : ((dimensions.innerWidth - slide.clientWidth) / 2)))
+		if(idx === 3)
+			console.log(slide)
+		const offset = -Math.floor(slide.offsetLeft - (isMobile ? 0 : ((dimensions.innerWidth - slide.offsetWidth) / 2)))
 
 		setTransition({ offset, duration })
 		setHoverIndex(undefined)
@@ -106,7 +107,7 @@ export default function Gallery({
 						height: `${dimensions.innerHeight}px`,
 						visibility: `${(slides.length <= 1 && isNavSlide) || !isReady ? 'hidden' : 'visible'}`,
 						cursor: isNavSlide ? 'pointer' : 'default',
-						//overflow: 'hidden'
+						overflow: isMobile ? 'unset' : 'hidden'
 					}
 
 					return (
@@ -117,13 +118,8 @@ export default function Gallery({
 							className={cn(isNavSlide && styles.nav, isCenterSlide && hoverIndex === idx && style.hover, margin && styles.padded)}
 							style={slideStyles}
 							onClick={() => isNavSlide ? (index - 1 === realIndex ? back() : forward()) : handleIndexSelected(realIndex)}
-							onMouseMove={() => {
-								if (!isCenterSlide || idx === hoverIndex) return
-								setHoverIndex(isCenterSlide ? idx : undefined)
-							}}
-							onMouseOut={() => {
-								setHoverIndex(undefined)
-							}}
+							onMouseMove={() => { !(!isCenterSlide || idx === hoverIndex) && setHoverIndex(isCenterSlide ? idx : undefined)}}
+							onMouseOut={() => setHoverIndex(undefined)}
 						>
 							{type === 'text' || type == 'empty' ?
 								<TextSlide text={data} width={maxWidth} isMobile={isMobile} />
@@ -135,7 +131,7 @@ export default function Gallery({
 										null
 							}
 
-							{(!caption && title) &&
+							{description &&
 								<div key={`slide-caption-${idx}-${id}`} className={cn(styles.caption, (hoverIndex === idx || isMobile) && styles.show)}>
 									<p className={cn(hoverIndex === idx && !isMobile && styles.hover)}>
 										<div className={styles.title}>
@@ -170,13 +166,13 @@ const TextSlide = ({ text, width }) => {
 		</div>
 	)
 }
-const ImageSlide = ({ image, width, margin }) => {
-	const realWidth = width - (margin ? '60' : 0)
+const ImageSlide = ({ image, width, margin, isMobile }) => {
+	
 	return (
 		<img
 			className={styles.imageSlide}
 			src={`${image.url}?w=1400`}
-			style={{ width: `${realWidth}px`, maxWidth: `${realWidth}px`, height: '100vh' }}
+			style={{ width: isMobile ? `${width}px` : '100%', maxWidth: `${width}px`, height: '100%' }}
 			loading={'eager'}
 		/>
 	)
