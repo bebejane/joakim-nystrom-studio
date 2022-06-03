@@ -19,7 +19,6 @@ const getPathsFromPayload = async (payload) => {
     paths.push(`/`)
   }
 
-  
   return paths;
 }
 

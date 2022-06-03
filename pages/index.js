@@ -114,6 +114,6 @@ export const getStaticProps = withGlobalProps(async ({props, revalidate }) => {
 			...props,
 			slug:'/'
 		},
-		revalidate
+		//revalidate
 	};
 });
