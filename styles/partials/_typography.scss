@@ -6,6 +6,7 @@ html {
   line-height: 1.25em;
   color: $black;
   font-weight: normal;
+  -webkit-font-smoothing: antialiased;
 
   @include mq($from: tablet) {
     font-size: 24px;

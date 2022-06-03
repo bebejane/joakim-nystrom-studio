@@ -37,7 +37,7 @@
 				}
 				transition: opacity 0.5s;
 				&:hover {
-					opacity: 0.9;
+					//opacity: 0.9;
 				}
 			}
 			&.padded {
@@ -107,6 +107,7 @@
 
 			.description {
 				font-size: 0.8em;
+				line-height: 1.2;
 			}
 
 			.subtitle {
