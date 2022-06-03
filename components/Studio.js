@@ -6,7 +6,7 @@ import Markdown from '/lib/dato/components/Markdown';
 export default function Studio({ studio: { email, phone, description, address, postal, background, clients }, show, revRoute }) {
 
 	return (
-		<Content className={cn(styles.studio, show && styles.show)}>
+		<Content className={styles.studio}>
 			<aside>
 				<p>
 					{email}<br />

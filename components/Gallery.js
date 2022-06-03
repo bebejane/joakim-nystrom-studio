@@ -65,6 +65,7 @@ export default function Gallery({
 	}
 
 	const handleIndexSelected = (idx) => slides[idx] && slides[idx].type !== 'text' && onIndexSelected?.(idx)
+	const handleMouseOver = ({type}) => slides[idx] && slides[idx].type !== 'text' && onIndexSelected?.(idx)
 
 	useEffect(() => { setDimensions({ innerHeight, innerWidth }) }, [innerHeight, innerWidth])
 	useEffect(() => { scrollTo(index) }, [index, slides, dimensions, id])
@@ -83,7 +84,7 @@ export default function Gallery({
 		document.addEventListener('keydown', handleKeyDown)
 		return () => document.removeEventListener('keydown', handleKeyDown)
 	}, [index, active])
-	
+	console.log(hoverIndex)
 	return (
 		<div id={id} ref={galleryRef} key={`gallery-${id}`} className={cn(styles.gallery, className)} style={{ ...style, visibility: !isReady ? 'hidden' : 'visible' }}>
 			<motion.ul
@@ -110,6 +111,7 @@ export default function Gallery({
 					return (
 						<li
 							id={`slide-${realIndex}-${id}`}
+							index={idx}
 							key={`slide-a-${idx}-${id}`}
 							className={cn(isNavSlide && styles.nav, isCenterSlide && hoverIndex === idx && style.hover, margin && styles.padded)}
 							style={slideStyles}
@@ -119,7 +121,7 @@ export default function Gallery({
 								setHoverIndex(isCenterSlide ? idx : undefined)
 							}}
 							onMouseOut={()=>{
-								setHoverIndex(undefined)
+								//setHoverIndex(undefined)
 							}}
 						>	
 								{type === 'text' || type == 'empty' ?
@@ -133,7 +135,7 @@ export default function Gallery({
 								}
 							
 								{(!caption && title) &&
-									<div key={`slide-caption-${idx}-${id}`} className={cn(styles.caption, (isCenterSlide || isMobile) && styles.show)}>
+									<div key={`slide-caption-${idx}-${id}`} className={cn(styles.caption, (hoverIndex === idx || isMobile) && styles.show)}>
 										<p className={cn(hoverIndex === idx && !isMobile && styles.hover)}>
 											<div className={styles.title}>
 												<span>{title}</span>
