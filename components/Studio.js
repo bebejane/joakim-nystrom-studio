@@ -52,6 +52,7 @@ export default function Studio({ artwork, studio: { email, phone, description, a
 			{galleryIndex !== undefined &&
 				<ArtworkGallery
 					images={artwork.map(({ image }) => image)}
+					artwork={artwork}
 					index={galleryIndex}
 					onClose={() => setGalleryIndex(undefined)}
 				/>

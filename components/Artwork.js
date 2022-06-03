@@ -20,18 +20,6 @@ export default function Artwork({ artwork, onShowGallery, onIndexChange, prevRou
 					{artwork.map(({ image, dimensions, sold, title }, idx) =>
 						<li key={idx} onClick={() => setGalleryIndex(idx)}>
 							<Image data={image.responsiveImage} className={styles.image} pictureClassName={styles.picture} />
-							<span className={cn(styles.availability, sold && styles.sold)}>
-								{sold ?
-									<>Sold</>
-								:
-									<a
-										href={`mailto:info@joakimnystrom.com${title ? `?subject=${encodeURIComponent(title)}` : ''}`}
-										onClick={e => e.stopPropagation()}
-									>
-										Buy
-									</a>
-								}
-							</span>
 						</li>
 					)}
 				</ul>

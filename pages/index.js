@@ -108,7 +108,7 @@ export default function Start({slides, assignments, artwork, studio, slug}){
 }
 
 export const getStaticProps = withGlobalProps(async ({props, revalidate }) => {
-
+	
 	return {
 		props:{
 			...props,

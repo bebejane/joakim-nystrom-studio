@@ -43,8 +43,7 @@ export default function Gallery({
 
 		const slide = document.getElementById(`slide-${idx}-${id}`)
 		if (!slide) return console.log('slide not found')
-		if (idx === 3)
-			console.log(slide)
+		
 		const offset = -Math.floor(slide.offsetLeft - (isMobile ? 0 : ((dimensions.innerWidth - slide.offsetWidth) / 2)))
 
 		setTransition({ offset, duration })

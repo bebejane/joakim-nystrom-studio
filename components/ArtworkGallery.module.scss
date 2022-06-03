@@ -63,12 +63,13 @@
   }
   .caption {
     position: absolute;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     bottom: 0;
     font-size: 0.9rem;
     color: white;
+    a{
+      color:$white;
+
+    }
   }
   .close {
     position: absolute;
@@ -94,5 +95,6 @@
     font-size: 1.5rem;
     user-select: none;
     visibility: hidden;
+    color:$white;
   }
 }
