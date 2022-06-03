@@ -103,6 +103,9 @@
 			padding: 20px;
 			padding-bottom: 3rem;
 			text-align: center;
+			.description {
+
+			}
 
 			.subtitle {
 				max-width: 80%;
@@ -110,8 +113,6 @@
 				//text-transform: uppercase;
 				font-size: 0.7rem;
 				line-height: 1rem;
-				transition: transform 0.5s ease;
-				transform: translateY(150px);
 			}
 		}
 		@include mq($until: desktop) {
