@@ -15,7 +15,11 @@ const getPathsFromPayload = async (payload) => {
     paths.push(`/artwork`)
   }else if(apiKey === 'studio'){
     paths.push(`/studio`)
+  }else if(apiKey === 'start'){
+    paths.push(`/`)
   }
+
+  
   return paths;
 }
 
