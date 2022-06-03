@@ -6,12 +6,14 @@ import ArtworkGallery from '/components/ArtworkGallery';
 
 import Markdown from '/lib/dato/components/Markdown';
 import useStore from '/store';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 export default function Studio({ artwork, studio: { email, phone, description, address, postal, background, clients }, show, revRoute }) {
 
 	const setIsShowingArtworkGallery = useStore((state) => state.setIsShowingArtworkGallery)
 	const [galleryIndex, setGalleryIndex] = useState()
+	
+	useEffect(()=>{setIsShowingArtworkGallery(galleryIndex !== undefined)}, [galleryIndex])
 
 	return (
 		<>
