@@ -30,11 +30,11 @@ export default function Menu({ }) {
 			</div>
 			<nav className={styles.nav}>
 				<ul>
+					<WrapLink href="/studio" type="studio">
+						<li>Information</li>
+					</WrapLink>
 					<WrapLink href="/artwork" type="artwork">
 						<li>Paintings</li>
-					</WrapLink>
-					<WrapLink href="/studio" type="studio">
-						<li>Studio</li>
 					</WrapLink>
 				</ul>
 			</nav>

@@ -15,12 +15,12 @@
 		flex-direction: row;
 		align-items: center;
 		position: relative;
-		
+
 		z-index: 1;
 		min-width: 100vw;
 		max-height: 100vh;
 		height: 100vh;
-		
+
 		li {
 			position: relative;
 			height: 100vh;
@@ -39,8 +39,8 @@
 					opacity: 0.9;
 				}
 			}
-			&.padded{
-				border: 30px solid transparent;
+			&.padded {
+				border: 120px solid transparent;
 				@include mq($until: tablet) {
 					border: 15px solid transparent;
 				}
@@ -61,13 +61,12 @@
 	justify-content: center;
 	z-index: 10;
 	opacity: 0;
-	color:$white;
-	transition: opacity .3s;
+	color: $white;
+	transition: opacity 0.3s;
 	transition-delay: 0s;
 	//white-space: pre;
 
-	
-	&.fixed{
+	&.fixed {
 		position: fixed;
 		pointer-events: none;
 	}
@@ -88,61 +87,61 @@
 		color: $white;
 		-webkit-font-smoothing: antialiased;
 		max-height: 0px;
-		transition: max-height .8s ease-in;
-		
-		.title{
+		transition: max-height 0.8s ease-in;
+
+		.title {
 			position: absolute;
 			display: flex;
 			flex-direction: column;
 			align-items: center;
 			justify-content: center;
-			top:0;
-			left:0;
+			top: 0;
+			left: 0;
 			width: 100%;
 			height: 100%;
 			z-index: 1;
 			padding: 20px;
 			text-align: center;
-			
-			.subtitle{
+
+			.subtitle {
 				text-transform: uppercase;
 				font-size: 0.7rem;
 				line-height: 1rem;
-				transition: transform .5s ease;
+				transition: transform 0.5s ease;
 				transform: translateY(150px);
 			}
 		}
 		@include mq($until: desktop) {
 			max-height: 500px;
-			.title{
-				.subtitle{
+			.title {
+				.subtitle {
 					transform: translateY(0px);
 				}
 			}
-			.bg{
+			.bg {
 				opacity: 1 !important;
 			}
 		}
-		&.hover{
-			transition: max-height .5s ease-out;
+		&.hover {
+			transition: max-height 0.5s ease-out;
 			max-height: 300px;
-			.title{
-				.subtitle{
+			.title {
+				.subtitle {
 					transform: translateY(0px);
 				}
 			}
-			.bg{
+			.bg {
 				opacity: 1;
 			}
 		}
-		.bg{
+		.bg {
 			position: absolute;
-			top:0;
-			left:0;
+			top: 0;
+			left: 0;
 			width: 100%;
 			height: 100%;
 			z-index: 0;
-			background: linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(0,0,0,0.5) 100%);
+			background: linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, rgba(0, 0, 0, 0.5) 100%);
 			opacity: 0;
 			transition: opacity 1s;
 		}
