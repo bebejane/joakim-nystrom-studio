@@ -6,6 +6,8 @@ const useStore = create((set) => ({
   active:undefined,
   galleryIndex:undefined,
   galleryEndReached:false,
+  isShowingArtworkGallery:false,
+  
 	setShowMenu: (show) =>  
     set((state) => ({
       showMenu: show
@@ -24,6 +26,11 @@ const useStore = create((set) => ({
   setGalleryIndex: (galleryIndex) =>  
     set((state) => ({
       galleryIndex
+    })
+  ),
+  setIsShowingArtworkGallery: (isShowingArtworkGallery) =>  
+    set((state) => ({
+      isShowingArtworkGallery
     })
   ),
 }));
