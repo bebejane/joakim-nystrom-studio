@@ -1,11 +1,11 @@
-$grid-space: 30px;
-$grid-space-small: 20px;
+$grid-space: 20px;
+$grid-space-small: 10px;
 
 .artwork {
 	width: 100%;
-	max-height: 100vh;
-	overflow-y: scroll;
-	overflow-x: hidden;
+	//max-height: 100vh;
+	//overflow-y: scroll;
+	//overflow-x: hidden;
 	//background-color: black;
 	//color: white;
 	ul {
@@ -66,7 +66,6 @@ $grid-space-small: 20px;
 				flex: 0 0 50%;
 				max-width: 50%;
 				min-width: 50%;
-
 				padding-left: math.div($grid-space-small, 2);
 				padding-right: math.div($grid-space-small, 2);
 			}

@@ -17,7 +17,7 @@ const variants =  {
 	},
 	studio:{
 		opacity:1,
-		translateY:'-200vh',
+		translateY:'-100vh',
 		transition:{ease:'easeOut', duration, delay:0.01}
 	},
 	artwork:{
@@ -27,7 +27,7 @@ const variants =  {
 	},
 	gallery:{
 		opacity:1,
-		translateY:'-100vh',
+		translateY:'0vh',
 		transition:{ease:'easeOut', duration, delay:0.01}
 	},
 }
@@ -39,7 +39,7 @@ export default function Start({slides, assignments, artwork, studio, slug}){
 	const setActive = useStore((state) => state.setActive)
 	const active = useStore((state) => state.active)
 	const [isMobile, setIsMobile] = useState(false)
-	const [isShowingArtworkGallery, setIsShowingArtworkGallery] = useState(false)
+	const isShowingArtworkGallery = useStore((state) => state.isShowingArtworkGallery)
 	const { innerWidth } = useWindowSize();
 
 	const [animating, setAnimating] = useState(false)
@@ -89,14 +89,13 @@ export default function Start({slides, assignments, artwork, studio, slug}){
 					onAnimationStart={() => setAnimating(true)}
 					onAnimationComplete={() => setAnimating(false)}
 				>	
-					<Artwork artwork={artwork} onShowGallery={setIsShowingArtworkGallery}/>
 					<Gallery 
 						id={'gallery'}
 						key={'gallery'}
 						slides={slides} 
 						active={true}
 					/>	
-					<Studio studio={studio}	/>	
+					<Studio studio={studio}	artwork={artwork}/>	
 				</motion.div>
 			</Content>
 			{!isShowingArtworkGallery &&

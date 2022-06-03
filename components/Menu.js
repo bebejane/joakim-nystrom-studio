@@ -20,7 +20,7 @@ export default function Menu({ }) {
 		)
 		return !isIndexPage ? <Link href={href}>{content}</Link> : content
 	}
-	console.log(active)
+	
 	return (
 		<menu id="menu" className={cn(styles.menu, !showMenu && styles.hideNav, active === 'studio' && styles.reverted)}>
 			<div className={styles.logo}>
@@ -32,9 +32,6 @@ export default function Menu({ }) {
 				<ul>
 					<WrapLink href="/studio" type="studio">
 						<li>Information</li>
-					</WrapLink>
-					<WrapLink href="/artwork" type="artwork">
-						<li>Paintings</li>
 					</WrapLink>
 				</ul>
 			</nav>

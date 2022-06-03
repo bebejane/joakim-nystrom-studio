@@ -106,7 +106,7 @@ export default function Gallery({
 						height: `${dimensions.innerHeight}px`,
 						visibility: `${(slides.length <= 1 && isNavSlide) || !isReady ? 'hidden' : 'visible'}`,
 						cursor: isNavSlide ? 'pointer' : 'default',
-						overflow: 'hidden'
+						//overflow: 'hidden'
 					}
 
 					return (
@@ -153,14 +153,7 @@ export default function Gallery({
 						</li>
 					)
 				})}
-			</motion.ul>
-			{caption &&
-				<div className={cn(styles.caption, styles.reverse, styles.fixed, styles.show, isMobile && styles.mobile)} onClick={onClose}>
-					<p className={cn(hoverIndex && !isMobile && styles.hover)}>
-						{caption}
-					</p>
-				</div>
-			}
+			</motion.ul>		
 		</div>
 	)
 }

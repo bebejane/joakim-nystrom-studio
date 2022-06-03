@@ -1,19 +1,21 @@
 import styles from './Artwork.module.scss';
 import cn from 'classnames'
 import { Image } from 'react-datocms';
-import Content from './Content';
 import ArtworkGallery from './ArtworkGallery';
 import { useEffect, useState } from 'react';
 
-export default function Artwork({ artwork, onShowGallery, prevRoute }) {
+export default function Artwork({ artwork, onShowGallery, onIndexChange, prevRoute }) {
 
 	const [galleryIndex, setGalleryIndex] = useState()
 
-	useEffect(() => { onShowGallery?.(galleryIndex !== undefined) }, [galleryIndex])
-
+	useEffect(() => { 
+		onShowGallery?.(galleryIndex !== undefined) 
+		onIndexChange?.(galleryIndex) 
+	}, [galleryIndex])
+	
 	return (
 		<>
-			<Content className={styles.artwork}>
+			<section className={styles.artwork}>
 				<ul>
 					{artwork.map(({ image, dimensions, sold, title }, idx) =>
 						<li key={idx} onClick={() => setGalleryIndex(idx)}>
@@ -21,7 +23,7 @@ export default function Artwork({ artwork, onShowGallery, prevRoute }) {
 							<span className={cn(styles.availability, sold && styles.sold)}>
 								{sold ?
 									<>Sold</>
-									:
+								:
 									<a
 										href={`mailto:info@joakimnystrom.com${title ? `?subject=${encodeURIComponent(title)}` : ''}`}
 										onClick={e => e.stopPropagation()}
@@ -33,14 +35,7 @@ export default function Artwork({ artwork, onShowGallery, prevRoute }) {
 						</li>
 					)}
 				</ul>
-			</Content>
-			{galleryIndex !== undefined &&
-				<ArtworkGallery
-					images={artwork.map(({ image }) => image)}
-					index={galleryIndex}
-					onClose={() => setGalleryIndex(undefined)}
-				/>
-			}
+			</section>
 		</>
 	)
 }
