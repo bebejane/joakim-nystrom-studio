@@ -53,8 +53,8 @@ $margin: 30px;
     }
     animation: hide 0.3s forwards;
     animation-delay: 0.3s;
-    @keyframes  hide{
-      to{
+    @keyframes hide {
+      to {
         width: auto;
       }
     }
@@ -75,8 +75,12 @@ $margin: 30px;
       transition-delay: 0.3s;
       transform: translateY(0vh);
     }
-    &.hide{
+    &.hide {
       display: none;
     }
+  }
+
+  a:hover {
+    color: white;
   }
 }
