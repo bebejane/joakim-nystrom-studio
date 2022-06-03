@@ -44,6 +44,7 @@ export default function Start({slides, assignments, artwork, studio, slug}){
 
 	const [animating, setAnimating] = useState(false)
 	
+	const isReverted = active === 'studio'
 	const activeToSlug = (active) => active === 'gallery' ? '/' : active === 'assignment' ? `/${assignment?.slug}` : active === 'artwork' ? '/artwork' : '/studio'
 	const urlToActive = (url) => url === '/' ? 'gallery' : url === '/artwork' ? `artwork` : url === '/studio' ? 'studio' : 'assignment'
 	
@@ -73,14 +74,13 @@ export default function Start({slides, assignments, artwork, studio, slug}){
 	
 	useEffect(()=>{ setIsMobile(innerWidth && innerWidth <= 768)}, [innerWidth])
 	
-	const backStyles = cn(styles.back, active !== 'gallery' && styles.show)
+	const backStyles = cn(styles.back, active !== 'gallery' && styles.show, isReverted && styles.reverted)
 
 	if(!active) return null
 	
 	return (
 		<>
 			<Content id="container" key={'container'} className={styles.container}>
-				
 				<motion.div
 					key={'animation'}
 					initial={'initial'}

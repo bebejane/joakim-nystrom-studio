@@ -57,6 +57,9 @@
 	&.hide{
 		display: none;
 	}
+	&.reverted{
+		color:$white;
+	}
 	.arrow {
 		position: absolute;
 		top:1.5rem;

@@ -91,11 +91,10 @@ export default function Gallery({
 				animate={{ translateX: `${transition.offset || 0 }px` }}
 				transition={{ duration: transition.duration || 0 }}
 			>
-				{allSlides.map(({ title,  data, type, subtitle, margin }, idx) => {
+				{allSlides.map(({ title,  data, type, subtitle, description, margin }, idx) => {
 
 					const maxWidth = dimensions.innerWidth * (isMobile ? 1 : 0.8);
 					const width = type === 'text' ? maxWidth : Math.min((dimensions.innerHeight / data.height) * data.width, isMobile ? data.width : maxWidth);
-					
 					const realIndex = isMobile ? idx : idx - (slides.length);
 					const isNavSlide = isMobile ? false : (index - 1 === realIndex || index + 1 === realIndex)
 					const isCenterSlide = realIndex === index
@@ -105,7 +104,7 @@ export default function Gallery({
 						width: isMobile ? 'auto' : `${width}px`,
 						height: `${dimensions.innerHeight}px`,
 						visibility: `${(slides.length <= 1 && isNavSlide) || !isReady ? 'hidden' : 'visible'}`,
-						cursor: isCenterSlide ? 'default' : 'pointer'
+						cursor: isNavSlide ? 'pointer' : 'default'
 					}
 					
 					return (
@@ -138,7 +137,7 @@ export default function Gallery({
 									<div key={`slide-caption-${idx}-${id}`} className={cn(styles.caption, (hoverIndex === idx || isMobile) && styles.show)}>
 										<p className={cn(hoverIndex === idx && !isMobile && styles.hover)}>
 											<div className={styles.title}>
-												<span>{title}</span>
+												<span>{description}</span>
 												<span className={styles.subtitle}>
 													{subtitle}
 												</span>
