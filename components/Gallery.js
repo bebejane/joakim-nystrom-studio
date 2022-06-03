@@ -64,12 +64,11 @@ export default function Gallery({
 		setTimeout(() => setIndex(index + 1 < slides.length ? index + 1 : 0), 20)
 	}
 
-	const handleIndexSelected = (idx) => slides[idx] && slides[idx].type !== 'text' && onIndexSelected?.(idx)
-	const handleMouseOver = ({type}) => slides[idx] && slides[idx].type !== 'text' && onIndexSelected?.(idx)
+	const handleIndexSelected = (idx) => slides[idx] && slides[idx].type !== 'text' && onIndexSelected?.(idx)	
 
 	useEffect(() => { setDimensions({ innerHeight, innerWidth }) }, [innerHeight, innerWidth])
-	useEffect(() => { scrollTo(index) }, [index, slides, dimensions, id])
-	useEffect(() => { onIndexChange?.(index) }, [index])
+	useEffect(() => { scrollTo(index);  onIndexChange?.(index); }, [index, slides, dimensions, id])
+	
 	useEffect(() => { indexFromProps !== undefined && setIndex(indexFromProps) }, [indexFromProps])
 	useEffect(() => { setIsMobile(innerWidth && innerWidth <= 768) }, [innerWidth])
 
@@ -84,12 +83,12 @@ export default function Gallery({
 		document.addEventListener('keydown', handleKeyDown)
 		return () => document.removeEventListener('keydown', handleKeyDown)
 	}, [index, active])
-	console.log(hoverIndex)
+	
 	return (
 		<div id={id} ref={galleryRef} key={`gallery-${id}`} className={cn(styles.gallery, className)} style={{ ...style, visibility: !isReady ? 'hidden' : 'visible' }}>
 			<motion.ul
 				id={'slide-list'}
-				animate={{ translateX: `${transition.offset || 0}px` }}
+				animate={{ translateX: `${transition.offset || 0 }px` }}
 				transition={{ duration: transition.duration || 0 }}
 			>
 				{allSlides.map(({ title,  data, type, subtitle, margin }, idx) => {
@@ -106,6 +105,7 @@ export default function Gallery({
 						width: isMobile ? 'auto' : `${width}px`,
 						height: `${dimensions.innerHeight}px`,
 						visibility: `${(slides.length <= 1 && isNavSlide) || !isReady ? 'hidden' : 'visible'}`,
+						cursor: isCenterSlide ? 'default' : 'pointer'
 					}
 					
 					return (
