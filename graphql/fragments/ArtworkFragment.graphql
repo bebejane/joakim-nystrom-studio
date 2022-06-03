@@ -4,8 +4,11 @@ fragment ArtworkFragment on ArtworkRecord {
   id
   title
   dimensions
+  edition
+  price
+  sold
   image{
     ...ImageFragment
   }
-  sold
+  
 }
