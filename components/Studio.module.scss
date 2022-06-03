@@ -12,6 +12,11 @@
   display: flex;
   flex-direction: row;
 
+  h2 {
+    padding-top: 1em;
+    font-size: 0.8rem;
+  }
+
   aside {
     width: 25%;
     position: sticky;
@@ -21,11 +26,6 @@
   article {
     width: 75%;
     padding-right: 10%;
-
-    h2 {
-      padding-top: 1em;
-      font-size: 0.8rem;
-    }
   }
 
   ul {

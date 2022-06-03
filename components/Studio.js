@@ -8,9 +8,12 @@ export default function Studio({ studio: { email, phone, description, address, p
 	return (
 		<Content className={styles.studio}>
 			<aside>
+				<h2>Contact</h2>
+
 				<p>
 					{email}<br />
 					{phone}<br />
+					<h2>Studio</h2>
 					{address}<br />
 					{postal}
 				</p>

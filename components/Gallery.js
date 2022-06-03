@@ -45,10 +45,10 @@ export default function Gallery({
 		if (!slide) return console.log('slide not found')
 
 		const offset = -Math.floor(slide.offsetLeft - (isMobile ? 0 : ((dimensions.innerWidth - slide.clientWidth) / 2)))
-		
-		setTransition({ offset, duration })	
+
+		setTransition({ offset, duration })
 		setHoverIndex(undefined)
-		idx+1 === slides.length && onEndReached?.(true)		
+		idx + 1 === slides.length && onEndReached?.(true)
 	}
 
 	const back = () => {
@@ -64,41 +64,41 @@ export default function Gallery({
 		setTimeout(() => setIndex(index + 1 < slides.length ? index + 1 : 0), 20)
 	}
 
-	const handleIndexSelected = (idx) => slides[idx] && slides[idx].type !== 'text' && onIndexSelected?.(idx)	
+	const handleIndexSelected = (idx) => slides[idx] && slides[idx].type !== 'text' && onIndexSelected?.(idx)
 
 	useEffect(() => { setDimensions({ innerHeight, innerWidth }) }, [innerHeight, innerWidth])
-	useEffect(() => { scrollTo(index);  onIndexChange?.(index); }, [index, slides, dimensions, id])
-	
+	useEffect(() => { scrollTo(index); onIndexChange?.(index); }, [index, slides, dimensions, id])
+
 	useEffect(() => { indexFromProps !== undefined && setIndex(indexFromProps) }, [indexFromProps])
 	useEffect(() => { setIsMobile(innerWidth && innerWidth <= 768) }, [innerWidth])
 
 	const updateIndexOnScroll = (p) => onIndexChange(clamp(Math.floor(slides.length * p), 0, slides.length - 1))
-	useEffect(() => {	
-		if(isMobile && onIndexChange)
+	useEffect(() => {
+		if (isMobile && onIndexChange)
 			return scrollXProgress.onChange(updateIndexOnScroll)
 	}, [isMobile])
-	
-	const handleKeyDown = ({key}) => active && (key === 'ArrowRight' ? forward() : key === 'ArrowLeft' ? back() :  key === 'ArrowUp' ? onClose?.() : key === 'ArrowDown' ? 	handleIndexSelected(index) : null)	
-	useEffect(()=>{
+
+	const handleKeyDown = ({ key }) => active && (key === 'ArrowRight' ? forward() : key === 'ArrowLeft' ? back() : key === 'ArrowUp' ? onClose?.() : key === 'ArrowDown' ? handleIndexSelected(index) : null)
+	useEffect(() => {
 		document.addEventListener('keydown', handleKeyDown)
 		return () => document.removeEventListener('keydown', handleKeyDown)
 	}, [index, active])
-	
+
 	return (
 		<div id={id} ref={galleryRef} key={`gallery-${id}`} className={cn(styles.gallery, className)} style={{ ...style, visibility: !isReady ? 'hidden' : 'visible' }}>
 			<motion.ul
 				id={'slide-list'}
-				animate={{ translateX: `${transition.offset || 0 }px` }}
+				animate={{ translateX: `${transition.offset || 0}px` }}
 				transition={{ duration: transition.duration || 0 }}
 			>
-				{allSlides.map(({ title,  data, type, subtitle, description, margin }, idx) => {
+				{allSlides.map(({ title, data, type, subtitle, description, margin }, idx) => {
 
 					const maxWidth = dimensions.innerWidth * (isMobile ? 1 : 0.8);
 					const width = type === 'text' ? maxWidth : Math.min((dimensions.innerHeight / data.height) * data.width, isMobile ? data.width : maxWidth);
 					const realIndex = isMobile ? idx : idx - (slides.length);
 					const isNavSlide = isMobile ? false : (index - 1 === realIndex || index + 1 === realIndex)
 					const isCenterSlide = realIndex === index
-					
+
 					const slideStyles = {
 						maxWidth: isMobile ? 'unset' : `${width}px`,
 						width: isMobile ? 'auto' : `${width}px`,
@@ -106,7 +106,7 @@ export default function Gallery({
 						visibility: `${(slides.length <= 1 && isNavSlide) || !isReady ? 'hidden' : 'visible'}`,
 						cursor: isNavSlide ? 'pointer' : 'default'
 					}
-					
+
 					return (
 						<li
 							id={`slide-${realIndex}-${id}`}
@@ -115,37 +115,37 @@ export default function Gallery({
 							className={cn(isNavSlide && styles.nav, isCenterSlide && hoverIndex === idx && style.hover, margin && styles.padded)}
 							style={slideStyles}
 							onClick={() => isNavSlide ? (index - 1 === realIndex ? back() : forward()) : handleIndexSelected(realIndex)}
-							onMouseMove={()=>{
-								if(!isCenterSlide || idx === hoverIndex) return
+							onMouseMove={() => {
+								if (!isCenterSlide || idx === hoverIndex) return
 								setHoverIndex(isCenterSlide ? idx : undefined)
 							}}
-							onMouseOut={()=>{
+							onMouseOut={() => {
 								setHoverIndex(undefined)
 							}}
-						>	
-								{type === 'text' || type == 'empty' ?
-									<TextSlide text={data} width={maxWidth} isMobile={isMobile}/>
-									: type === 'image' ?
-										<ImageSlide image={data} width={width} isMobile={isMobile} margin={margin}/>
-										: type === 'video' ?
-											<VideoSlide key={`slide-video-${idx}-${id}`} data={data} active={index === realIndex} width={width} isMobile={isMobile} />
-											:
-											null
-								}
-							
-								{(!caption && title) &&
-									<div key={`slide-caption-${idx}-${id}`} className={cn(styles.caption, (hoverIndex === idx || isMobile) && styles.show)}>
-										<p className={cn(hoverIndex === idx && !isMobile && styles.hover)}>
-											<div className={styles.title}>
-												<span>{description}</span>
-												<span className={styles.subtitle}>
-													{subtitle}
-												</span>
-											</div>
-											<div className={styles.bg}></div>
-										</p>
-									</div>
-								}
+						>
+							{type === 'text' || type == 'empty' ?
+								<TextSlide text={data} width={maxWidth} isMobile={isMobile} />
+								: type === 'image' ?
+									<ImageSlide image={data} width={width} isMobile={isMobile} margin={margin} />
+									: type === 'video' ?
+										<VideoSlide key={`slide-video-${idx}-${id}`} data={data} active={index === realIndex} width={width} isMobile={isMobile} />
+										:
+										null
+							}
+
+							{(!caption && title) &&
+								<div key={`slide-caption-${idx}-${id}`} className={cn(styles.caption, (hoverIndex === idx || isMobile) && styles.show)}>
+									<p className={cn(hoverIndex === idx && !isMobile && styles.hover)}>
+										<div className={styles.title}>
+											<span>{title}</span>
+											<span className={styles.subtitle}>
+												<br />{subtitle}
+											</span>
+										</div>
+										<div className={styles.bg}></div>
+									</p>
+								</div>
+							}
 						</li>
 					)
 				})}
@@ -167,7 +167,7 @@ const TextSlide = ({ text, width }) => {
 		<div className={styles.textSlide} style={{ minWidth: `${width}px` }}>
 			<div className={styles.content} style={{ minWidth: `${width}px` }}>
 				{text &&
-					<div>{text}</div>	
+					<div>{text}</div>
 				}
 			</div>
 		</div>
@@ -188,11 +188,11 @@ const ImageSlide = ({ image, width, margin }) => {
 }
 
 const VideoSlide = ({ data, active, width, isMobile }) => {
-	
+
 	const videoRef = useRef();
 
 	useEffect(() => {
-		if (!videoRef.current || isMobile) return	
+		if (!videoRef.current || isMobile) return
 		if (active)
 			videoRef.current.play().catch(() => { })
 		else

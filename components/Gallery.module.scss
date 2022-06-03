@@ -101,10 +101,13 @@
 			height: 100%;
 			z-index: 1;
 			padding: 20px;
+			padding-bottom: 3rem;
 			text-align: center;
 
 			.subtitle {
-				text-transform: uppercase;
+				max-width: 80%;
+
+				//text-transform: uppercase;
 				font-size: 0.7rem;
 				line-height: 1rem;
 				transition: transform 0.5s ease;
