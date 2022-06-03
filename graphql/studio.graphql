@@ -2,6 +2,8 @@ query GetStudio{
 	studio{
     email
     phone
+    address
+    postal
     description(markdown: false)
     background(markdown: false)
     clients{
