@@ -9,7 +9,6 @@ export default function Studio({ studio: { email, phone, description, address, p
 		<Content className={styles.studio}>
 			<aside>
 				<h2>Contact</h2>
-
 				<p>
 					{email}<br />
 					{phone}<br />
