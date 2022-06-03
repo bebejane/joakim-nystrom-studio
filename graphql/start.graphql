@@ -18,6 +18,7 @@ query GetStart {
         assignment{
           ...AssignmentFragment
         }
+        margin
       }
       ... on VideoSlideRecord {
        type: _modelApiKey

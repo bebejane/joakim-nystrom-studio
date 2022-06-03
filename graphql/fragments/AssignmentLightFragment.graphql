@@ -4,5 +4,8 @@ fragment AssignmentLightFragment on AssignmentRecord {
   images{
     ...ImageFragment
   }
+  collaborator{
+    name
+  }
   slug
 }

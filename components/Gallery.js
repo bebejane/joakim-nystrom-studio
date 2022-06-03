@@ -91,14 +91,14 @@ export default function Gallery({
 				animate={{ translateX: `${transition.offset || 0}px` }}
 				transition={{ duration: transition.duration || 0 }}
 			>
-				{allSlides.map(({ title, subtitle,  data, type }, idx) => {
+				{allSlides.map(({ title,  data, type, subtitle }, idx) => {
 
 					const maxWidth = dimensions.innerWidth * (isMobile ? 1 : 0.8);
 					const width = type === 'text' ? maxWidth : Math.min((dimensions.innerHeight / data.height) * data.width, isMobile ? data.width : maxWidth);
 					const realIndex = isMobile ? idx : idx - (slides.length);
 					const isNavSlide = isMobile ? false : (index - 1 === realIndex || index + 1 === realIndex)
 					const isCenterSlide = realIndex === index
-
+					
 					const slideStyles = {
 						maxWidth: isMobile ? 'unset' : `${width}px`,
 						width: isMobile ? 'auto' : `${width}px`,
@@ -135,9 +135,10 @@ export default function Gallery({
 									<p className={cn(hoverIndex === idx && !isMobile && styles.hover)}>
 										<div className={styles.title}>
 											<span>{title}</span>
-											<span className={styles.subtitle}>{subtitle}</span>
+											<span className={styles.subtitle}>
+												{subtitle}
+											</span>
 										</div>
-										
 										<div className={styles.bg}></div>
 									</p>
 								</div>
