@@ -91,7 +91,7 @@ export default function Gallery({
 				animate={{ translateX: `${transition.offset || 0 }px` }}
 				transition={{ duration: transition.duration || 0 }}
 			>
-				{allSlides.map(({ title,  data, type, subtitle, description, margin }, idx) => {
+				{allSlides.map(({ title,  data, type, subtitle, description, year, client, collaborator, margin }, idx) => {
 
 					const maxWidth = dimensions.innerWidth * (isMobile ? 1 : 0.8);
 					const width = type === 'text' ? maxWidth : Math.min((dimensions.innerHeight / data.height) * data.width, isMobile ? data.width : maxWidth);
@@ -101,10 +101,12 @@ export default function Gallery({
 					
 					const slideStyles = {
 						maxWidth: isMobile ? 'unset' : `${width}px`,
+						minWidth: isMobile ? 'unset' : `${width}px`,
 						width: isMobile ? 'auto' : `${width}px`,
 						height: `${dimensions.innerHeight}px`,
 						visibility: `${(slides.length <= 1 && isNavSlide) || !isReady ? 'hidden' : 'visible'}`,
-						cursor: isNavSlide ? 'pointer' : 'default'
+						cursor: isNavSlide ? 'pointer' : 'default',
+						overflow:'hidden'
 					}
 					
 					return (
@@ -139,7 +141,9 @@ export default function Gallery({
 											<div className={styles.title}>
 												<span className={styles.description}>{description}</span>
 												<span className={styles.subtitle}>
-													{subtitle}
+													{year && <span>Year: {year}</span>}
+													{client && <span>Client: {client}</span>}
+													{collaborator && <span>Collaborator: {collaborator}</span>}
 												</span>
 											</div>
 											<div className={styles.bg}></div>
@@ -176,14 +180,12 @@ const TextSlide = ({ text, width }) => {
 const ImageSlide = ({ image, width, margin }) => {
 	const realWidth = width - (margin ? '60' : 0)
 	return (
-		<picture>
-			<img
-				className={styles.imageSlide}
-				src={`${image.url}?w=1400`}
-				style={{ width: `${realWidth}px`, maxWidth: `${realWidth}px`, height: '100vh' }}
-				loading={'eager'}
-			/>
-		</picture>
+		<img
+			className={styles.imageSlide}
+			src={`${image.url}?w=1400`}
+			style={{ width: `${realWidth}px`, maxWidth: `${realWidth}px`, height: '100vh' }}
+			loading={'eager'}
+		/>
 	)
 }
 
