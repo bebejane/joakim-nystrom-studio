@@ -8,15 +8,11 @@ fragment AssignmentFragment on AssignmentRecord {
   images{
     ...ImageFragment
   }
-  assignmentTypes{
-    value
-  }
   client{
     name
   }
   collaborator{
     name
   }
-  
   slug
 }
