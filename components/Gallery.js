@@ -91,10 +91,11 @@ export default function Gallery({
 				animate={{ translateX: `${transition.offset || 0}px` }}
 				transition={{ duration: transition.duration || 0 }}
 			>
-				{allSlides.map(({ title,  data, type, subtitle }, idx) => {
+				{allSlides.map(({ title,  data, type, subtitle, margin }, idx) => {
 
 					const maxWidth = dimensions.innerWidth * (isMobile ? 1 : 0.8);
 					const width = type === 'text' ? maxWidth : Math.min((dimensions.innerHeight / data.height) * data.width, isMobile ? data.width : maxWidth);
+					
 					const realIndex = isMobile ? idx : idx - (slides.length);
 					const isNavSlide = isMobile ? false : (index - 1 === realIndex || index + 1 === realIndex)
 					const isCenterSlide = realIndex === index
@@ -110,7 +111,7 @@ export default function Gallery({
 						<li
 							id={`slide-${realIndex}-${id}`}
 							key={`slide-a-${idx}-${id}`}
-							className={cn(isNavSlide && styles.nav, isCenterSlide && hoverIndex === idx && style.hover)}
+							className={cn(isNavSlide && styles.nav, isCenterSlide && hoverIndex === idx && style.hover, margin && styles.padded)}
 							style={slideStyles}
 							onClick={() => isNavSlide ? (index - 1 === realIndex ? back() : forward()) : handleIndexSelected(realIndex)}
 							onMouseMove={()=>{
@@ -120,29 +121,30 @@ export default function Gallery({
 							onMouseOut={()=>{
 								setHoverIndex(undefined)
 							}}
-						>
-							{type === 'text' || type == 'empty' ?
-								<TextSlide text={data} width={maxWidth} isMobile={isMobile}/>
-								: type === 'image' ?
-									<ImageSlide image={data} width={width} isMobile={isMobile} />
-									: type === 'video' ?
-										<VideoSlide key={`slide-video-${idx}-${id}`} data={data} active={index === realIndex} width={width} isMobile={isMobile} />
-										:
-										null
-							}
-							{(!caption && title) &&
-								<div key={`slide-caption-${idx}-${id}`} className={cn(styles.caption, (isCenterSlide || isMobile) && styles.show)}>
-									<p className={cn(hoverIndex === idx && !isMobile && styles.hover)}>
-										<div className={styles.title}>
-											<span>{title}</span>
-											<span className={styles.subtitle}>
-												{subtitle}
-											</span>
-										</div>
-										<div className={styles.bg}></div>
-									</p>
-								</div>
-							}
+						>	
+								{type === 'text' || type == 'empty' ?
+									<TextSlide text={data} width={maxWidth} isMobile={isMobile}/>
+									: type === 'image' ?
+										<ImageSlide image={data} width={width} isMobile={isMobile} margin={margin}/>
+										: type === 'video' ?
+											<VideoSlide key={`slide-video-${idx}-${id}`} data={data} active={index === realIndex} width={width} isMobile={isMobile} />
+											:
+											null
+								}
+							
+								{(!caption && title) &&
+									<div key={`slide-caption-${idx}-${id}`} className={cn(styles.caption, (isCenterSlide || isMobile) && styles.show)}>
+										<p className={cn(hoverIndex === idx && !isMobile && styles.hover)}>
+											<div className={styles.title}>
+												<span>{title}</span>
+												<span className={styles.subtitle}>
+													{subtitle}
+												</span>
+											</div>
+											<div className={styles.bg}></div>
+										</p>
+									</div>
+								}
 						</li>
 					)
 				})}
@@ -170,14 +172,14 @@ const TextSlide = ({ text, width }) => {
 		</div>
 	)
 }
-const ImageSlide = ({ image, width }) => {
-
+const ImageSlide = ({ image, width, margin }) => {
+	const realWidth = width - (margin ? '60' : 0)
 	return (
 		<picture>
 			<img
 				className={styles.imageSlide}
 				src={`${image.url}?w=1400`}
-				style={{ width: `${width}px`, maxWidth: `${width}px`, height: '100vh' }}
+				style={{ width: `${realWidth}px`, maxWidth: `${realWidth}px`, height: '100vh' }}
 				loading={'eager'}
 			/>
 		</picture>
