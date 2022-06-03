@@ -121,7 +121,7 @@ export default function Gallery({
 								setHoverIndex(isCenterSlide ? idx : undefined)
 							}}
 							onMouseOut={()=>{
-								//setHoverIndex(undefined)
+								setHoverIndex(undefined)
 							}}
 						>	
 								{type === 'text' || type == 'empty' ?
