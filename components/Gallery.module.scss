@@ -102,13 +102,14 @@
 			z-index: 1;
 			padding: 20px;
 			text-align: center;
+			.description {
+
+			}
 
 			.subtitle {
 				text-transform: uppercase;
 				font-size: 0.7rem;
 				line-height: 1rem;
-				transition: transform 0.5s ease;
-				transform: translateY(150px);
 			}
 		}
 		@include mq($until: desktop) {
