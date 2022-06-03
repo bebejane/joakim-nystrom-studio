@@ -16,7 +16,8 @@ const variants =  {
 		translateY:'0vh'
 	},
 	studio:{
-		opacity:0,
+		opacity:1,
+		translateY:'-200vh',
 		transition:{ease:'easeOut', duration, delay:0.01}
 	},
 	artwork:{
@@ -75,15 +76,15 @@ export default function Start({slides, assignments, artwork, studio, slug}){
 	const backStyles = cn(styles.back, active !== 'gallery' && styles.show)
 
 	if(!active) return null
-
+	
 	return (
 		<>
 			<Content id="container" key={'container'} className={styles.container}>
-				<Studio studio={studio} show={active === 'studio'}/>	
+				
 				<motion.div
 					key={'animation'}
 					initial={'initial'}
-					animate={active !== 'studio' ? active : false}	
+					animate={active}	
 					variants={variants}
 					onAnimationStart={() => setAnimating(true)}
 					onAnimationComplete={() => setAnimating(false)}
@@ -95,11 +96,14 @@ export default function Start({slides, assignments, artwork, studio, slug}){
 						slides={slides} 
 						active={true}
 					/>	
+					<Studio studio={studio}	/>	
 				</motion.div>
 			</Content>
-			<div className={backStyles} onClick={() => setActive('gallery')}>
-				Back
-			</div>
+			{!isShowingArtworkGallery &&
+				<div className={backStyles} onClick={() => setActive('gallery')}>
+					Back
+				</div>
+			}
 		</>
 	)
 }

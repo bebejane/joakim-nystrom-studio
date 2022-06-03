@@ -11,7 +11,7 @@ query GetStart {
         data: text
       }
       ... on ImageSlideRecord {
-       type: _modelApiKey
+        type: _modelApiKey
         data: image {
           ...ImageFragment
         }
@@ -21,7 +21,7 @@ query GetStart {
         margin
       }
       ... on VideoSlideRecord {
-       type: _modelApiKey
+        type: _modelApiKey
         data: video {
           ...ImageFragment
         }

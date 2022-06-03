@@ -64,11 +64,11 @@ export default function Gallery({
 		setTimeout(() => setIndex(index + 1 < slides.length ? index + 1 : 0), 20)
 	}
 
-	const handleIndexSelected = (idx) => slides[idx] && slides[idx].type !== 'text' && onIndexSelected?.(idx)
+	const handleIndexSelected = (idx) => slides[idx] && slides[idx].type !== 'text' && onIndexSelected?.(idx)	
 
 	useEffect(() => { setDimensions({ innerHeight, innerWidth }) }, [innerHeight, innerWidth])
-	useEffect(() => { scrollTo(index) }, [index, slides, dimensions, id])
-	useEffect(() => { onIndexChange?.(index) }, [index])
+	useEffect(() => { scrollTo(index);  onIndexChange?.(index); }, [index, slides, dimensions, id])
+	
 	useEffect(() => { indexFromProps !== undefined && setIndex(indexFromProps) }, [indexFromProps])
 	useEffect(() => { setIsMobile(innerWidth && innerWidth <= 768) }, [innerWidth])
 
@@ -88,13 +88,14 @@ export default function Gallery({
 		<div id={id} ref={galleryRef} key={`gallery-${id}`} className={cn(styles.gallery, className)} style={{ ...style, visibility: !isReady ? 'hidden' : 'visible' }}>
 			<motion.ul
 				id={'slide-list'}
-				animate={{ translateX: `${transition.offset || 0}px` }}
+				animate={{ translateX: `${transition.offset || 0 }px` }}
 				transition={{ duration: transition.duration || 0 }}
 			>
-				{allSlides.map(({ title,  data, type, subtitle }, idx) => {
+				{allSlides.map(({ title,  data, type, subtitle, margin }, idx) => {
 
 					const maxWidth = dimensions.innerWidth * (isMobile ? 1 : 0.8);
 					const width = type === 'text' ? maxWidth : Math.min((dimensions.innerHeight / data.height) * data.width, isMobile ? data.width : maxWidth);
+					
 					const realIndex = isMobile ? idx : idx - (slides.length);
 					const isNavSlide = isMobile ? false : (index - 1 === realIndex || index + 1 === realIndex)
 					const isCenterSlide = realIndex === index
@@ -104,13 +105,15 @@ export default function Gallery({
 						width: isMobile ? 'auto' : `${width}px`,
 						height: `${dimensions.innerHeight}px`,
 						visibility: `${(slides.length <= 1 && isNavSlide) || !isReady ? 'hidden' : 'visible'}`,
+						cursor: isCenterSlide ? 'default' : 'pointer'
 					}
 					
 					return (
 						<li
 							id={`slide-${realIndex}-${id}`}
+							index={idx}
 							key={`slide-a-${idx}-${id}`}
-							className={cn(isNavSlide && styles.nav, isCenterSlide && hoverIndex === idx && style.hover)}
+							className={cn(isNavSlide && styles.nav, isCenterSlide && hoverIndex === idx && style.hover, margin && styles.padded)}
 							style={slideStyles}
 							onClick={() => isNavSlide ? (index - 1 === realIndex ? back() : forward()) : handleIndexSelected(realIndex)}
 							onMouseMove={()=>{
@@ -120,29 +123,30 @@ export default function Gallery({
 							onMouseOut={()=>{
 								setHoverIndex(undefined)
 							}}
-						>
-							{type === 'text' || type == 'empty' ?
-								<TextSlide text={data} width={maxWidth} isMobile={isMobile}/>
-								: type === 'image' ?
-									<ImageSlide image={data} width={width} isMobile={isMobile} />
-									: type === 'video' ?
-										<VideoSlide key={`slide-video-${idx}-${id}`} data={data} active={index === realIndex} width={width} isMobile={isMobile} />
-										:
-										null
-							}
-							{(!caption && title) &&
-								<div key={`slide-caption-${idx}-${id}`} className={cn(styles.caption, (isCenterSlide || isMobile) && styles.show)}>
-									<p className={cn(hoverIndex === idx && !isMobile && styles.hover)}>
-										<div className={styles.title}>
-											<span>{title}</span>
-											<span className={styles.subtitle}>
-												{subtitle}
-											</span>
-										</div>
-										<div className={styles.bg}></div>
-									</p>
-								</div>
-							}
+						>	
+								{type === 'text' || type == 'empty' ?
+									<TextSlide text={data} width={maxWidth} isMobile={isMobile}/>
+									: type === 'image' ?
+										<ImageSlide image={data} width={width} isMobile={isMobile} margin={margin}/>
+										: type === 'video' ?
+											<VideoSlide key={`slide-video-${idx}-${id}`} data={data} active={index === realIndex} width={width} isMobile={isMobile} />
+											:
+											null
+								}
+							
+								{(!caption && title) &&
+									<div key={`slide-caption-${idx}-${id}`} className={cn(styles.caption, (hoverIndex === idx || isMobile) && styles.show)}>
+										<p className={cn(hoverIndex === idx && !isMobile && styles.hover)}>
+											<div className={styles.title}>
+												<span>{title}</span>
+												<span className={styles.subtitle}>
+													{subtitle}
+												</span>
+											</div>
+											<div className={styles.bg}></div>
+										</p>
+									</div>
+								}
 						</li>
 					)
 				})}
@@ -170,14 +174,14 @@ const TextSlide = ({ text, width }) => {
 		</div>
 	)
 }
-const ImageSlide = ({ image, width }) => {
-
+const ImageSlide = ({ image, width, margin }) => {
+	const realWidth = width - (margin ? '60' : 0)
 	return (
 		<picture>
 			<img
 				className={styles.imageSlide}
 				src={`${image.url}?w=1400`}
-				style={{ width: `${width}px`, maxWidth: `${width}px`, height: '100vh' }}
+				style={{ width: `${realWidth}px`, maxWidth: `${realWidth}px`, height: '100vh' }}
 				loading={'eager'}
 			/>
 		</picture>
