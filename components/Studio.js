@@ -27,6 +27,7 @@ export default function Studio({ artwork, studio: { email, phone, description, a
 					</p>
 				</aside>
 				<article>
+					<h2>About</h2>
 					<Markdown>{description}</Markdown>
 					<h2>Clients</h2>
 					<ul>
@@ -36,14 +37,15 @@ export default function Studio({ artwork, studio: { email, phone, description, a
 					</ul>
 					<h2>Photo credit</h2>
 					<Markdown>{background}</Markdown>
+					<hr />
 					<h2>Paintings</h2>
-					<Artwork 
-						artwork={artwork} 
-						onShowGallery={setIsShowingArtworkGallery} 
+					<Artwork
+						artwork={artwork}
+						onShowGallery={setIsShowingArtworkGallery}
 						onIndexChange={setGalleryIndex}
 					/>
 				</article>
-				
+
 			</Content>
 			{galleryIndex !== undefined &&
 				<ArtworkGallery

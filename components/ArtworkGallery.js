@@ -40,8 +40,13 @@ export default function ArtworkGallery({ images, onClose, index = 0 }) {
         </Swiper>
       </div>
       <div className={styles.forward} onClick={() => swiperRef.current.slideNext()}>→</div>
-      <div className={styles.caption}>{title}</div>
+      <div className={styles.caption}>
+        Edition: 1<br />
+        Size: 45x34cm<br />
+        Prize: 200 Euro<br />
+        Buy<br />
+      </div>
       <div className={styles.close} onClick={onClose}>×</div>
-    </div>
+    </div >
   )
 }

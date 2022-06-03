@@ -104,7 +104,6 @@
 			padding-bottom: 3rem;
 			text-align: center;
 			.description {
-
 			}
 
 			.subtitle {
@@ -166,7 +165,8 @@
 	min-height: 100vh;
 	max-height: 100vh;
 	user-select: none;
-	background-color: #fff;
+	background-color: black;
+	color: white;
 	cursor: default;
 	.content {
 		position: absolute;
@@ -178,8 +178,9 @@
 		align-items: center;
 		justify-content: center;
 		padding: $space;
-		line-height: 2rem;
 		flex-wrap: wrap;
+		padding-left: 15%;
+		padding-right: 15%;
 	}
 
 	.meta {

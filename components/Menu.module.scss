@@ -14,12 +14,11 @@ $margin: 30px;
   width: 100vw;
   max-width: 100vw;
   &.reverted {
-    div{
-      a{
-        color:$white !important;
+    div {
+      a {
+        color: $white !important;
       }
     }
-    
   }
   .logo {
     cursor: pointer;
@@ -80,7 +79,11 @@ $margin: 30px;
     }
   }
 
-  a:hover {
+  a {
     color: white;
+  }
+
+  a:hover {
+    color: black;
   }
 }

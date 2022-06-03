@@ -1,8 +1,9 @@
-$grid-space: 20px;
+$grid-space: 1rem;
 $grid-space-small: 10px;
 
 .artwork {
 	width: 100%;
+	padding-top: 1rem;
 	//max-height: 100vh;
 	//overflow-y: scroll;
 	//overflow-x: hidden;
@@ -18,11 +19,11 @@ $grid-space-small: 10px;
 		li {
 			display: flex;
 			flex-direction: column;
-			flex: 0 0 16.66%;
+			flex: 0 0 20%;
 			margin: 0;
-			margin-bottom: 4.1vw;
-			max-width: 16.66%;
-			min-width: 16.66%;
+			margin-bottom: 1rem;
+			max-width: 20%;
+			min-width: 20%;
 			cursor: pointer;
 			&:last-child {
 				margin-right: auto;
