@@ -11,8 +11,8 @@ export default function Menu({ }) {
 	const setActive = useStore((state) => state.setActive)
 	const active = useStore((state) => state.active)
 	const isIndexPage = router.asPath === '/'
-	
-	const WrapLink = ({href, type, children}) => {
+
+	const WrapLink = ({ href, type, children }) => {
 		const content = (
 			<a onClick={() => setActive(type)} className={cn(active === type && styles.selected)}>
 				{children}
@@ -31,13 +31,13 @@ export default function Menu({ }) {
 			<nav className={styles.nav}>
 				<ul>
 					<WrapLink href="/artwork" type="artwork">
-						<li>Artwork</li>
+						<li>Paintings</li>
 					</WrapLink>
 					<WrapLink href="/studio" type="studio">
 						<li>Studio</li>
 					</WrapLink>
 				</ul>
-			</nav>			
+			</nav>
 		</menu>
 	);
 }

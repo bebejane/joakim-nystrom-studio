@@ -3,21 +3,30 @@ import cn from 'classnames'
 import Content from '/components/Content';
 import Markdown from '/lib/dato/components/Markdown';
 
-export default function Studio({studio: {email, phone, description, background, clients}, show, revRoute}){	
-	
+export default function Studio({ studio: { email, phone, description, address, postal, background, clients }, show, revRoute }) {
+
 	return (
 		<Content className={cn(styles.studio, show && styles.show)}>
-			<p>
-			{email}<br/>
-			{phone}
-			</p>
-			<Markdown>{description}</Markdown>
-			<Markdown>{background}</Markdown>
+			<aside>
+				<p>
+					{email}<br />
+					{phone}<br />
+					{address}<br />
+					{postal}
+				</p>
+			</aside>
+			<article>
+				<Markdown>{description}</Markdown>
+				<h2>Clients</h2>
 				<ul>
-				{clients.map(({name}, idx) => 
-					<li key={idx}>{name}</li>
-				)}
+					{clients.map(({ name }, idx) =>
+						<li key={idx}>{name}</li>
+					)}
 				</ul>
+				<h2>Photo credit</h2>
+				<Markdown>{background}</Markdown>
+
+			</article>
 		</Content>
 	)
 }
