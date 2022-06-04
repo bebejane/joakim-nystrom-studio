@@ -2,7 +2,6 @@ import styles from './index.module.scss'
 import { withGlobalProps } from "/lib/hoc";
 import Content from '/components/Content';
 import Gallery from '/components/Gallery';
-import Artwork from '/components/Artwork';
 import Studio from '/components/Studio';
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion'
@@ -35,7 +34,6 @@ const variants =  {
 export default function Start({slides, assignments, artwork, studio, slug}){
 	
 	const setShowMenu = useStore((state) => state.setShowMenu)
-	const showMenu = useStore((state) => state.showMenu)
 	const setActive = useStore((state) => state.setActive)
 	const active = useStore((state) => state.active)
 	const [isMobile, setIsMobile] = useState(false)
@@ -72,7 +70,7 @@ export default function Start({slides, assignments, artwork, studio, slug}){
 		}
 	}, [])
 	
-	useEffect(()=>{ setIsMobile(innerWidth && innerWidth <= 768)}, [innerWidth])
+	useEffect(()=>{ setIsMobile(innerWidth && innerWidth <= 768) }, [innerWidth])
 	
 	const backStyles = cn(styles.back, active !== 'gallery' && styles.show, isReverted && styles.reverted)
 
@@ -114,6 +112,6 @@ export const getStaticProps = withGlobalProps(async ({props, revalidate }) => {
 			...props,
 			slug:'/'
 		},
-		//revalidate
+		revalidate
 	};
 });
