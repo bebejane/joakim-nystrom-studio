@@ -38,6 +38,7 @@ export default async (req, res) => {
     
     const t = new Date().getTime()
     const to = setTimeout(()=>res.json({ revalidated: true, paths, duration:DATO_TIMEOUT, timeout:true}), DATO_TIMEOUT)
+    console.log('revalidate', paths)
     const result = await Promise.all(paths.map(path => res.unstable_revalidate(path)))
     clearTimeout(to)
     const duration = (new Date().getTime()-t)

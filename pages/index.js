@@ -32,7 +32,7 @@ const variants =  {
 }
 
 export default function Start({slides, assignments, artwork, studio, slug}){
-	console.log(slides)
+	
 	const setShowMenu = useStore((state) => state.setShowMenu)
 	const setActive = useStore((state) => state.setActive)
 	const active = useStore((state) => state.active)
