@@ -44,6 +44,7 @@ export default async (req, res) => {
     const duration = (new Date().getTime()-t)
     if(duration > DATO_TIMEOUT)  return
     res.json({ revalidated: true, paths, duration })
+    console.log('revalidate', 'done', duration)
   } catch(err){
     console.log(err)
     res.status(500).send(`Error revalidating: ${err.message || err }`)
