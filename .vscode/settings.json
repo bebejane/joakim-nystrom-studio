@@ -1,15 +1,15 @@
 {
   "files.exclude": {
-    "node_modules": true,
-    ".next": true,
-    "jsconfig.json": true,
-    "migrate.js": true,
-    ".gitignore": true,
-    "next.config.js": true,
-    "package-lock.json": true,
-    ".vscode": true,
-    "vercel.json": true,
-    "README.md": true
+    "node_modules": false,
+    ".next": false,
+    "jsconfig.json": false,
+    "migrate.js": false,
+    ".gitignore": false,
+    "next.config.js": false,
+    "package-lock.json": false,
+    ".vscode": false,
+    "vercel.json": false,
+    "README.md": false
   },
-  "workspace.isHidden": true
+  "workspace.isHidden": false
 }
