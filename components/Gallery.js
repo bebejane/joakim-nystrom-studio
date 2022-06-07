@@ -85,10 +85,12 @@ export default function Gallery({
 	}, [index, active])
 
 	useEffect(()=>{ // Block scrolling with mouse
+		
 		const blockScroll = (e) => galleryRef.current.scrollLeft = 0;
+		if(isMobile) return galleryRef.current.removeEventListener('scroll', blockScroll)
 		galleryRef.current.addEventListener('scroll', blockScroll)
 		return () => galleryRef.current.removeEventListener('scroll', blockScroll)
-	}, [galleryRef])
+	}, [isMobile, galleryRef])
 
 	return (
 		<div id={id} ref={galleryRef} key={`gallery-${id}`} className={cn(styles.gallery, className)} style={{ ...style, visibility: !isReady ? 'hidden' : 'visible' }}>
