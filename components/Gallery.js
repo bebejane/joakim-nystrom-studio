@@ -78,11 +78,17 @@ export default function Gallery({
 			return scrollXProgress.onChange(updateIndexOnScroll)
 	}, [isMobile])
 
-	const handleKeyDown = ({ key }) => active && (key === 'ArrowRight' ? forward() : key === 'ArrowLeft' ? back() : key === 'ArrowUp' ? onClose?.() : key === 'ArrowDown' ? handleIndexSelected(index) : null)
+	const handleKeyDown = ({ key }) => active && (key === 'ArrowRight' ? forward() : key === 'ArrowLeft' ? back() : null)
 	useEffect(() => {
 		document.addEventListener('keydown', handleKeyDown)
 		return () => document.removeEventListener('keydown', handleKeyDown)
 	}, [index, active])
+
+	useEffect(()=>{ // Block scrolling with mouse
+		const blockScroll = (e) => galleryRef.current.scrollLeft = 0;
+		galleryRef.current.addEventListener('scroll', blockScroll)
+		return () => galleryRef.current.removeEventListener('scroll', blockScroll)
+	}, [galleryRef])
 
 	return (
 		<div id={id} ref={galleryRef} key={`gallery-${id}`} className={cn(styles.gallery, className)} style={{ ...style, visibility: !isReady ? 'hidden' : 'visible' }}>
