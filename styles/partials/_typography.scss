@@ -9,9 +9,14 @@ html {
   -webkit-font-smoothing: antialiased;
 
   @include mq($from: tablet) {
-    font-size: 24px;
+    font-size: 26px;
   }
   @include mq($from: wide) {
-    font-size: 28px;
+    font-size: 30px;
   }
+}
+
+h2 {
+  font-weight: normal;
+  //font-family: $body-font-italic;
 }

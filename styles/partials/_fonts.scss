@@ -2,7 +2,7 @@
 $body-font: "JJ";
 $headline-font: "Helvetica";
 $mono-font: "Helvetica";
-$body-font-italic: "Helvetica";
+$body-font-italic: "JJItalic";
 @font-face {
     font-family: "Monument";
     src: url("../../public/fonts/ABCMonumentGrotesk-Regular.woff2") format("woff2");
@@ -18,6 +18,12 @@ $body-font-italic: "Helvetica";
 @font-face {
     font-family: "JJ";
     src: url("../../public/fonts/JJ.woff2") format("woff2");
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: "JJItalic";
+    src: url("../../public/fonts/JJ-Italic.woff2") format("woff2");
     font-weight: normal;
     font-style: normal;
 }
