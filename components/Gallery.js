@@ -47,7 +47,6 @@ export default function Gallery({
 		const offset = -Math.floor(slide.offsetLeft - (isMobile ? 0 : ((dimensions.innerWidth - slide.offsetWidth) / 2)))
 
 		setTransition({ offset, duration })
-		setHoverIndex(undefined)
 		idx + 1 === slides.length && onEndReached?.(true)
 	}
 
@@ -68,7 +67,6 @@ export default function Gallery({
 
 	useEffect(() => { setDimensions({ innerHeight, innerWidth }) }, [innerHeight, innerWidth])
 	useEffect(() => { scrollTo(index); onIndexChange?.(index); }, [index, slides, dimensions, id])
-
 	useEffect(() => { indexFromProps !== undefined && setIndex(indexFromProps) }, [indexFromProps])
 	useEffect(() => { setIsMobile(innerWidth && innerWidth <= 768) }, [innerWidth])
 
@@ -84,16 +82,14 @@ export default function Gallery({
 		return () => document.removeEventListener('keydown', handleKeyDown)
 	}, [index, active])
 
-	useEffect(()=>{ // Block scrolling with mouse
-		
-		const blockScroll = (e) => galleryRef.current.scrollLeft = 0;
-		if(isMobile) return galleryRef.current.removeEventListener('scroll', blockScroll)
-		galleryRef.current.addEventListener('scroll', blockScroll)
-		return () => galleryRef.current.removeEventListener('scroll', blockScroll)
-	}, [isMobile, galleryRef])
-
 	return (
-		<div id={id} ref={galleryRef} key={`gallery-${id}`} className={cn(styles.gallery, className)} style={{ ...style, visibility: !isReady ? 'hidden' : 'visible' }}>
+		<div 
+			id={id} 
+			ref={galleryRef} 
+			key={`gallery-${id}`} 
+			className={cn(styles.gallery, className)} 
+			style={{ ...style, visibility: !isReady ? 'hidden' : 'visible' }}
+		>
 			<motion.ul
 				id={'slide-list'}
 				animate={{ translateX: `${transition.offset || 0}px` }}
@@ -122,22 +118,20 @@ export default function Gallery({
 							id={`slide-${realIndex}-${id}`}
 							index={idx}
 							key={`slide-a-${idx}-${id}`}
-							className={cn(isNavSlide && styles.nav, isCenterSlide && hoverIndex === idx && style.hover, margin && styles.padded)}
+							className={cn(isNavSlide && styles.nav, margin && styles.padded)}
 							style={slideStyles}
 							onClick={() => isNavSlide ? (index - 1 === realIndex ? back() : forward()) : handleIndexSelected(realIndex)}
-							onMouseMove={() => { !(!isCenterSlide || idx === hoverIndex) && setHoverIndex(isCenterSlide ? idx : undefined) }}
-							onMouseOut={() => setHoverIndex(undefined)}
+					
 						>
 							{type === 'text' || type == 'empty' ?
 								<TextSlide text={data} width={maxWidth} isMobile={isMobile} />
-								: type === 'image' ?
-									<ImageSlide image={data} width={width} isMobile={isMobile} margin={margin} />
+									: type === 'image' ?
+								<ImageSlide image={data} width={width} isMobile={isMobile} margin={margin} />
 									: type === 'video' ?
-										<VideoSlide key={`slide-video-${idx}-${id}`} data={data} active={index === realIndex} width={width} isMobile={isMobile} />
-										:
-										null
+								<VideoSlide key={`slide-video-${idx}-${id}`} data={data} active={index === realIndex} width={width} isMobile={isMobile} />
+									:
+								null
 							}
-
 							{description &&
 								<div key={`slide-caption-${idx}-${id}`} className={cn(styles.caption, (isCenterSlide || isMobile) && styles.show)}>
 									<p className={styles.hover}>
