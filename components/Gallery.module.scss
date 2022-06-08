@@ -28,17 +28,17 @@
 			text-indent: 0;
 			list-style-type: none;
 			background-color: black;
-			cursor: pointer;
+			cursor: default;
 
 			&.nav {
-				cursor: pointer;
-				.textSlide {
-					cursor: pointer !important;
+				
+				&.back{
+					cursor: url('/img/back.svg'), auto;
 				}
-				transition: opacity 0.5s;
-				&:hover {
-					//opacity: 0.9;
+				&.forward{
+					cursor: url('/img/ffw.svg'), auto;
 				}
+				
 			}
 			&.padded {
 				border: 120px solid transparent;
@@ -175,7 +175,7 @@
 	user-select: none;
 	background-color: black;
 	color: white;
-	cursor: default;
+	
 	.content {
 		position: absolute;
 		top: 0;

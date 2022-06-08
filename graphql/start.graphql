@@ -19,6 +19,7 @@ query GetStart {
           ...AssignmentFragment
         }
         margin
+        dark
       }
       ... on VideoSlideRecord {
         type: _modelApiKey
@@ -28,6 +29,7 @@ query GetStart {
         assignment{
           ...AssignmentFragment
         }
+        dark
       }
     }
   }

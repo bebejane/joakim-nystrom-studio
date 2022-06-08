@@ -95,12 +95,15 @@ export default function Gallery({
 				animate={{ translateX: `${transition.offset || 0}px` }}
 				transition={{ duration: transition.duration || 0 }}
 			>
-				{allSlides.map(({ title, data, type, subtitle, description, year, client, collaborator, margin }, idx) => {
+				{allSlides.map(({ title, data, type, description, margin, dark }, idx) => {
 
 					const maxWidth = dimensions.innerWidth * (isMobile ? 1 : 0.8);
 					const width = type === 'text' ? maxWidth : Math.min((dimensions.innerHeight / data.height) * data.width, isMobile ? data.width : maxWidth);
 					const realIndex = isMobile ? idx : idx - (slides.length);
-					const isNavSlide = isMobile ? false : (index - 1 === realIndex || index + 1 === realIndex)
+					const isBackNavSlide = index - 1 === realIndex
+					const isForwardNavSlide = index + 1 === realIndex
+					const isNavSlide = isMobile ? false : (isBackNavSlide || isForwardNavSlide)
+					
 					const isCenterSlide = realIndex === index
 
 					const slideStyles = {
@@ -109,7 +112,6 @@ export default function Gallery({
 						width: isMobile ? 'auto' : `${width}px`,
 						height: `${dimensions.innerHeight}px`,
 						visibility: `${(slides.length <= 1 && isNavSlide) || !isReady ? 'hidden' : 'visible'}`,
-						cursor: isNavSlide ? 'pointer' : 'default',
 						overflow: isMobile ? 'unset' : 'hidden'
 					}
 
@@ -118,7 +120,7 @@ export default function Gallery({
 							id={`slide-${realIndex}-${id}`}
 							index={idx}
 							key={`slide-a-${idx}-${id}`}
-							className={cn(isNavSlide && styles.nav, margin && styles.padded)}
+							className={cn(isNavSlide && styles.nav, isBackNavSlide && styles.back, isForwardNavSlide && styles.forward, margin && styles.padded)}
 							style={slideStyles}
 							onClick={() => isNavSlide ? (index - 1 === realIndex ? back() : forward()) : handleIndexSelected(realIndex)}
 					
@@ -134,8 +136,8 @@ export default function Gallery({
 							}
 							{description &&
 								<div key={`slide-caption-${idx}-${id}`} className={cn(styles.caption, (isCenterSlide || isMobile) && styles.show)}>
-									<p className={styles.hover}>
-										<div className={styles.title}>
+									<p>
+										<div className={cn(styles.title, dark && styles.dark)}>
 											<span className={styles.description}>{description}</span>
 										</div>
 										<div className={styles.bg}></div>
