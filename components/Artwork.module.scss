@@ -36,11 +36,15 @@ $grid-space-small: 10px;
 					object-fit: cover;
 				}
 			}
-			
-			.sold{
+
+			.sold {
 				position: absolute;
-				top:0;
-				right:0;
+				top: 0;
+				right: $grid-space;
+				font-size: 0.4rem;
+				text-transform: uppercase;
+				color: $black;
+				letter-spacing: 0.1em;
 			}
 
 			padding-left: math.div($grid-space, 2);
