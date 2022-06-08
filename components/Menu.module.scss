@@ -26,7 +26,6 @@ $margin: 30px;
     @include mq($until: tablet) {
       a {
         display: block;
-        max-width: 90px;
       }
     }
   }
