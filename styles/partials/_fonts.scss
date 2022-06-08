@@ -1,5 +1,5 @@
 // FONT EMBEDDING & TYPO VARIABLES
-$body-font: "Graphik";
+$body-font: "JJ";
 $headline-font: "Helvetica";
 $mono-font: "Helvetica";
 $body-font-italic: "Helvetica";
@@ -12,6 +12,12 @@ $body-font-italic: "Helvetica";
 @font-face {
     font-family: "Graphik";
     src: url("../../public/fonts/Graphik-Bold-Web.woff2") format("woff2");
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: "JJ";
+    src: url("../../public/fonts/JJ.woff2") format("woff2");
     font-weight: normal;
     font-style: normal;
 }
