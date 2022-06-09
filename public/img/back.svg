@@ -3,9 +3,9 @@
 <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
 	 viewBox="0 0 32 32" enable-background="new 0 0 32 32" xml:space="preserve" width="32" height="32">
 <g>
-	<line fill="none" stroke="#FFFFFF" stroke-miterlimit="10" x1="31.9" y1="15.1" x2="1.2" y2="15.1"/>
+	<line fill="none" stroke="#FFFFFF" stroke-width="2" stroke-miterlimit="10" x1="31.9" y1="15.1" x2="1.2" y2="15.1"/>
 </g>
 <g>
-	<polyline fill="none" stroke="#FFFFFF" stroke-miterlimit="10" points="11.5,25.5 1.2,15.1 11,5.3 	"/>
+	<polyline fill="none" stroke="#FFFFFF" stroke-width="2" points="11.5,25.5 1.2,15.1 11,5.3 	"/>
 </g>
 </svg>
