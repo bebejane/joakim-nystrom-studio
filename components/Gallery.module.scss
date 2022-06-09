@@ -19,12 +19,12 @@
 		z-index: 1;
 		min-width: 100vw;
 		max-height: 100vh;
-		height: 100vh;
+		height: 100%;
 
 		li {
 			position: relative;
-			height: 100%;
-			max-height: 100vh;
+			min-height: 100%;
+			max-height: 100%;
 			margin: 0;
 			padding: 0;
 			text-indent: 0;
