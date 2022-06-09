@@ -10,29 +10,29 @@ import cn from 'classnames'
 import useStore from '/store';
 
 const duration = 0.4;
-const variants =  { 
-	initial:{
-		translateY:'0vh'
+const variants = {
+	initial: {
+		translateY: '0vh'
 	},
-	studio:{
-		opacity:1,
-		translateY:'-100vh',
-		transition:{ease:'easeOut', duration, delay:0.01}
+	studio: {
+		opacity: 1,
+		translateY: '-100vh',
+		transition: { ease: 'easeOut', duration, delay: 0.01 }
 	},
-	artwork:{
-		opacity:1,
-		translateY:'0vh',
-		transition:{ease:'easeOut', duration, delay:0.01}
+	artwork: {
+		opacity: 1,
+		translateY: '0vh',
+		transition: { ease: 'easeOut', duration, delay: 0.01 }
 	},
-	gallery:{
-		opacity:1,
-		translateY:'0vh',
-		transition:{ease:'easeOut', duration, delay:0.01}
+	gallery: {
+		opacity: 1,
+		translateY: '0vh',
+		transition: { ease: 'easeOut', duration, delay: 0.01 }
 	},
 }
 
-export default function Start({start:{ slides }, assignments, artwork, studio, slug}){
-	
+export default function Start({ start: { slides }, assignments, artwork, studio, slug }) {
+
 	const setShowMenu = useStore((state) => state.setShowMenu)
 	const setActive = useStore((state) => state.setActive)
 	const active = useStore((state) => state.active)
@@ -41,25 +41,25 @@ export default function Start({start:{ slides }, assignments, artwork, studio, s
 	const { innerWidth } = useWindowSize();
 
 	const [animating, setAnimating] = useState(false)
-	
+
 	const isReverted = active === 'studio'
 	const activeToSlug = (active) => active === 'gallery' ? '/' : active === 'assignment' ? `/${assignment?.slug}` : active === 'artwork' ? '/artwork' : '/studio'
 	const urlToActive = (url) => url === '/' ? 'gallery' : url === '/artwork' ? `artwork` : url === '/studio' ? 'studio' : 'assignment'
-	
-	useEffect(()=>setActive(urlToActive(slug)), []) // Set initial active from props
 
-	useEffect(()=>{ 
-		if(!active) return
+	useEffect(() => setActive(urlToActive(slug)), []) // Set initial active from props
+
+	useEffect(() => {
+		if (!active) return
 		const isGallery = active === 'gallery'
 		setShowMenu(isGallery)
-		if(activeToSlug(active) !== document.location.pathname)
-			window.history.pushState({url:activeToSlug(active)}, "", activeToSlug(active))
+		if (activeToSlug(active) !== document.location.pathname)
+			window.history.pushState({ url: activeToSlug(active) }, "", activeToSlug(active))
 	}, [active])
 
-	useEffect(()=>{ 
-		
-		const handlePopState = ({state, state:{url}}) => setActive(urlToActive(url))
-		const handleKeyPress = ({key}) => key === 'Escape' && setActive('gallery')
+	useEffect(() => {
+
+		const handlePopState = ({ state, state: { url } }) => setActive(urlToActive(url))
+		const handleKeyPress = ({ key }) => key === 'Escape' && setActive('gallery')
 
 		window.addEventListener('popstate', handlePopState);
 		window.addEventListener('keydown', handleKeyPress);
@@ -69,31 +69,31 @@ export default function Start({start:{ slides }, assignments, artwork, studio, s
 			window.removeEventListener('keydown', handleKeyPress);
 		}
 	}, [])
-	
-	useEffect(()=>{ setIsMobile(innerWidth && innerWidth <= 768) }, [innerWidth])
-	
+
+	useEffect(() => { setIsMobile(innerWidth && innerWidth <= 768) }, [innerWidth])
+
 	const backStyles = cn(styles.back, active !== 'gallery' && styles.show, isReverted && styles.reverted)
 
-	if(!active) return null
-	
+	if (!active) return null
+
 	return (
 		<>
 			<Content id="container" key={'container'} className={styles.container}>
 				<motion.div
 					key={'animation'}
 					initial={'initial'}
-					animate={active}	
+					animate={active}
 					variants={variants}
 					onAnimationStart={() => setAnimating(true)}
 					onAnimationComplete={() => setAnimating(false)}
-				>	
-					<Gallery 
+				>
+					<Gallery
 						id={'gallery'}
 						key={'gallery'}
-						slides={slides} 
+						slides={slides}
 						active={true}
-					/>	
-					<Studio studio={studio}	artwork={artwork}/>	
+					/>
+					<Studio studio={studio} artwork={artwork} />
 				</motion.div>
 			</Content>
 			{!isShowingArtworkGallery &&
@@ -105,12 +105,12 @@ export default function Start({start:{ slides }, assignments, artwork, studio, s
 	)
 }
 
-export const getStaticProps = withGlobalProps(async ({props, revalidate }) => {
-	
+export const getStaticProps = withGlobalProps(async ({ props, revalidate }) => {
+
 	return {
-		props:{
+		props: {
 			...props,
-			slug:'/'
+			slug: '/'
 		},
 		revalidate
 	};

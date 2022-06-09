@@ -203,8 +203,12 @@
 		justify-content: center;
 		padding: $space;
 		flex-wrap: wrap;
-		padding-left: 15%;
-		padding-right: 15%;
+		padding-left: 1.6rem;
+		padding-right: 1.6rem;
+		@include mq($from: tablet) {
+			padding-left: 15%;
+			padding-right: 15%;
+		}
 	}
 
 	.meta {

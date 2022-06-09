@@ -33,3 +33,10 @@ $body-font-italic: "JJItalic";
     font-weight: normal;
     font-style: normal;
 }
+
+@font-face {
+    font-family: "JJMid";
+    src: url("../../public/fonts/JJ-Book.woff2") format("woff2");
+    font-weight: normal;
+    font-style: normal;
+}
