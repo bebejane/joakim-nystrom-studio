@@ -116,7 +116,7 @@ export default function Gallery({
 						maxWidth: isMobile ? 'unset' : `${width}px`,
 						minWidth: isMobile ? 'unset' : `${width}px`,
 						width: isMobile ? 'auto' : `${width}px`,
-						height: `${dimensions.innerHeight}px`,
+						
 						visibility: `${(slides.length <= 1 && isNavSlide) || !isReady ? 'hidden' : 'visible'}`,
 						overflow: isMobile ? 'unset' : 'hidden'
 					}
