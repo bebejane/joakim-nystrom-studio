@@ -228,11 +228,29 @@
 	}
 }
 .videoSlide {
+	position: relative;
 	background-color: #000;
 	object-fit: cover;
 	min-height: 100%;
 	height: 100%;
 	object-position: 50% 50%;
+	
+}
+.play {
+	display: none;
+	position: absolute;
+	top:0;
+	left:0;
+	width: 100%;
+	height: 100%;
+	align-items: center;
+	justify-content: center;
+	z-index: 1000;
+	color: $white;
+	filter: invert(1);
+	@include mq($until: desktop) {
+		display: flex;	
+	}
 }
 
 .close {

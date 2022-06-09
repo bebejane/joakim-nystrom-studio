@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useWindowSize } from 'rooks';
 import { motion, useElementScroll } from 'framer-motion';
 import { clamp } from '/utils';
+import { vi } from 'date-fns/locale';
 
 export default function Gallery({
 	id,
@@ -135,7 +136,7 @@ export default function Gallery({
 									: type === 'image' ?
 								<ImageSlide image={data} width={width} isMobile={isMobile} margin={margin} />
 									: type === 'video' ?
-								<VideoSlide key={`slide-video-${idx}-${id}`} data={data} active={index === realIndex || scrollIndex === realIndex} width={width} isMobile={isMobile}/>
+								<VideoSlide key={`slide-video-${idx}-${id}`} data={data} active={index === realIndex} width={width} isMobile={isMobile}/>
 									:
 								null
 							}
@@ -185,27 +186,36 @@ const ImageSlide = ({ image, width, margin, isMobile }) => {
 const VideoSlide = ({ data, active, width, isMobile, scrollIndex }) => {
 
 	const videoRef = useRef();
-	
+	const play = ()=> {
+		videoRef.current.currentTime = 0;
+		videoRef.current.play().catch((err) => {})
+	}
+	const [internalActive, setInternalActive] = useState(false)
+
 	useEffect(() => {
-		
 		if (!videoRef.current ) return
-		if (active)
+		if (active || internalActive)
 			videoRef.current.play().catch((err) => {})
-		else
+		else 
 			videoRef.current.pause();
-	}, [active])
+	}, [active, internalActive])
 
 	return (
-		<video
-			src={data.url}
-			ref={videoRef}
-			autoPlay={false}
-			type={data.mimeType}
-			disablePictureInPicture={true}
-			loop={true}
-			poster={data.video?.thumbnailUrl}
-			className={styles.videoSlide}
-			style={{ width: `${width}px`, maxWidth: `${width}px` }}
-		/>
+		<>
+			<video
+				src={data.url}
+				ref={videoRef}
+				autoPlay={false}
+				type={data.mimeType}
+				disablePictureInPicture={true}
+				loop={true}
+				poster={data.video?.thumbnailUrl}
+				className={styles.videoSlide}
+				style={{ width: `${width}px`, maxWidth: `${width}px` }}
+			/>
+			<div className={styles.play}>
+				<img src={'/img/play.svg'} onClick={()=>play()}/>
+			</div>
+		</>
 	)
 }
