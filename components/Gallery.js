@@ -3,8 +3,7 @@ import cn from 'classnames'
 import { useState, useEffect, useRef } from 'react';
 import { useWindowSize } from 'rooks';
 import { motion, useElementScroll } from 'framer-motion';
-import { clamp } from '/utils';
-import { vi } from 'date-fns/locale';
+import { use100vh } from 'react-div-100vh'
 
 export default function Gallery({
 	id,
@@ -28,6 +27,8 @@ export default function Gallery({
 	const [dimensions, setDimensions] = useState({ innerHeight: 0, innerWidth: 0 })
 
 	const { innerWidth, innerHeight } = useWindowSize();
+	const height = use100vh()
+	
 	const isReady = dimensions.innerWidth > 0 && transition.offset !== undefined
 	const galleryRef = useRef(null)
 	const { scrollXProgress } = useElementScroll(galleryRef)
@@ -104,7 +105,7 @@ export default function Gallery({
 				{allSlides.map(({ title, data, type, description, margin, dark }, idx) => {
 
 					const maxWidth = dimensions.innerWidth * (isMobile ? 1 : 0.8);
-					const width = type === 'text' ? maxWidth : Math.min((dimensions.innerHeight / data.height) * data.width, isMobile ? data.width : maxWidth);
+					const width = type === 'text' ? maxWidth : Math.min((height / data.height) * data.width, isMobile ? data.width : maxWidth);
 					const realIndex = isMobile ? idx : idx - (slides.length);
 					const isBackNavSlide = index - 1 === realIndex
 					const isForwardNavSlide = index + 1 === realIndex
@@ -116,7 +117,7 @@ export default function Gallery({
 						maxWidth: isMobile ? 'unset' : `${width}px`,
 						minWidth: isMobile ? 'unset' : `${width}px`,
 						width: isMobile ? 'auto' : `${width}px`,
-						
+						height,
 						visibility: `${(slides.length <= 1 && isNavSlide) || !isReady ? 'hidden' : 'visible'}`,
 						overflow: isMobile ? 'unset' : 'hidden'
 					}
