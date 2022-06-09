@@ -136,7 +136,7 @@ export default function Gallery({
 									: type === 'image' ?
 								<ImageSlide image={data} width={width} isMobile={isMobile} margin={margin} />
 									: type === 'video' ?
-								<VideoSlide key={`slide-video-${idx}-${id}`} data={data} active={index === realIndex} width={width} isMobile={isMobile}/>
+								<VideoSlide key={`slide-video-${idx}-${id}`} data={data} active={index === realIndex || scrollIndex === realIndex} width={width} isMobile={isMobile}/>
 									:
 								null
 							}
@@ -203,6 +203,8 @@ const VideoSlide = ({ data, active, width, isMobile, scrollIndex }) => {
 	return (
 		<>
 			<video
+				playsInline
+				muted
 				src={data.url}
 				ref={videoRef}
 				autoPlay={false}
@@ -213,9 +215,9 @@ const VideoSlide = ({ data, active, width, isMobile, scrollIndex }) => {
 				className={styles.videoSlide}
 				style={{ width: `${width}px`, maxWidth: `${width}px` }}
 			/>
-			<div className={styles.play}>
+			{/*<div className={styles.play}>
 				<img src={'/img/play.svg'} onClick={()=>play()}/>
-			</div>
+			</div>*/}
 		</>
 	)
 }
