@@ -153,7 +153,7 @@ export default function Gallery({
 					)
 				})}
 			</motion.ul>
-			<div className={styles.status}><span>status: {scrollIndex}</span></div>
+			
 		</div>
 	)
 }
@@ -190,7 +190,7 @@ const VideoSlide = ({ data, active, width, isMobile, scrollIndex }) => {
 		
 		if (!videoRef.current ) return
 		if (active)
-			videoRef.current.play().catch((err) => {alert(err.message)})
+			videoRef.current.play().catch((err) => {})
 		else
 			videoRef.current.pause();
 	}, [active])
