@@ -1,19 +1,13 @@
 import styles from './Studio.module.scss'
-import cn from 'classnames'
 import Content from '/components/Content';
 import Artwork from '/components/Artwork';
-import ArtworkGallery from '/components/ArtworkGallery';
-
 import Markdown from '/lib/dato/components/Markdown';
 import useStore from '/store';
-import { useState, useEffect } from 'react';
+import shallow from 'zustand/shallow'
 
 export default function Studio({ artwork, studio: { email, phone, description, address, postal, background, clients }, show, revRoute }) {
 
-	const setIsShowingArtworkGallery = useStore((state) => state.setIsShowingArtworkGallery)
-	const [galleryIndex, setGalleryIndex] = useState()
-	
-	useEffect(()=>{setIsShowingArtworkGallery(galleryIndex !== undefined)}, [galleryIndex])
+	const [galleryIndex, setGalleryIndex] = useStore((state) => [state.galleryIndex, state.setGalleryIndex], shallow)
 
 	return (
 		<>
@@ -43,20 +37,13 @@ export default function Studio({ artwork, studio: { email, phone, description, a
 					<h2>Paintings</h2>
 					<Artwork
 						artwork={artwork}
-						onShowGallery={setIsShowingArtworkGallery}
+						//onShowGallery={setIsShowingArtworkGallery}
 						onIndexChange={setGalleryIndex}
 					/>
 				</article>
 
 			</Content>
-			{galleryIndex !== undefined &&
-				<ArtworkGallery
-					images={artwork.map(({ image }) => image)}
-					artwork={artwork}
-					index={galleryIndex}
-					onClose={() => setGalleryIndex(undefined)}
-				/>
-			}
+			
 		</>
 	)
 }

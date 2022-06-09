@@ -3,6 +3,7 @@ import { withGlobalProps } from "/lib/hoc";
 import Content from '/components/Content';
 import Gallery from '/components/Gallery';
 import Studio from '/components/Studio';
+import ArtworkGallery from '/components/ArtworkGallery';
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion'
 import { useWindowSize } from 'rooks';
@@ -37,7 +38,8 @@ export default function Start({ start: { slides }, assignments, artwork, studio,
 	const setActive = useStore((state) => state.setActive)
 	const active = useStore((state) => state.active)
 	const [isMobile, setIsMobile] = useState(false)
-	const isShowingArtworkGallery = useStore((state) => state.isShowingArtworkGallery)
+	const galleryIndex = useStore((state) => state.galleryIndex)
+	const setGalleryIndex = useStore((state) => state.setGalleryIndex)
 	const { innerWidth } = useWindowSize();
 
 	const [animating, setAnimating] = useState(false)
@@ -75,7 +77,7 @@ export default function Start({ start: { slides }, assignments, artwork, studio,
 	const backStyles = cn(styles.back, active !== 'gallery' && styles.show, isReverted && styles.reverted)
 
 	if (!active) return null
-
+	
 	return (
 		<>
 			<Content id="container" key={'container'} className={styles.container}>
@@ -96,10 +98,17 @@ export default function Start({ start: { slides }, assignments, artwork, studio,
 					<Studio studio={studio} artwork={artwork} />
 				</motion.div>
 			</Content>
-			{!isShowingArtworkGallery &&
+			{galleryIndex === undefined ?
 				<div className={backStyles} onClick={() => setActive('gallery')}>
 					Back
 				</div>
+			:
+				<ArtworkGallery
+					images={artwork.map(({ image }) => image)}
+					artwork={artwork}
+					index={galleryIndex}
+					onClose={() => setGalleryIndex(undefined)}
+				/>
 			}
 		</>
 	)

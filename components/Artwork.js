@@ -1,12 +1,12 @@
 import styles from './Artwork.module.scss';
-import cn from 'classnames'
 import { Image } from 'react-datocms';
-import ArtworkGallery from './ArtworkGallery';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
+import shallow from 'zustand/shallow'
+import useStore from '/store';
 
 export default function Artwork({ artwork, onShowGallery, onIndexChange, prevRoute }) {
 
-	const [galleryIndex, setGalleryIndex] = useState()
+	const [galleryIndex, setGalleryIndex] = useStore((state) => [state.galleryIndex, state.setGalleryIndex], shallow)
 
 	useEffect(() => { 
 		onShowGallery?.(galleryIndex !== undefined) 
