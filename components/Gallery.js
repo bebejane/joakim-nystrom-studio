@@ -21,8 +21,8 @@ export default function Gallery({
 }) {
 
 	const [isMobile, setIsMobile] = useState(false)
-	const [hoverIndex, setHoverIndex] = useState()
 	const [index, setIndex] = useState(indexFromProps !== undefined ? indexFromProps : 0)
+	const [scrollIndex, setScrollIndex] = useState(0)
 	const [transition, setTransition] = useState({ offset: undefined, duration: undefined })
 	const [dimensions, setDimensions] = useState({ innerHeight: 0, innerWidth: 0 })
 
@@ -70,18 +70,15 @@ export default function Gallery({
 	useEffect(() => { indexFromProps !== undefined && setIndex(indexFromProps) }, [indexFromProps])
 	useEffect(() => { setIsMobile(innerWidth && innerWidth <= 768) }, [innerWidth])
 
-	const updateIndexOnScroll = (p) => onIndexChange(clamp(Math.floor(slides.length * p), 0, slides.length - 1))
-	useEffect(() => {
-		if (isMobile && onIndexChange)
-			return scrollXProgress.onChange(updateIndexOnScroll)
-	}, [isMobile])
+	const updateIndexOnScroll = (p) => setScrollIndex(clamp(Math.floor(slides.length * p), 0, slides.length - 1))
+	useEffect(() => { if(isMobile) return scrollXProgress.onChange(updateIndexOnScroll)}, [isMobile])
 
 	const handleKeyDown = ({ key }) => active && (key === 'ArrowRight' ? forward() : key === 'ArrowLeft' ? back() : null)
 	useEffect(() => {
 		document.addEventListener('keydown', handleKeyDown)
 		return () => document.removeEventListener('keydown', handleKeyDown)
 	}, [index, active])
-
+	
 	return (
 		<div 
 			id={id} 
@@ -130,7 +127,7 @@ export default function Gallery({
 									: type === 'image' ?
 								<ImageSlide image={data} width={width} isMobile={isMobile} margin={margin} />
 									: type === 'video' ?
-								<VideoSlide key={`slide-video-${idx}-${id}`} data={data} active={index === realIndex} width={width} isMobile={isMobile} />
+								<VideoSlide key={`slide-video-${idx}-${id}`} data={data} active={index === realIndex || scrollIndex === realIndex} width={width} isMobile={isMobile}/>
 									:
 								null
 							}
@@ -176,12 +173,12 @@ const ImageSlide = ({ image, width, margin, isMobile }) => {
 	)
 }
 
-const VideoSlide = ({ data, active, width, isMobile }) => {
+const VideoSlide = ({ data, active, width, isMobile, scrollIndex }) => {
 
 	const videoRef = useRef();
-
+	
 	useEffect(() => {
-		if (!videoRef.current || isMobile) return
+		if (!videoRef.current ) return
 		if (active)
 			videoRef.current.play().catch(() => { })
 		else
