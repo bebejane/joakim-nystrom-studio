@@ -70,8 +70,16 @@ export default function Gallery({
 	useEffect(() => { indexFromProps !== undefined && setIndex(indexFromProps) }, [indexFromProps])
 	useEffect(() => { setIsMobile(innerWidth && innerWidth <= 768) }, [innerWidth])
 
-	const updateIndexOnScroll = (p) => setScrollIndex(clamp(Math.floor(slides.length * p), 0, slides.length - 1))
-	useEffect(() => { if(isMobile) return scrollXProgress.onChange(updateIndexOnScroll)}, [isMobile])
+	const updateIndexOnScroll = (p, innerWidth) => {
+		const items =  Array.prototype.slice.call(document.querySelectorAll(`li[index]`))
+		const offset = items.reduce((acc, curr) => acc + curr.clientWidth, 0) * p
+		
+		for (let i = 0; i < items.length; i++) {
+			if(items[i].offsetLeft >= offset)
+				return setScrollIndex(i-1)
+		}
+	}
+	useEffect(() => { if(isMobile) return scrollXProgress.onChange(updateIndexOnScroll)}, [isMobile, dimensions, galleryRef])
 
 	const handleKeyDown = ({ key }) => active && (key === 'ArrowRight' ? forward() : key === 'ArrowLeft' ? back() : null)
 	useEffect(() => {
@@ -145,6 +153,7 @@ export default function Gallery({
 					)
 				})}
 			</motion.ul>
+			<div className={styles.status}><span>status: {scrollIndex}</span></div>
 		</div>
 	)
 }
@@ -178,9 +187,10 @@ const VideoSlide = ({ data, active, width, isMobile, scrollIndex }) => {
 	const videoRef = useRef();
 	
 	useEffect(() => {
+		
 		if (!videoRef.current ) return
 		if (active)
-			videoRef.current.play().catch(() => { })
+			videoRef.current.play().catch((err) => {alert(err.message)})
 		else
 			videoRef.current.pause();
 	}, [active])
