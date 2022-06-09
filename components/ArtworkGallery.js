@@ -17,7 +17,7 @@ export default function ArtworkGallery({ artwork, onClose, index = 0 }) {
 
   return (
     <div className={styles.artworkGallery} style={{maxHeight:height}}>
-      {/*<div className={styles.back} onClick={() => swiperRef.current.slidePrev()}>←</div>*/}
+      <div className={styles.back} onClick={() => swiperRef.current.slidePrev()}>←</div>
       <div className={styles.images} onClick={() => swiperRef?.current?.slideNext()}>
         <Swiper
           loop={true}
@@ -40,7 +40,7 @@ export default function ArtworkGallery({ artwork, onClose, index = 0 }) {
           )}
         </Swiper>
       </div>
-      {/*<div className={styles.forward} onClick={() => swiperRef.current.slideNext()}>→</div>*/}
+      <div className={styles.forward} onClick={() => swiperRef.current.slideNext()}>→</div>
       <div className={styles.caption}>
         {current && 
           <>

@@ -19,7 +19,9 @@
     position: relative;
     align-items: center;
     justify-content: center;
-    min-width: 60vw;
+    max-width: 60vw;
+    margin-left: auto;
+    margin-right: auto;
     @include mq($from: tablet) {
       min-width: 100vw;
       min-height: 100vh;
@@ -84,7 +86,7 @@
   }
   .forward,
   .back {
-    display: flex;
+    display: none;
     padding: 2rem;
     justify-content: center;
     align-items: center;
