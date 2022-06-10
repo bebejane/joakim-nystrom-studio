@@ -23,7 +23,10 @@ $grid-space-small: 10px;
 			flex-direction: column;
 			flex: 0 0 20%;
 			margin: 0;
-			margin-bottom: 1rem;
+			margin-bottom: 10px;
+			@include mq($from: tablet) {
+				margin-bottom: 1rem;
+			}
 			max-width: 20%;
 			min-width: 20%;
 			cursor: pointer;

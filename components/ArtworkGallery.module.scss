@@ -75,7 +75,10 @@
     right: 0;
     top: 0;
     margin: 1.5rem;
-    margin-top: 1.2rem;
+    margin-top: 1.7rem;
+    @include mq($from: tablet) {
+      margin-top: 1.2rem;
+    }
     color: white;
     z-index: 500;
     cursor: pointer;

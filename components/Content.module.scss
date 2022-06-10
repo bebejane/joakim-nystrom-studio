@@ -4,6 +4,8 @@
   min-height: 100%;
   min-width: 100vw;
   padding: 1.6rem;
-  padding-top: 100px;
+  @include mq($from: tablet) {
+    padding-top: 100px;
+  }
   background-color: $white;
 }
