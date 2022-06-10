@@ -42,21 +42,14 @@ export default function Gallery({
 	const scrollTo = (idx, duration = active && isReady ? 0.5 : 0, skipIndex = false) => {
 
 		if (dimensions.innerWidth === 0) return
-
+		
 		const slide = document.getElementById(`slide-${idx}-${id}`)
 		if (!slide) return console.log('slide not found')
 		
 		const offset = -Math.floor(slide.offsetLeft - (isMobile ? 0 : ((dimensions.innerWidth - slide.offsetWidth) / 2)))
-
+		
 		setTransition({ offset, duration })
 		idx + 1 === slides.length && onEndReached?.(true)
-
-		setTimeout(()=>{ // Fix cursor dissapearing
-			const ffwSlide = document.querySelector(`.${styles.nav}.${styles.forward}`)
-			const backSlide = document.querySelector(`.${styles.nav}.${styles.back}`)
-			ffwSlide?.classList.toggle(styles.forward); ffwSlide?.classList.toggle(styles.forward);
-			backSlide?.classList.toggle(styles.back); backSlide?.classList.toggle(styles.back);
-		}, duration * 1000)
 	}
 
 	const back = () => {
@@ -72,6 +65,20 @@ export default function Gallery({
 		setTimeout(() => setIndex(index + 1 < slides.length ? index + 1 : 0), 20)
 	}
 
+	// Fix cursor not changing until mouse move after scroll
+	const cursorFix = (start) => { 
+		const overlay = document.querySelector(`.${styles.mouseOverlay}`)
+
+		if(start)
+			return overlay.style.display = 'block'
+
+		const ffwSlide = document.querySelector(`.${styles.nav}.${styles.forward}`)
+		const backSlide = document.querySelector(`.${styles.nav}.${styles.back}`)
+		ffwSlide?.classList.remove(styles.forward); ffwSlide?.classList.toggle(styles.forward);
+		backSlide?.classList.toggle(styles.back); backSlide?.classList.toggle(styles.back);
+		overlay.style.display = 'none'
+	}
+	
 	const handleIndexSelected = (idx) => slides[idx] && slides[idx].type !== 'text' && onIndexSelected?.(idx)
 
 	useEffect(() => { setDimensions({ innerHeight, innerWidth }) }, [innerHeight, innerWidth])
@@ -108,6 +115,8 @@ export default function Gallery({
 				id={'slide-list'}
 				animate={{ translateX: `${transition.offset || 0}px` }}
 				transition={{ duration: transition.duration || 0 }}
+				onAnimationComplete={()=>cursorFix(false)}
+				onAnimationStart={()=>cursorFix(true)}
 			>
 				{allSlides.map(({ title, data, type, description, margin, dark }, idx) => {
 
@@ -161,7 +170,7 @@ export default function Gallery({
 					)
 				})}
 			</motion.ul>
-			
+			<div className={styles.mouseOverlay}></div>
 		</div>
 	)
 }
