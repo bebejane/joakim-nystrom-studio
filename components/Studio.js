@@ -37,7 +37,6 @@ export default function Studio({ artwork, studio: { email, phone, description, a
 					<h2>Paintings</h2>
 					<Artwork
 						artwork={artwork}
-						//onShowGallery={setIsShowingArtworkGallery}
 						onIndexChange={setGalleryIndex}
 					/>
 				</article>

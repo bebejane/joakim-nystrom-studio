@@ -50,6 +50,13 @@ export default function Gallery({
 
 		setTransition({ offset, duration })
 		idx + 1 === slides.length && onEndReached?.(true)
+
+		setTimeout(()=>{ // Fix cursor dissapearing
+			const ffwSlide = document.querySelector(`.${styles.nav}.${styles.forward}`)
+			const backSlide = document.querySelector(`.${styles.nav}.${styles.back}`)
+			ffwSlide?.classList.toggle(styles.forward); ffwSlide?.classList.toggle(styles.forward);
+			backSlide?.classList.toggle(styles.back); backSlide?.classList.toggle(styles.back);
+		}, duration * 1000)
 	}
 
 	const back = () => {
@@ -130,7 +137,6 @@ export default function Gallery({
 							className={cn(isNavSlide && styles.nav, isBackNavSlide && styles.back, isForwardNavSlide && styles.forward, margin && styles.padded)}
 							style={slideStyles}
 							onClick={() => isNavSlide ? (index - 1 === realIndex ? back() : forward()) : handleIndexSelected(realIndex)}
-					
 						>
 							{type === 'text' || type == 'empty' ?
 								<TextSlide text={data} width={maxWidth} isMobile={isMobile} />
