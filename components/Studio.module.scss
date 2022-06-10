@@ -19,16 +19,27 @@
     flex-direction: row;
   }
 
+  a {
+    color: white;
+  }
+
   h2 {
     padding-top: 1em;
-    font-size: 0.65rem;
-    font-family: "JJBook";
+    font-size: 0.75rem;
+    @include mq($from: tablet) {
+      font-size: 0.65rem;
+    }
+    font-family: "Monument";
     //color: rgb(0, 81, 255);
   }
 
   hr {
-    margin-top: 5rem;
-    margin-bottom: 4rem;
+    margin-top: 3rem;
+    margin-bottom: 2rem;
+    @include mq($from: tablet) {
+      margin-top: 5rem;
+      margin-bottom: 4rem;
+    }
   }
 
   aside {

@@ -19,7 +19,7 @@
     position: relative;
     align-items: center;
     justify-content: center;
-    max-width: 60vw;
+    max-width: 70vw;
     margin-left: auto;
     margin-right: auto;
     @include mq($from: tablet) {
@@ -71,6 +71,15 @@
     a {
       color: $white;
     }
+
+    @include mq($until: tablet) {
+      br {
+        display: none;
+      }
+      span {
+        padding-right: 0.3em;
+      }
+    }
   }
   .close {
     position: absolute;
@@ -85,7 +94,6 @@
     z-index: 500;
     cursor: pointer;
     font-size: 1.7rem;
-    
   }
   .forward,
   .back {

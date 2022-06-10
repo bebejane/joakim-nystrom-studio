@@ -6,7 +6,7 @@ import { useState, useRef, useEffect } from 'react';
 import { use100vh } from 'react-div-100vh'
 
 export default function ArtworkGallery({ artwork, onClose, index = 0 }) {
-  
+
   const swiperRef = useRef()
   const [realIndex, setRealIndex] = useState(index)
   const [title, setTitle] = useState()
@@ -16,7 +16,7 @@ export default function ArtworkGallery({ artwork, onClose, index = 0 }) {
   useEffect(() => setTitle(artwork[realIndex].title), [realIndex])
 
   return (
-    <div className={styles.artworkGallery} style={{maxHeight:height}}>
+    <div className={styles.artworkGallery} style={{ maxHeight: height }}>
       <div className={styles.back} onClick={() => swiperRef.current.slidePrev()}>←</div>
       <div className={styles.images} onClick={() => swiperRef?.current?.slideNext()}>
         <Swiper
@@ -27,7 +27,7 @@ export default function ArtworkGallery({ artwork, onClose, index = 0 }) {
           onSlideChange={({ realIndex }) => setRealIndex(realIndex)}
           onSwiper={(swiper) => swiperRef.current = swiper}
         >
-          {artwork.map(({image}, idx) =>
+          {artwork.map(({ image }, idx) =>
             <SwiperSlide key={idx} className={styles.slide}>
               {<Image
                 className={styles.image}
@@ -42,21 +42,22 @@ export default function ArtworkGallery({ artwork, onClose, index = 0 }) {
       </div>
       <div className={styles.forward} onClick={() => swiperRef.current.slideNext()}>→</div>
       <div className={styles.caption}>
-        {current && 
+        {current &&
           <>
-            Edition: {current.edition}<br />
-            Size: {current.dimensions}<br />
-            Prize: {current.price}<br />
-            {current.sold ?
-              <>Sold</>
-            :
-              <a
-                href={`mailto:info@joakimnystrom.com${current.title ? `?subject=${encodeURIComponent(current.title)}` : ''}`}
-                onClick={e => e.stopPropagation()}
-              >
-                Buy
-              </a>
-            }
+            <span>Edition: {current.edition}<br /></span>
+            <span>Size: {current.dimensions}<br /></span>
+            <span>Prize: {current.price}<br /></span>
+            <span>
+              {current.sold ?
+                <>Sold</>
+                :
+                <a
+                  href={`mailto:info@joakimnystrom.com${current.title ? `?subject=${encodeURIComponent(current.title)}` : ''}`}
+                  onClick={e => e.stopPropagation()}
+                >
+                  Buy
+                </a>
+              }</span>
           </>
         }
       </div>

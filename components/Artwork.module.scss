@@ -4,7 +4,9 @@ $grid-space-small: 10px;
 .artwork {
 	width: 100%;
 	padding-top: 1rem;
-	padding-bottom: 3rem;
+	@include mq($from: tablet) {
+		padding-bottom: 3rem;
+	}
 	//max-height: 100vh;
 	//overflow-y: scroll;
 	//overflow-x: hidden;
@@ -45,7 +47,14 @@ $grid-space-small: 10px;
 				position: absolute;
 				top: 0;
 				right: $grid-space;
-				font-size: 0.4rem;
+				font-size: 0.6rem;
+				@include mq($until: tablet) {
+					padding-top: 0.5em;
+				}
+
+				@include mq($from: tablet) {
+					font-size: 0.4rem;
+				}
 				text-transform: uppercase;
 				color: $black;
 				letter-spacing: 0.1em;

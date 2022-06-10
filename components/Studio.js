@@ -15,7 +15,7 @@ export default function Studio({ artwork, studio: { email, phone, description, a
 				<aside>
 					<h2>Contact</h2>
 					<p>
-						{email}<br />
+						<a href={`mailto:${email}`}>{email}</a><br />
 						{phone}<br />
 						<h2>Studio</h2>
 						{address}<br />
@@ -43,7 +43,7 @@ export default function Studio({ artwork, studio: { email, phone, description, a
 				</article>
 
 			</Content>
-			
+
 		</>
 	)
 }
