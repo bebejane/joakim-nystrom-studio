@@ -3,6 +3,7 @@ import styles from './ArtworkGallery.module.scss'
 import { Image } from "react-datocms"
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { useState, useRef, useEffect } from 'react';
+import { use100vh } from 'react-div-100vh'
 
 export default function ArtworkGallery({ artwork, onClose, index = 0 }) {
   
@@ -10,11 +11,12 @@ export default function ArtworkGallery({ artwork, onClose, index = 0 }) {
   const [realIndex, setRealIndex] = useState(index)
   const [title, setTitle] = useState()
   const current = artwork[realIndex]
+  const height = use100vh()
 
   useEffect(() => setTitle(artwork[realIndex].title), [realIndex])
 
   return (
-    <div className={styles.artworkGallery}>
+    <div className={styles.artworkGallery} style={{maxHeight:height}}>
       <div className={styles.back} onClick={() => swiperRef.current.slidePrev()}>←</div>
       <div className={styles.images} onClick={() => swiperRef?.current?.slideNext()}>
         <Swiper
@@ -59,6 +61,6 @@ export default function ArtworkGallery({ artwork, onClose, index = 0 }) {
         }
       </div>
       <div className={styles.close} onClick={onClose}>×</div>
-    </div >
+    </div>
   )
 }

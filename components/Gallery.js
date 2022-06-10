@@ -28,7 +28,7 @@ export default function Gallery({
 
 	const { innerWidth, innerHeight } = useWindowSize();
 	const height = use100vh()
-	
+
 	const isReady = dimensions.innerWidth > 0 && transition.offset !== undefined
 	const galleryRef = useRef(null)
 	const { scrollXProgress } = useElementScroll(galleryRef)
@@ -95,7 +95,7 @@ export default function Gallery({
 			ref={galleryRef} 
 			key={`gallery-${id}`} 
 			className={cn(styles.gallery, className)} 
-			style={{ ...style, visibility: !isReady ? 'hidden' : 'visible' }}
+			style={{ ...style, visibility: !isReady ? 'hidden' : 'visible'}}
 		>
 			<motion.ul
 				id={'slide-list'}
@@ -117,7 +117,7 @@ export default function Gallery({
 						maxWidth: isMobile ? 'unset' : `${width}px`,
 						minWidth: isMobile ? 'unset' : `${width}px`,
 						width: isMobile ? 'auto' : `${width}px`,
-						height,
+						height: height,
 						visibility: `${(slides.length <= 1 && isNavSlide) || !isReady ? 'hidden' : 'visible'}`,
 						overflow: isMobile ? 'unset' : 'hidden'
 					}
