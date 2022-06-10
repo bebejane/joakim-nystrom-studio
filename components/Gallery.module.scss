@@ -45,13 +45,13 @@
 			}
 		}
 	}
-	.mouseOverlay{
+	.mouseOverlay {
 		display: none;
 		position: absolute;
 		background-color: transparent;
 		z-index: 1000;
-		top:0;
-		left:0;
+		top: 0;
+		left: 0;
 		width: 100%;
 		height: 100%;
 	}
@@ -118,8 +118,8 @@
 			}
 			.description {
 				@include mq($from: tablet) {
-					font-size: 0.65em;
-					font-family: "JJBook";
+					font-size: 0.75em;
+					font-family: "JJMid";
 				}
 				line-height: 1.2;
 			}
