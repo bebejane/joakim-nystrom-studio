@@ -17,7 +17,7 @@ html {
   }
 
   @include mq($until: tablet) {
-    font-family: "JJBook" !important;
+    //font-family: "JJBook" !important;
   }
 }
 
