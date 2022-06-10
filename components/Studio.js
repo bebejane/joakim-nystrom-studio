@@ -27,7 +27,7 @@ export default function Studio({ artwork, studio: { email, phone, description, a
 					<Markdown>{description}</Markdown>
 					<h2>Clients</h2>
 					<ul>
-						{clients.map(({ name }, idx) =>
+						{clients.sort((a, b) => a.name > b.name ? 1 : -1).map(({ name }, idx) =>
 							<li key={idx}>{name}</li>
 						)}
 					</ul>
