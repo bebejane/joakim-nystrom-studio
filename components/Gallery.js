@@ -42,21 +42,23 @@ export default function Gallery({
 	const scrollTo = (idx, duration = active && isReady ? 0.5 : 0, skipIndex = false) => {
 
 		if (dimensions.innerWidth === 0) return
-
+		const overlay = document.querySelector(`.${styles.mouseOverlay}`)
 		const slide = document.getElementById(`slide-${idx}-${id}`)
 		if (!slide) return console.log('slide not found')
 		
 		const offset = -Math.floor(slide.offsetLeft - (isMobile ? 0 : ((dimensions.innerWidth - slide.offsetWidth) / 2)))
-
+		overlay.style.display = 'block'
 		setTransition({ offset, duration })
 		idx + 1 === slides.length && onEndReached?.(true)
 
-		setTimeout(()=>{ // Fix cursor dissapearing
+		// Fix cursor dissapearing until move
+		setTimeout(()=>{ 
 			const ffwSlide = document.querySelector(`.${styles.nav}.${styles.forward}`)
 			const backSlide = document.querySelector(`.${styles.nav}.${styles.back}`)
-			ffwSlide?.classList.toggle(styles.forward); ffwSlide?.classList.toggle(styles.forward);
+			ffwSlide?.classList.remove(styles.forward); ffwSlide?.classList.toggle(styles.forward);
 			backSlide?.classList.toggle(styles.back); backSlide?.classList.toggle(styles.back);
-		}, duration * 1000)
+			overlay.style.display = 'none'
+		}, (duration * 1000) + 100)
 	}
 
 	const back = () => {
@@ -161,7 +163,7 @@ export default function Gallery({
 					)
 				})}
 			</motion.ul>
-			
+			<div className={styles.mouseOverlay}></div>
 		</div>
 	)
 }
