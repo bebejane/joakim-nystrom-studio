@@ -20,7 +20,7 @@ export default function Menu({ }) {
 		)
 		return !isIndexPage ? <Link href={href}>{content}</Link> : content
 	}
-	
+
 	return (
 		<menu id="menu" className={cn(styles.menu, !showMenu && styles.hideNav, active === 'studio' && styles.reverted)}>
 			<div className={styles.logo}>
@@ -31,7 +31,7 @@ export default function Menu({ }) {
 			<nav className={styles.nav}>
 				<ul>
 					<WrapLink href="/studio" type="studio">
-						<li>Information</li>
+						<li>About</li>
 					</WrapLink>
 				</ul>
 			</nav>
