@@ -41,10 +41,15 @@
 				}
 			}
 			&.padded {
-				padding: 15vh; // Better with vh landscape mobile
-				//padding: 120px;
+				padding: 120px;
 				.caption {
-					margin: -15vh;
+					margin: -120px;
+				}
+				@media (orientation: landscape) {
+					padding: 60px;
+					.caption {
+						margin: -60px;
+					}
 				}
 			}
 		}
