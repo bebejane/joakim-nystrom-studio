@@ -41,7 +41,11 @@
 				}
 			}
 			&.padded {
-				border: 120px solid transparent;
+				padding: 15vh; // Better with vh landscape mobile
+				//padding: 120px;
+				.caption {
+					margin: -15vh;
+				}
 			}
 		}
 	}
@@ -64,7 +68,7 @@
 	height: 100%;
 	top: 0px;
 	bottom: 0px;
-	min-width: 100%;
+	width: 100%;
 	align-items: flex-end;
 	justify-content: center;
 	z-index: 10;

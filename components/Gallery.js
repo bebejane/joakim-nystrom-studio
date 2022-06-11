@@ -29,8 +29,11 @@ export default function Gallery({
 	const { innerWidth, innerHeight } = useWindowSize();
 	const height = use100vh()
 
-	const isReady = dimensions.innerWidth > 0 && transition.offset !== undefined
 	const galleryRef = useRef(null)
+	const mouseOverlayRef = useRef(null)
+
+	const isReady = dimensions.innerWidth > 0 && transition.offset !== undefined
+	
 	const { scrollXProgress } = useElementScroll(galleryRef)
 	const allSlides = isMobile ? slides : slides.concat(slides).concat(slides)
 
@@ -67,16 +70,15 @@ export default function Gallery({
 
 	// Fix cursor not changing until mouse move after scroll
 	const cursorFix = (start) => { 
-		const overlay = document.querySelector(`.${styles.mouseOverlay}`)
-
+		
 		if(start)
-			return overlay.style.display = 'block'
+			return mouseOverlayRef.current.style.display = 'block'
 
 		const ffwSlide = document.querySelector(`.${styles.nav}.${styles.forward}`)
 		const backSlide = document.querySelector(`.${styles.nav}.${styles.back}`)
 		ffwSlide?.classList.remove(styles.forward); ffwSlide?.classList.toggle(styles.forward);
 		backSlide?.classList.toggle(styles.back); backSlide?.classList.toggle(styles.back);
-		overlay.style.display = 'none'
+		mouseOverlayRef.current.style.display = 'none'
 	}
 	
 	const handleIndexSelected = (idx) => slides[idx] && slides[idx].type !== 'text' && onIndexSelected?.(idx)
@@ -91,7 +93,7 @@ export default function Gallery({
 		const offset = items.reduce((acc, curr) => acc + curr.clientWidth, 0) * p
 		
 		for (let i = 0; i < items.length; i++) {
-			if(items[i].offsetLeft >= offset)
+			if(items[i].offsetLeft-items[i].clientWidth >= offset)
 				return setScrollIndex(i-1)
 		}
 	}
@@ -170,7 +172,7 @@ export default function Gallery({
 					)
 				})}
 			</motion.ul>
-			<div className={styles.mouseOverlay}></div>
+			<div ref={mouseOverlayRef} className={styles.mouseOverlay}></div>
 		</div>
 	)
 }
@@ -206,15 +208,18 @@ const VideoSlide = ({ data, active, width, isMobile, scrollIndex }) => {
 		videoRef.current.currentTime = 0;
 		videoRef.current.play().catch((err) => {})
 	}
-	const [internalActive, setInternalActive] = useState(false)
+	//const [internalActive, setInternalActive] = useState(false)
 
 	useEffect(() => {
 		if (!videoRef.current ) return
-		if (active || internalActive)
+		if (active){
+			console.log('play')
 			videoRef.current.play().catch((err) => {})
-		else 
+		} else {
+			console.log('pause')
 			videoRef.current.pause();
-	}, [active, internalActive])
+		}
+	}, [active])
 
 	return (
 		<>
