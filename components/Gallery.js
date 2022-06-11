@@ -93,7 +93,7 @@ export default function Gallery({
 		const offset = items.reduce((acc, curr) => acc + curr.clientWidth, 0) * p
 		
 		for (let i = 0; i < items.length; i++) {
-			if(items[i].offsetLeft-items[i].clientWidth >= offset)
+			if(items[i].offsetLeft >= offset)
 				return setScrollIndex(i-1)
 		}
 	}
