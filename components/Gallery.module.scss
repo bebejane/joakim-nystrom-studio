@@ -45,10 +45,10 @@
 				.caption {
 					margin: -120px;
 				}
-				@media (orientation: landscape) {
-					padding: 60px;
+				@include mq(mobile, $and: '(orientation: landscape)'){
+					padding: 10vh !important;
 					.caption {
-						margin: -60px;
+						margin: -10vh !important;
 					}
 				}
 			}
