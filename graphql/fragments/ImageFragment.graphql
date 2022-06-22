@@ -29,8 +29,13 @@ fragment ImageFragment on FileField {
     red
   }
   video {
-    streamingUrl
     thumbnailUrl
+    streamingUrl
+    mp4high: mp4Url(res: high)
+    mp4med: mp4Url(res: medium)
+    mp4low: mp4Url(res: low)
+    framerate
+    duration
   }
   customData
 }

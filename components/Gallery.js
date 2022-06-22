@@ -226,7 +226,7 @@ const VideoSlide = ({ data, active, width, isMobile, scrollIndex }) => {
 			<video
 				playsInline
 				muted
-				src={data.url}
+				src={data.video.mp4high}
 				ref={videoRef}
 				autoPlay={false}
 				type={data.mimeType}
