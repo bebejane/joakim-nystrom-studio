@@ -33,6 +33,8 @@ export default function Studio({ artwork, studio: { email, phone, description, a
 					</ul>
 					<h2>Photo credit</h2>
 					<Markdown>{background}</Markdown>
+					<h2>Website credit</h2>
+					<p>Designed and developed by <a href="http://www.konst-teknik.se">Konst & Teknik</a>.</p>
 					<hr />
 					<h2>Paintings</h2>
 					<Artwork
