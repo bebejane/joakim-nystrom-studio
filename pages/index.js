@@ -8,7 +8,7 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion'
 import { useWindowSize } from 'rooks';
 import cn from 'classnames'
-import useStore from '/store';
+import useStore from '/lib/store';
 
 const duration = 0.4;
 const variants = {

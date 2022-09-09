@@ -1,6 +1,6 @@
 import styles from './Background.module.scss'
 import cn from 'classnames'
-import useStore from '/store';
+import useStore from '/lib/store';
 import { useWindowSize } from 'rooks';
 import { useState, useEffect } from 'react';
 

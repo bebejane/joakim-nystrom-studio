@@ -2,7 +2,7 @@ import styles from './Artwork.module.scss';
 import { Image } from 'react-datocms';
 import { useEffect } from 'react';
 import shallow from 'zustand/shallow'
-import useStore from '/store';
+import useStore from '/lib/store';
 
 export default function Artwork({ artwork, onShowGallery, onIndexChange, prevRoute }) {
 

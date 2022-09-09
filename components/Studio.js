@@ -2,7 +2,7 @@ import styles from './Studio.module.scss'
 import Content from '/components/Content';
 import Artwork from '/components/Artwork';
 import Markdown from '/lib/dato/components/Markdown';
-import useStore from '/store';
+import useStore from '/lib/store';
 import shallow from 'zustand/shallow'
 
 export default function Studio({ artwork, studio: { email, phone, description, address, postal, background, clients }, show, revRoute }) {

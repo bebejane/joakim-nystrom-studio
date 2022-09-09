@@ -1,7 +1,7 @@
 import styles from "./Menu.module.scss";
 import Link from "next/link";
 import cn from "classnames";
-import useStore from "/store";
+import useStore from "/lib/store";
 import { useRouter } from "next/router";
 
 export default function Menu({ }) {
