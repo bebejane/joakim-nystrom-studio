@@ -25,7 +25,7 @@ export default function Menu({ }) {
 		<menu id="menu" className={cn(styles.menu, !showMenu && styles.hideNav, active === 'studio' && styles.reverted)}>
 			<div className={styles.logo}>
 				<WrapLink href="/" type="gallery">
-					Joakim Nyström Studio
+					JN Studio
 				</WrapLink>
 			</div>
 			<nav className={styles.nav}>
